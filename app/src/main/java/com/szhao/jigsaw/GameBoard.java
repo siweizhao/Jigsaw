@@ -9,10 +9,6 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.text.Layout;
-import android.util.Log;
-import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import java.util.Random;
 /**
@@ -23,62 +19,19 @@ public class GameBoard{
     Context context;
     int difficulty;
     Bitmap original;
-    Bitmap[][] solution;
     JigsawConfig[][] puzzleConfig;
-    ViewGroup puzzleArea;
+    Bitmap[][] solved;
+    RelativeLayout puzzleArea;
 
-    public GameBoard(Context context, int difficulty, Bitmap original,ViewGroup puzzleArea){
+    public GameBoard(Context context, int difficulty, Bitmap original,RelativeLayout puzzleArea){
         this.context =context;
         this.difficulty = difficulty;
         this.original = original;
         this.puzzleArea = puzzleArea;
         this.puzzleConfig = getJigsawConfig();
-        this.solution = getJigsawPieces();
     }
 
     public void initGame(){
-        for (int j = 0; j < difficulty; j++){
-            for (int i = 0; i < difficulty; i++){
-                PuzzlePiece solutionPiece = new PuzzlePiece(context,i,j);
-                solutionPiece.setImageBitmap(solution[i][j]);
-                JigsawConfig config = puzzleConfig[i][j];
-
-                int x = i * original.getWidth()/difficulty;
-                int y = j * original.getHeight()/difficulty;
-
-                int width = original.getWidth()/difficulty;
-                int height = original.getHeight()/difficulty;
-
-                int indentX = width/4;
-                int indentY = height/4;
-                if (config.getTop() == 1){
-                    y -= indentY;
-                }
-                solutionPiece.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                solutionPiece.setOnTouchListener(solutionPiece);
-                puzzleArea.addView(solutionPiece);
-                /*
-                //solution.setLayoutParams(new LayoutParams(pieceWidth, pieceHeight));
-                solutionPieces[i][j] = solution;
-                completedPuzzle.addView(solution);
-                //solution.setVisibility(View.INVISIBLE);
-
-                PuzzlePiece unsolved = new PuzzlePiece(this, i, j);
-                unsolved.setImageBitmap(puzzlePieces[i][j]);
-                ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(pieceWidth, pieceHeight);
-                params.leftMargin =
-                        random.nextInt(displayWidth) * 7 / 8;
-                params.topMargin =
-                        random.nextInt(displayHeight) * 4 / 5;
-                //unsolved.setLayoutParams(params);
-                unsolved.setOnTouchListener(unsolved);
-                mRrootLayout.addView(unsolved);*/
-
-            }
-        }
-    }
-
-    public Bitmap[][] getJigsawPieces(){
         Bitmap[][] puzzlePieces = new Bitmap[difficulty][difficulty];
         Bitmap bitmap = Bitmap.createBitmap(original);
 
@@ -116,10 +69,21 @@ public class GameBoard{
 
                 Bitmap puzzlePiece = Bitmap.createBitmap(output, (int)x, (int) y, (int)width, (int)height);
                 puzzlePieces[i][j] = puzzlePiece;
+
+                PuzzlePiece solvedPiece = new PuzzlePiece(context,i,j);
+                solvedPiece.setImageBitmap(puzzlePiece);
+                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((int)width, (int)height);
+                params.leftMargin = (int)x;
+                params.topMargin = (int)y;
+                solvedPiece.setLayoutParams(params);
+                puzzleArea.addView(solvedPiece);
+
+
             }
         }
-        return puzzlePieces;
+        solved = puzzlePieces;
     }
+
 
     //Generate the path for template
     public Path getPuzzlePath(int row, int column, JigsawConfig config){
