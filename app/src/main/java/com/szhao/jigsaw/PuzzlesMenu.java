@@ -26,9 +26,9 @@ public class PuzzlesMenu extends AppCompatActivity {
         puzzlesMenu.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                Intent i = new Intent(getApplicationContext(),DifficultySelector.class);
-                i.putExtra("id",position);
-                startActivity(i);
+                Intent intent = new Intent(getApplicationContext(),DifficultySelector.class);
+                intent.putExtra("id",position);
+                startActivity(intent);
             }
         });
     }

@@ -13,12 +13,14 @@ import android.widget.Toast;
 
 public class PuzzlePiece extends android.support.v7.widget.AppCompatImageView implements View.OnTouchListener {
     private int row, col;
-    MainActivity main;
+    Context context;
+    GameBoard gameBoard;
     float dX, dY;
 
-    public PuzzlePiece(Context context, int row, int col){
+    public PuzzlePiece(Context context, GameBoard gameBoard, int row, int col){
         super(context);
-        this.main = (MainActivity)context;
+        this.context = context;
+        this.gameBoard = gameBoard;
         this.row = row;
         this.col = col;
 
@@ -41,19 +43,19 @@ public class PuzzlePiece extends android.support.v7.widget.AppCompatImageView im
                         .setDuration(0)
                         .start();
                 break;
-            /*
+
             case MotionEvent.ACTION_UP:
                 //Check if correct placement
                 PuzzlePiece piece = (PuzzlePiece)view;
                 if (withinBounds(piece, piece.getRow(), piece.getCol())){
                     view.setVisibility(View.GONE);
-                    main.solutionPieces[piece.getRow()][piece.getCol()].setVisibility(View.VISIBLE);
+                    gameBoard.solvedPuzzle[piece.getRow()][piece.getCol()].setVisibility(View.VISIBLE);
 
                     //Check if solved;
                     if (isSolved())
-                        Toast.makeText(main, "Puzzle solved", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "Puzzle solved", Toast.LENGTH_LONG).show();
                 }
-*/
+
             default:
                 return false;
         }
@@ -61,7 +63,7 @@ public class PuzzlePiece extends android.support.v7.widget.AppCompatImageView im
     }
 
     private boolean withinBounds(PuzzlePiece piece, int row, int col){
-        PuzzlePiece solution = main.solutionPieces[row][col];
+        PuzzlePiece solution = gameBoard.solvedPuzzle[row][col];
         int[] solutionLocation = new int[2];
         solution.getLocationOnScreen(solutionLocation);
         int x1 = solutionLocation[0];
@@ -81,9 +83,9 @@ public class PuzzlePiece extends android.support.v7.widget.AppCompatImageView im
     }
 
     public boolean isSolved(){
-        for (int i = 0; i < main.difficulty; i++){
-            for(int j = 0; j < main.difficulty; j++) {
-                if (main.solutionPieces[i][j].getVisibility() == View.INVISIBLE)
+        for (int i = 0; i < gameBoard.difficulty; i++){
+            for(int j = 0; j < gameBoard.difficulty; j++) {
+                if (gameBoard.solvedPuzzle[i][j].getVisibility() == View.INVISIBLE)
                     return false;
             }
         }

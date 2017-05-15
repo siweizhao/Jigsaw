@@ -9,6 +9,8 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.util.Log;
+import android.view.View;
 import android.widget.RelativeLayout;
 import java.util.Random;
 /**
@@ -22,13 +24,15 @@ public class GameBoard{
     JigsawConfig[][] puzzleConfig;
     Bitmap[][] solved;
     RelativeLayout puzzleArea;
+    public PuzzlePiece[][] solvedPuzzle;
 
     public GameBoard(Context context, int difficulty, Bitmap original,RelativeLayout puzzleArea){
-        this.context =context;
+        this.context = context;
         this.difficulty = difficulty;
         this.original = original;
         this.puzzleArea = puzzleArea;
-        this.puzzleConfig = getJigsawConfig();
+        this.puzzleConfig = JigsawConfig.getJigsawConfig(difficulty);
+        this.solvedPuzzle = new PuzzlePiece[difficulty][difficulty];
     }
 
     public void initGame(){
@@ -67,18 +71,36 @@ public class GameBoard{
                 x = x < 0 ? 0 : x;
                 y = y < 0 ? 0 : y;
 
-                Bitmap puzzlePiece = Bitmap.createBitmap(output, (int)x, (int) y, (int)width, (int)height);
+                //Increase size of the puzzle piece so nothing gets cut off
+                width += 7;
+                height += 7;
+                if ((int)Math.round(x + width) > original.getWidth())
+                    x = original.getWidth() - Math.round(width);
+                if ((int)Math.round(y + height) > original.getHeight())
+                    y = original.getHeight() - Math.round(height);
+
+                Bitmap puzzlePiece = Bitmap.createBitmap(output, (int)Math.round(x),
+                        (int)Math.round(y), (int)Math.round(width), (int)Math.round(height));
+
+                //Bitmap puzzlePiece = Bitmap.createBitmap(output, (int)x, (int)y, (int)width, (int)height);
+
                 puzzlePieces[i][j] = puzzlePiece;
 
-                PuzzlePiece solvedPiece = new PuzzlePiece(context,i,j);
+                PuzzlePiece solvedPiece = new PuzzlePiece(context,this,i,j);
+                solvedPuzzle[i][j] = solvedPiece;
                 solvedPiece.setImageBitmap(puzzlePiece);
-                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((int)width, (int)height);
-                params.leftMargin = (int)x;
-                params.topMargin = (int)y;
+                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((int)Math.round(width), (int)Math.round(height));
+                params.leftMargin = (int)Math.round(x);
+                params.topMargin = (int)Math.round(y);
                 solvedPiece.setLayoutParams(params);
+                solvedPiece.setVisibility(View.INVISIBLE);
                 puzzleArea.addView(solvedPiece);
 
-
+                PuzzlePiece unsolvedPiece = new PuzzlePiece(context,this,i,j);
+                unsolvedPiece.setImageBitmap(puzzlePiece);
+                unsolvedPiece.setOnTouchListener(unsolvedPiece);
+                unsolvedPiece.setVisibility(View.VISIBLE);
+                puzzleArea.addView(unsolvedPiece);
             }
         }
         solved = puzzlePieces;
@@ -89,10 +111,10 @@ public class GameBoard{
     public Path getPuzzlePath(int row, int column, JigsawConfig config){
         Path puzzlePath = new Path();
         float sideLength = (float)original.getWidth()/difficulty;
+        float x1, x2, y1, y2;
 
         //Distance from edge to indent
         float segment = sideLength/3;
-
         float startX = sideLength * row;
         float startY = sideLength * column;
 
@@ -103,90 +125,83 @@ public class GameBoard{
         puzzlePath.moveTo(startX, startY);
         //top
         puzzlePath.lineTo(startX + segment, startY);
+        x1 = startX + segment;
+        x2 = startX + 2 * segment;
         if (config.getTop() == -1){
-            indent = new RectF(startX + segment, startY - offset, startX + 2 * segment, startY + segment - offset);
+            y1 = startY - offset;
+            y2 = startY + segment - offset;
+            indent = new RectF(x1, y1, x2, y2);
             puzzlePath.arcTo(indent, 180, -180);
         } else if (config.getTop() == 1){
-            indent = new RectF(startX + segment, startY - segment + offset, startX + 2 * segment, startY + offset);
+            y1 = startY - segment + offset;
+            y2 = startY + offset;
+            indent = new RectF(x1, y1, x2, y2);
             puzzlePath.arcTo(indent, 180, 180);
         }
-        puzzlePath.lineTo(startX + 2 * segment, startY);
+        puzzlePath.lineTo(x2, startY);
         puzzlePath.lineTo(startX + sideLength, startY);
         startX = startX + sideLength;
 
         //right
         puzzlePath.lineTo(startX, startY + segment);
+        y1 = startY + segment;
+        y2 = startY + 2 * segment;
         if (config.getRight() == -1){
-            indent = new RectF(startX - segment + offset , startY + segment, startX + offset, startY + 2 * segment);
+            x1 = startX - segment + offset;
+            x2 = startX + offset;
+            //Log.d("right - 1", " " + x1 + " " + x2);
+            indent = new RectF(x1 , y1, x2, y2);
             puzzlePath.arcTo(indent, 270, -180);
         } else if (config.getRight() == 1){
-            indent = new RectF(startX - offset, startY + segment, startX + segment - offset, startY + 2 * segment);
+            x1 = startX - offset;
+            x2 = startX + segment - offset;
+            //Log.d("right + 1", " " + x1 + " " + x2);
+            indent = new RectF(x1, y1, x2, y2);
             puzzlePath.arcTo(indent,270,180);
         }
-        puzzlePath.lineTo(startX, startY + 2 * segment);
+        puzzlePath.lineTo(startX, y2);
         puzzlePath.lineTo(startX, startY + sideLength);
         startY = startY + sideLength;
 
         //bot
         puzzlePath.lineTo(startX - segment, startY);
+        x1 = startX - 2 * segment;
+        x2 = startX - segment;
         if (config.getBot() == -1){
-            indent = new RectF(startX - 2 * segment, startY - segment + offset, startX - segment, startY + offset);
+            y1 = startY - segment + offset;
+            y2 = startY + offset;
+            indent = new RectF(x1, y1, x2, y2);
             puzzlePath.arcTo(indent, 0, -180);
         } else if (config.getBot() == 1){
-            indent = new RectF(startX - 2 * segment, startY - offset, startX - segment,  startY + segment - offset);
+            y1 = startY - offset;
+            y2 = startY + segment - offset;
+            indent = new RectF(x1, y1, x2, y2);
             puzzlePath.arcTo(indent,0,180);
         }
-        puzzlePath.lineTo(startX - 2 * segment, startY);
+        puzzlePath.lineTo(x1, startY);
         puzzlePath.lineTo(startX - sideLength, startY);
         startX = startX - sideLength;
 
         //left
         puzzlePath.lineTo(startX, startY - segment);
+        y1 = startY - 2 * segment;
+        y2 = startY - segment;
         if (config.getLeft() == -1){
-            indent = new RectF(startX - offset , startY - 2 * segment, startX + segment - offset, startY - segment);
+            x1 = startX - offset;
+            x2 = startX + segment - offset;
+            //Log.d("left - 1", " " + x1 + " " + x2);
+            indent = new RectF(x1, y1, x2, y2);
             puzzlePath.arcTo(indent, 90, -180);
         } else if (config.getLeft() == 1){
-            indent = new RectF(startX - segment + offset, startY - 2 * segment, startX + offset, startY - segment);
+            x1 = startX - segment + offset;
+            x2 = startX + offset;
+            //Log.d("left + 1", " " + x1 + " " + x2);
+            indent = new RectF(x1, y1, x2, y2);
             puzzlePath.arcTo(indent,90,180);
         }
         puzzlePath.lineTo(startX, startY - 2 * segment);
         puzzlePath.lineTo(startX, startY - sideLength);
 
         return puzzlePath;
-    }
-
-    // -1 represents indent, 1 represents outdent, 0 represents a flat surface
-    // the sides of each jigsaw piece will be represented by this
-    public JigsawConfig[][] getJigsawConfig(){
-        JigsawConfig[][] config = new JigsawConfig[difficulty][difficulty];
-        Random random = new Random();
-        int top, bot, left, right;
-
-        for(int j = 0; j < difficulty; j ++) {
-            for (int i = 0; i < difficulty; i++){
-                top = random.nextInt(2) * 2 - 1;
-                right = random.nextInt(2) * 2 - 1;
-                bot = random.nextInt(2) * 2 - 1;
-                left = random.nextInt(2) * 2 - 1;
-
-                //Check adjacent pieces
-                if (i > 0)
-                    left = -config[i - 1][j].getRight();
-                if (j > 0)
-                    top = -config[i][j - 1].getBot();
-
-                if (i == 0)
-                    left = 0;
-                else if (i == difficulty - 1)
-                    right = 0;
-
-                if (j == 0)
-                    top = 0;
-                else if (j == difficulty - 1)
-                    bot = 0;
-                config[i][j] = new JigsawConfig(top,bot,left,right);
-            }
-        }
-        return config;
     }
 }
