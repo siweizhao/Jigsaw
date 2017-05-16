@@ -12,8 +12,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class DifficultySelector extends AppCompatActivity {
 
-    int puzzleId;
-    SeekBar difficultySelector;
+    private int puzzleId;
+    private SeekBar difficultySelector;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
