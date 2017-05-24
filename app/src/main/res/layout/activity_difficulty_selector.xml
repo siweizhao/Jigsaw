@@ -16,7 +16,7 @@
         android:layout_width="wrap_content"
         android:layout_centerInParent="true"
         android:textSize="32sp"
-        android:text="Difficulty: 2 x 2"
+        android:text="@string/defaultDifficulty"
         android:layout_below="@id/puzzleSelected">
     </TextView>
 
@@ -35,6 +35,6 @@
         android:layout_centerInParent="true"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="12dp"
-        android:text="Start Game"
+        android:text="@string/startGame"
         android:onClick="startGame"/>
 </RelativeLayout>

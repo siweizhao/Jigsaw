@@ -18,4 +18,70 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/gameMenuLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#C0C0C0"
+        android:alpha="0.8"
+        android:visibility="invisible">
+        <RelativeLayout
+            android:id="@+id/gameMenu"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_gravity="center">
+
+            <Button
+                android:id="@+id/showOriginal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="show original"
+                android:onClick="showOriginal"/>
+            <Button
+                android:id="@+id/resetPuzzle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/showOriginal"
+                android:text="reset puzzle"
+                android:onClick="resetPuzzle"/>
+            <Button
+                android:id="@+id/goPuzzleMenu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/resetPuzzle"
+                android:text="puzzle menu"
+                android:onClick="returnPuzzleMenu"/>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/goPuzzleMenu"
+                android:text="close"
+                android:onClick="closeGameMenu"/>
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/originalImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="invisible"/>
+
+    <TextView
+        android:id="@+id/timerDisplay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-black"
+        android:textSize="32sp"/>
+
+    <ImageButton
+        android:id="@+id/pauseButton"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:background="@drawable/logo"
+        android:layout_gravity="bottom|right"
+        android:layout_marginBottom="30dp"
+        android:onClick="openGameMenu"
+        />
 </FrameLayout >

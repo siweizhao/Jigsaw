@@ -25,6 +25,9 @@ public class PuzzlePiece extends android.support.v7.widget.AppCompatImageView im
     }
 
     public boolean onTouch(View view, MotionEvent event) {
+        if (((MainActivity)context).isMenuOpen)
+            return false;
+
         view.bringToFront();
         view.invalidate();
         switch(event.getAction()){
@@ -48,8 +51,11 @@ public class PuzzlePiece extends android.support.v7.widget.AppCompatImageView im
                     gameBoard.getSolution()[piece.row][piece.col].setVisibility(View.VISIBLE);
 
                     //Check if solved;
-                    if (isSolved())
-                        Toast.makeText(context, "Puzzle solved", Toast.LENGTH_LONG).show();
+                    if (isSolved()) {
+                        MainActivity mainActivity = (MainActivity)context;
+                        mainActivity.stopTimer();
+                        Toast.makeText(context, "Puzzle solved in " + (mainActivity.getTotalTimeSec() - 1) + " seconds", Toast.LENGTH_LONG).show();
+                    }
                 }
 
             default:

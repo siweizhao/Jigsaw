@@ -10,10 +10,13 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import java.util.Random;
+import java.util.concurrent.RecursiveAction;
+
 /**
  * Created by Owner on 4/15/2017.
  */
@@ -34,23 +37,39 @@ public class GameBoard{
 
     public void initGame(){
         this.solution = new PuzzlePiece[difficulty][difficulty];
-
         for (int j = 0; j < difficulty; j++) {
             for (int i = 0; i < difficulty; i++) {
                 //Create puzzle piece from original image
                 Bitmap puzzlePieceRaw = getPuzzlePieceRaw(i, j);
-                double sideLength = original.getWidth()/difficulty;
+                double pieceLength = original.getWidth()/difficulty;
+                double indentSize = pieceLength/4;
 
-                double width = 1.5 * sideLength;
-                double height = 1.5 * sideLength;
-                double y = j * sideLength - sideLength/4;
-                double x = i * sideLength - sideLength/4;
+                double width = pieceLength;
+                double x = i * pieceLength;
+                //Determine size and position of new bitmap for each puzzle piece
+                if (puzzleConfig[i][j].getLeft() == 1){
+                    width += indentSize;
+                    x -= indentSize;
+                }
+                if (puzzleConfig[i][j].getRight() == 1){
+                    width += indentSize;
+                }
+
+                double height = pieceLength;
+                double y = j * pieceLength;
+                if (puzzleConfig[i][j].getTop() == 1){
+                    height += indentSize;
+                    y -= indentSize;
+                }
+                if (puzzleConfig[i][j].getBot() == 1){
+                    height += indentSize;
+                }
 
                 //Increase size of the puzzle piece so nothing gets cut off
                 width += 7;
                 height += 7;
 
-                //Make sure x,y > 0 and boundaries constraint
+                //Make sure x,y > 0 and boundaries are constraint
                 x = x < 0 ? 0 : x;
                 y = y < 0 ? 0 : y;
                 x = (int)Math.round(x + width) > original.getWidth() ? original.getWidth() - Math.round(width) : x;
@@ -64,23 +83,33 @@ public class GameBoard{
                 PuzzlePiece solvedPiece = new PuzzlePiece(mainActivity,this,i,j);
                 solution[i][j] = solvedPiece;
                 solvedPiece.setImageBitmap(puzzlePiece);
-                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((int)Math.round(width), (int)Math.round(height));
+                RelativeLayout.LayoutParams params =
+                        new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                 params.leftMargin = (int)Math.round(x);
                 params.topMargin = (int)Math.round(y);
                 solvedPiece.setLayoutParams(params);
                 solvedPiece.setVisibility(View.INVISIBLE);
                 mainActivity.getSolutionLayout().addView(solvedPiece);
 
-                PuzzlePiece unsolvedPiece = new PuzzlePiece(mainActivity,this,i,j);
-                unsolvedPiece.setImageBitmap(puzzlePiece);
-                unsolvedPiece.setOnTouchListener(unsolvedPiece);
-                unsolvedPiece.setVisibility(View.VISIBLE);
-                mainActivity.getGameLayout().addView(unsolvedPiece);
+                scatterPuzzlePiece(puzzlePiece,i,j);
             }
         }
     }
 
-
+    //Position each puzzle piece randomly
+    private void scatterPuzzlePiece(Bitmap puzzlePiece,int i, int j){
+        Random random = new Random();
+        RelativeLayout.LayoutParams params =
+                new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        PuzzlePiece unsolvedPiece = new PuzzlePiece(mainActivity,this,i,j);
+        params.leftMargin = random.nextInt(mainActivity.getDisplayWidth() - puzzlePiece.getWidth());
+        params.topMargin = random.nextInt(mainActivity.getDisplayHeight()  - puzzlePiece.getHeight());
+        unsolvedPiece.setLayoutParams(params);
+        unsolvedPiece.setImageBitmap(puzzlePiece);
+        unsolvedPiece.setOnTouchListener(unsolvedPiece);
+        unsolvedPiece.setVisibility(View.VISIBLE);
+        mainActivity.getGameLayout().addView(unsolvedPiece);
+    }
 
     //Generate the path for puzzle piece cutout
     private Path getPuzzlePath(int row, int column, JigsawConfig config){
@@ -189,39 +218,6 @@ public class GameBoard{
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
         canvas.drawBitmap(original, rect, rect, paint);
         return puzzlePiece;
-    }
-
-    //Creates a new bitmap of just the puzzle piece
-    private Bitmap trimPuzzlePiece(Bitmap puzzlePieceRaw, int i, int j){
-        double sideLength = original.getWidth()/difficulty;
-        double width = 1.5 * sideLength;
-        double height = 1.5 * sideLength;
-        double y = j * sideLength - sideLength/4;
-        double x = i * sideLength - sideLength/4;
-
-        //left, right edge
-        if (i == 0 || i == difficulty - 1) {
-            width = 1.25 * sideLength;
-        }
-
-        //top, bot edge
-        if (j == 0 || j == difficulty - 1) {
-            height = 1.25 * sideLength;
-        }
-
-        //Increase size of the puzzle piece so nothing gets cut off
-        width += 7;
-        height += 7;
-
-        //Make sure x,y > 0 and boundaries constraint
-        x = x < 0 ? 0 : x;
-        y = y < 0 ? 0 : y;
-        x = (int)Math.round(x + width) > original.getWidth() ? original.getWidth() - Math.round(width) : x;
-        y = (int)Math.round(y + height) > original.getHeight() ? original.getHeight() - Math.round(height) : y;
-
-        return Bitmap.createBitmap(puzzlePieceRaw, (int)Math.round(x),
-                (int)Math.round(y), (int)Math.round(width), (int)Math.round(height));
-
     }
 
     public int getDifficulty(){

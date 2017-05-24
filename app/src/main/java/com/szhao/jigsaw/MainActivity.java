@@ -4,29 +4,37 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 
 import android.app.Activity;
+import android.os.CountDownTimer;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.GridLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.RelativeLayout.LayoutParams;
+
+import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import java.util.Random;
+import java.io.IOException;
+
 
 public class MainActivity extends Activity {
 
     private RelativeLayout gameLayout;
     private RelativeLayout solutionLayout;
-    private int displayWidth;
+    private int displayWidth, displayHeight;
+    private int totalTimeSec = 0;
+    private CountDownTimer timer;
+    private GameBoard gameBoard;
+    private ImageView originalImage;
+    private RelativeLayout gameMenuLayout;
+    public boolean isMenuOpen = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -34,16 +42,36 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         gameLayout = (RelativeLayout) findViewById(R.id.gameLayout);
         solutionLayout = (RelativeLayout) findViewById(R.id.solutionLayout);
+        gameMenuLayout = (RelativeLayout)findViewById(R.id.gameMenuLayout);
+        originalImage = (ImageView)findViewById(R.id.originalImage);
+
+        originalImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                originalImage.setVisibility(View.INVISIBLE);
+            }
+        });
+
 
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
         displayWidth = size.x;
+        displayHeight = size.y;
 
         Intent intent = getIntent();
-        int puzzleId = intent.getExtras().getInt("id");
+        String puzzleUri = intent.getExtras().getString("puzzleUri");
         int difficulty = intent.getExtras().getInt("difficulty");
-        initGame(puzzleId,difficulty);
+        initGame(puzzleUri,difficulty);
+        startTimer();
+    }
+
+    public int getDisplayWidth(){
+        return displayWidth;
+    }
+
+    public int getDisplayHeight(){
+        return displayHeight;
     }
 
     public RelativeLayout getGameLayout(){
@@ -54,14 +82,64 @@ public class MainActivity extends Activity {
         return solutionLayout;
     }
 
-    private void initGame(int puzzleId, int difficulty){
-        ImageAdapter adapter = new ImageAdapter(this);
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inScaled = false;
-        Bitmap picture =  BitmapFactory.decodeResource(getResources(), adapter.images[puzzleId],options);
+    public void startTimer(){
+        final TextView timerDisplay = (TextView)findViewById(R.id.timerDisplay);
+        timer = new CountDownTimer(Long.MAX_VALUE,1000) {
+            @Override
+            public void onTick(long l) {
+                long numSeconds = totalTimeSec % 60;
+                long numMinutes= totalTimeSec / 60;
+                long numHours = numMinutes / 60;
+                totalTimeSec++;
+                timerDisplay.setText(numHours + " : " + numMinutes + " : " + numSeconds);
+            }
 
-        Bitmap scaledPicture  = Bitmap.createScaledBitmap(picture, displayWidth - 200, displayWidth - 200, true);
-        GameBoard board = new GameBoard(this, difficulty, scaledPicture);
-        board.initGame();
+            @Override
+            public void onFinish() {
+            }
+        };
+        timer.start();
+    }
+
+    public long getTotalTimeSec(){
+        return totalTimeSec;
+    }
+
+    public void stopTimer(){
+        timer.cancel();
+    }
+
+    private void initGame(String puzzleUri, int difficulty){
+        Bitmap puzzle = ImageLoader.getInstance().loadImageSync(puzzleUri);
+        Bitmap scaledPicture  = Bitmap.createScaledBitmap(puzzle, displayWidth - 200, displayWidth - 200, true);
+        originalImage.setImageBitmap(scaledPicture);
+        gameBoard= new GameBoard(this, difficulty, scaledPicture);
+        gameBoard.initGame();
+
+    }
+
+    public void openGameMenu(View view){
+        isMenuOpen = true;
+        stopTimer();
+        gameMenuLayout.setVisibility(View.VISIBLE);
+    }
+
+    public void showOriginal(View view){
+        originalImage.setVisibility(View.VISIBLE);
+    }
+
+    public void resetPuzzle(View view){
+        recreate();
+    }
+
+    public void returnPuzzleMenu(View view){
+        Intent intent = new Intent (this, PuzzlesMenu.class);
+        startActivity(intent);
+    }
+
+    public void closeGameMenu(View view){
+        isMenuOpen = false;
+        gameMenuLayout.setVisibility(View.INVISIBLE);
+        startTimer();
     }
 }

@@ -1,8 +1,12 @@
 package com.szhao.jigsaw;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -10,9 +14,11 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.io.IOException;
+
 public class DifficultySelector extends AppCompatActivity {
 
-    private int puzzleId;
+    private String puzzleUri;
     private SeekBar difficultySelector;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,12 +26,10 @@ public class DifficultySelector extends AppCompatActivity {
         setContentView(R.layout.activity_difficulty_selector);
 
         Intent intent = getIntent();
-        puzzleId = intent.getExtras().getInt("id");
-        ImageAdapter adapter = new ImageAdapter(this);
-
+        puzzleUri = intent.getExtras().getString("imageUri");
+        Log.d("difficulty url", puzzleUri);
         ImageView puzzleSelected = (ImageView)findViewById(R.id.puzzleSelected);
-        ImageLoader.getInstance().displayImage("drawable://" + adapter.images[puzzleId],puzzleSelected);
-
+        ImageLoader.getInstance().displayImage(puzzleUri, puzzleSelected);
         difficultySelector = (SeekBar)findViewById(R.id.seekBar);
 
         difficultySelector.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -50,7 +54,7 @@ public class DifficultySelector extends AppCompatActivity {
 
     public void startGame(View view){
         Intent intent = new Intent (this, MainActivity.class);
-        intent.putExtra("id", puzzleId);
+        intent.putExtra("puzzleUri", puzzleUri);
         intent.putExtra("difficulty", difficultySelector.getProgress() + 2);
         startActivity(intent);
     }
