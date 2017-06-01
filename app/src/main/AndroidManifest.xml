@@ -2,9 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.szhao.jigsaw">
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -13,9 +13,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light">
-        <activity android:name=".MainActivity"
-            android:screenOrientation="portrait"
-            android:configChanges="orientation|screenSize"/>
+        <activity
+            android:name=".MainActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait" />
         <activity android:name=".TitleScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,7 +25,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".PuzzlesMenu" />
-        <activity android:name=".DifficultySelector"></activity>
+        <activity android:name=".DifficultySelector" />
+        <activity android:name=".CompletedPuzzles"></activity>
     </application>
 
 </manifest>

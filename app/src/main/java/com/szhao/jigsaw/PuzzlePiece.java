@@ -1,10 +1,8 @@
 package com.szhao.jigsaw;
 
-import android.app.Activity;
 import android.content.Context;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 /**
@@ -54,6 +52,7 @@ public class PuzzlePiece extends android.support.v7.widget.AppCompatImageView im
                     if (isSolved()) {
                         MainActivity mainActivity = (MainActivity)context;
                         mainActivity.stopTimer();
+                        mainActivity.puzzleComplete();
                         Toast.makeText(context, "Puzzle solved in " + (mainActivity.getTotalTimeSec() - 1) + " seconds", Toast.LENGTH_LONG).show();
                     }
                 }

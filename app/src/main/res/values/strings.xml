@@ -2,6 +2,7 @@
     <string name="app_name">Jigsaw</string>
 
     <string name="puzzles">Puzzles</string>
+    <string name="completedPuzzles">Completed Puzzles</string>
     <string name="uploadImage"> Upload Image</string>
     <string name="startGame">Start Game</string>
     <string name="defaultDifficulty">Difficulty: 2 x 2</string>

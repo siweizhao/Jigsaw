@@ -1,6 +1,5 @@
 package com.szhao.jigsaw;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -9,13 +8,10 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.util.Log;
-import android.view.Display;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+
 import java.util.Random;
-import java.util.concurrent.RecursiveAction;
 
 /**
  * Created by Owner on 4/15/2017.

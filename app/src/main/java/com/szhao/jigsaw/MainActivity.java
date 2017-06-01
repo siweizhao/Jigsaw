@@ -1,27 +1,22 @@
 package com.szhao.jigsaw;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
 import android.os.Bundle;
-
-import android.app.Activity;
 import android.os.CountDownTimer;
-import android.provider.MediaStore;
-import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
-
-import java.io.IOException;
 
 
 public class MainActivity extends Activity {
@@ -35,6 +30,7 @@ public class MainActivity extends Activity {
     private ImageView originalImage;
     private RelativeLayout gameMenuLayout;
     public boolean isMenuOpen = false;
+    private int difficulty;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,7 +57,7 @@ public class MainActivity extends Activity {
 
         Intent intent = getIntent();
         String puzzleUri = intent.getExtras().getString("puzzleUri");
-        int difficulty = intent.getExtras().getInt("difficulty");
+        difficulty = intent.getExtras().getInt("difficulty");
         initGame(puzzleUri,difficulty);
         startTimer();
     }
@@ -141,5 +137,18 @@ public class MainActivity extends Activity {
         isMenuOpen = false;
         gameMenuLayout.setVisibility(View.INVISIBLE);
         startTimer();
+    }
+
+    public void puzzleComplete(){
+        try{
+            CompletedPuzzlesDatabaseHelper puzzleDatabaseHelper = new CompletedPuzzlesDatabaseHelper(this);
+            SQLiteDatabase db = puzzleDatabaseHelper.getWritableDatabase();
+            CompletedPuzzlesDatabaseHelper.insertPuzzle(db, "caption", difficulty, totalTimeSec,System.currentTimeMillis(),
+                    ((BitmapDrawable)originalImage.getDrawable()).getBitmap());
+        } catch (SQLiteException e){
+            Toast toast = Toast.makeText(this, "Database unavailable", Toast.LENGTH_SHORT);
+            toast.show();
+        }
+
     }
 }

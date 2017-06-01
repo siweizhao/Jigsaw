@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/completedPuzzleImage"
+        android:layout_alignParentLeft="true"
+        android:adjustViewBounds="true"
+        android:maxHeight="200dp"
+        android:maxWidth="200dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/completedPuzzleDescription"
+        android:layout_below="@+id/completedPuzzleImage"
+        android:textSize="30sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/completedPuzzleDifficulty"
+        android:layout_toRightOf="@+id/completedPuzzleImage"
+        android:textSize="30sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/completedPuzzleSolveTime"
+        android:layout_toRightOf="@+id/completedPuzzleImage"
+        android:layout_below="@+id/completedPuzzleDifficulty"
+        android:textSize="30sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/completedPuzzleDate"
+        android:layout_toRightOf="@+id/completedPuzzleImage"
+        android:layout_below="@+id/completedPuzzleSolveTime"
+        android:textSize="30sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</RelativeLayout>

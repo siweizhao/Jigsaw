@@ -1,10 +1,9 @@
 package com.szhao.jigsaw;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
 
 public class TitleScreen extends AppCompatActivity {
 
@@ -20,5 +19,9 @@ public class TitleScreen extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void goCompletedPuzzles(View view){
+        Intent intent = new Intent (this, CompletedPuzzles.class);
+        startActivity(intent);
+    }
 
 }
