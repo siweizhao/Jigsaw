@@ -6,4 +6,8 @@
     <string name="uploadImage"> Upload Image</string>
     <string name="startGame">Start Game</string>
     <string name="defaultDifficulty">Difficulty: 2 x 2</string>
+    <string name="showSolution">Show Solution</string>
+    <string name="resetPuzzle">Reset Puzzle</string>
+    <string name="puzzleMenu">Puzzle Menu</string>
+    <string name="close">Close</string>
 </resources>

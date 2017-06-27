@@ -14,19 +14,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light">
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.JigsawGame"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait" />
-        <activity android:name=".TitleScreen">
+        <activity android:name=".activities.TitleScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".PuzzlesMenu" />
-        <activity android:name=".DifficultySelector" />
-        <activity android:name=".CompletedPuzzles"></activity>
+        <activity android:name=".activities.PuzzlesMenu" />
+        <activity android:name=".activities.DifficultySelector" />
+        <activity android:name=".activities.CompletedPuzzles"></activity>
     </application>
 
 </manifest>
