@@ -26,7 +26,14 @@
         </activity>
         <activity android:name=".activities.PuzzlesMenu" />
         <activity android:name=".activities.DifficultySelector" />
-        <activity android:name=".activities.CompletedPuzzles"></activity>
+        <activity android:name=".activities.CompletedPuzzles" />
+        <activity
+            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:theme="@style/Base.Theme.AppCompat" />
+        <activity
+            android:name=".activities.PuzzleSelector"
+            android:label="@string/title_activity_puzzle_selector"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
     </application>
 
 </manifest>

@@ -66,18 +66,16 @@ public class PuzzlePiece extends android.support.v7.widget.AppCompatImageView im
         PuzzlePiece solution = gameBoard.getSolution()[row][col];
         int[] solutionLocation = new int[2];
         solution.getLocationOnScreen(solutionLocation);
-        int x1 = solutionLocation[0] + piece.getWidth()/2;
-        int y1 = solutionLocation[1] + piece.getHeight()/2;
+        int x1 = solutionLocation[0];
+        int y1 = solutionLocation[1];
 
         int[] pieceLocation = new int[2];
         piece.getLocationOnScreen(pieceLocation);
-        int x2 = pieceLocation[0] + piece.getWidth()/2;
-        int y2 = pieceLocation[1] + piece.getHeight()/2;
+        int x2 = pieceLocation[0];
+        int y2 = pieceLocation[1];
 
-        int offsetX = piece.getWidth()/4;
-        int offsetY = piece.getHeight()/4;
-        return ((x2 + offsetX >= x1 && x2 - offsetX<= (x1 + solution.getWidth()) &&
-                (y2 + offsetY >= y1 && y2 -offsetY <= (y1 + solution.getHeight()))));
+        int bounds = piece.getWidth()/6;
+        return Math.abs(x1 - x2) <= bounds && Math.abs(y1-y2) <= bounds;
     }
 
     public boolean isSolved(){

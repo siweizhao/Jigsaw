@@ -47,7 +47,7 @@ public class ImageAdapter extends BaseAdapter {
         ImageView imageView = new ImageView(context);
         imageView.setScaleType(ImageView.ScaleType.CENTER);
         imageView.setLayoutParams(new GridView.LayoutParams(520,520));
-        ImageLoader.getInstance().displayImage("drawable://" + images[position],imageView);
+        imageView.setImageResource(images[position]);
         return imageView;
     }
 

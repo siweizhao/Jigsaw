@@ -13,11 +13,11 @@ public class TitleScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_title_screen);
-
+        globalInit();
     }
 
     public void goToPuzzlesMenu(View view){
-        Intent intent = new Intent (this, PuzzlesMenu.class);
+        Intent intent = new Intent (this, PuzzleSelector.class);
         startActivity(intent);
     }
 
@@ -26,4 +26,6 @@ public class TitleScreen extends AppCompatActivity {
         startActivity(intent);
     }
 
+    private void globalInit(){
+    }
 }

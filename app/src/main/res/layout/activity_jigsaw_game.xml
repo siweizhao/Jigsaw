@@ -1,4 +1,5 @@
 <FrameLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/MatchParent">
     <RelativeLayout
         android:id="@+id/solutionLayout"
@@ -37,7 +38,7 @@
                 style="@style/Wrap"
                 android:layout_below="@+id/resetPuzzle"
                 android:text="@string/puzzleMenu"
-                android:onClick="returnPuzzleMenu"/>
+                android:onClick="returnPuzzleSelector"/>
             <Button
                 style="@style/Wrap"
                 android:layout_below="@+id/goPuzzleMenu"
@@ -57,12 +58,10 @@
         android:fontFamily="sans-serif-black"
         android:textSize="32sp"/>
 
-    <ImageButton
-        android:layout_width="65dp"
-        android:layout_height="65dp"
-        android:background="@drawable/logo"
-        android:layout_gravity="bottom|right"
-        android:layout_marginBottom="30dp"
-        android:onClick="openGameMenu"
-        />
+    <android.support.design.widget.FloatingActionButton
+        style="@style/Wrap"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="@dimen/fab_margin"
+        app:srcCompat="@android:drawable/ic_dialog_email"
+        android:onClick="openGameMenu"/>
 </FrameLayout >

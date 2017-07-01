@@ -16,10 +16,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.szhao.jigsaw.puzzle.GameBoard;
 import com.szhao.jigsaw.R;
-import com.szhao.jigsaw.db.CompletedPuzzlesDatabaseHelper;
+import com.szhao.jigsaw.db.DatabaseHelper;
+import com.szhao.jigsaw.db.Utility;
+import com.szhao.jigsaw.puzzle.GameBoard;
 
 public class JigsawGame extends Activity {
 
@@ -58,9 +58,8 @@ public class JigsawGame extends Activity {
         displayHeight = size.y;
 
         Intent intent = getIntent();
-        String puzzleUri = intent.getExtras().getString("puzzleUri");
         difficulty = intent.getExtras().getInt("difficulty");
-        initGame(puzzleUri,difficulty);
+        initGame(difficulty);
         startTimer();
     }
 
@@ -107,9 +106,9 @@ public class JigsawGame extends Activity {
         timer.cancel();
     }
 
-    private void initGame(String puzzleUri, int difficulty){
-        Bitmap puzzle = ImageLoader.getInstance().loadImageSync(puzzleUri);
-        Bitmap scaledPicture  = Bitmap.createScaledBitmap(puzzle, displayWidth - 200, displayWidth - 200, true);
+    private void initGame(int difficulty){
+        Bitmap bitmap = Utility.getStoredImage(this);
+        Bitmap scaledPicture  = Bitmap.createScaledBitmap(bitmap, displayWidth - 200, displayWidth - 200, true);
         originalImage.setImageBitmap(scaledPicture);
         gameBoard= new GameBoard(this, difficulty, scaledPicture);
         gameBoard.initGame();
@@ -130,8 +129,8 @@ public class JigsawGame extends Activity {
         recreate();
     }
 
-    public void returnPuzzleMenu(View view){
-        Intent intent = new Intent (this, PuzzlesMenu.class);
+    public void returnPuzzleSelector(View view){
+        Intent intent = new Intent (this, PuzzleSelector.class);
         startActivity(intent);
     }
 
@@ -143,9 +142,9 @@ public class JigsawGame extends Activity {
 
     public void puzzleComplete(){
         try{
-            CompletedPuzzlesDatabaseHelper puzzleDatabaseHelper = new CompletedPuzzlesDatabaseHelper(this);
+            DatabaseHelper puzzleDatabaseHelper = DatabaseHelper.getInstance(this);
             SQLiteDatabase db = puzzleDatabaseHelper.getWritableDatabase();
-            CompletedPuzzlesDatabaseHelper.insertPuzzle(db, "caption", difficulty, totalTimeSec,System.currentTimeMillis(),
+            DatabaseHelper.insertPuzzleCompleted(db, "caption", difficulty, totalTimeSec,System.currentTimeMillis(),
                     ((BitmapDrawable)originalImage.getDrawable()).getBitmap());
         } catch (SQLiteException e){
             Toast toast = Toast.makeText(this, "Database unavailable", Toast.LENGTH_SHORT);

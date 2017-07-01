@@ -27,7 +27,7 @@
         <item name="android:layout_centerInParent">true</item>
         <item name="android:layout_gravity">center</item>
     </style>
-    
+
     <style name="ButtonBasic" parent="@style/WrapCenterParent">
         <item name="android:layout_centerInParent">true</item>
         <item name="android:textSize">16sp</item>
@@ -36,4 +36,8 @@
     <style name="TextViewBasic" parent="@style/Wrap">
         <item name="android:textSize">32sp</item>
     </style>
+
+    <style name="AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

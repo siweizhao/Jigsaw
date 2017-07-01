@@ -1,0 +1,17 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/MatchParent"
+    tools:context="com.szhao.jigsaw.fragments.PuzzleGridViewFragment">
+
+    <GridView
+        android:id="@+id/puzzlesGridView"
+        style="@style/MatchParent"
+        android:columnWidth="200dp"
+        android:horizontalSpacing="5dp"
+        android:numColumns="auto_fit"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="5dp"
+        android:gravity="center">
+    </GridView>
+
+</FrameLayout>

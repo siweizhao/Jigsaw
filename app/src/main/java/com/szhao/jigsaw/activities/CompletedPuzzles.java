@@ -7,8 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.ListView;
 
 import com.szhao.jigsaw.R;
-import com.szhao.jigsaw.adapters.PuzzleCursorAdaptor;
-import com.szhao.jigsaw.db.CompletedPuzzlesDatabaseHelper;
+import com.szhao.jigsaw.adapters.CompletedPuzzlesCursorAdapter;
+import com.szhao.jigsaw.db.DatabaseHelper;
 
 public class CompletedPuzzles extends AppCompatActivity {
 
@@ -17,11 +17,11 @@ public class CompletedPuzzles extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_completed_puzzles);
 
-        CompletedPuzzlesDatabaseHelper puzzlesDatabaseHelper = new CompletedPuzzlesDatabaseHelper(this);
+        DatabaseHelper puzzlesDatabaseHelper = DatabaseHelper.getInstance(this);
         SQLiteDatabase db = puzzlesDatabaseHelper.getReadableDatabase();
-        Cursor cursor = CompletedPuzzlesDatabaseHelper.getAllRows(db);
-        PuzzleCursorAdaptor puzzleCursorAdaptor = new PuzzleCursorAdaptor(this,cursor,0);
+        Cursor cursor = DatabaseHelper.getAllRows(db);
+        CompletedPuzzlesCursorAdapter completedPuzzlesCursorAdapter = new CompletedPuzzlesCursorAdapter(this,cursor,0);
         ListView listView = (ListView)findViewById(R.id.listViewCompletedPuzzles);
-        listView.setAdapter(puzzleCursorAdaptor);
+        listView.setAdapter(completedPuzzlesCursorAdapter);
     }
 }

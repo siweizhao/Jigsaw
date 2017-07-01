@@ -10,4 +10,11 @@
     <string name="resetPuzzle">Reset Puzzle</string>
     <string name="puzzleMenu">Puzzle Menu</string>
     <string name="close">Close</string>
+    <string name="title_activity_crop_image">CropImage</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_puzzle_selector">PuzzleSelector</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
 </resources>
