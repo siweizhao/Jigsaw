@@ -1,10 +1,9 @@
 package com.szhao.jigsaw.activities;
 
 import android.Manifest;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,83 +14,99 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.transition.Explode;
 import android.util.Log;
-import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.Toast;
 
 import com.szhao.jigsaw.R;
-import com.szhao.jigsaw.db.DatabaseHelper;
+import com.szhao.jigsaw.db.PuzzleContentProvider;
 import com.szhao.jigsaw.db.Utility;
-import com.szhao.jigsaw.fragments.PuzzleGridViewFragment;
+import com.szhao.jigsaw.fragments.DifficultyDialog;
+import com.szhao.jigsaw.fragments.PuzzleSelectFragment;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.IOException;
 
-public class PuzzleSelector extends AppCompatActivity implements PuzzleGridViewFragment.onPuzzleSelectedListener {
+public class PuzzleSelector extends AppCompatActivity {
     private static final int PICK_IMAGE = 1;
     private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 2;
-    private static final int IMAGE_MAX_DIMENSIONS = 500;
+    public static final String FRAG_PROVIDED_PUZZLES = "PROVIDED";
+    public static final String FRAG_CUSTOM_PUZZLES = "CUSTOM";
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
     private SectionsPagerAdapter mSectionsPagerAdapter;
-
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
     private ViewPager mViewPager;
+    private Toolbar toolbar;
+    private boolean removePuzzles = false;
+    private Menu menuOptions;
+    DifficultyDialog difficultyDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_puzzle_selector);
-
+        difficultyDialog = new DifficultyDialog();
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-
-        // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-
+        toolbar = (Toolbar)findViewById(R.id.tool_bar);
+        setSupportActionBar(toolbar);
 
         FloatingActionButton customPuzzleButton = (FloatingActionButton) findViewById(R.id.customPuzzleButton);
         customPuzzleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (android.os.Build.VERSION.SDK_INT > 23 && checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                            MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+                    return;
+                }
                 Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
                 startActivityForResult(intent, PICK_IMAGE);
             }
         });
-
-        if (android.os.Build.VERSION.SDK_INT > 23) {
-            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-                    != PackageManager.PERMISSION_GRANTED) {
-                Toast toast = Toast.makeText(this,"This app requires access to your photos", Toast.LENGTH_LONG);
-                toast.setGravity(Gravity.CENTER, 0, 0);
-                toast.show();
-                if (shouldShowRequestPermissionRationale(
-                        Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                    // Explain to the user why we need to read the contacts
-                }
-                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                        MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
-                return;
-            }
-        }
-
     }
 
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_puzzle_selector, menu);
+        menuOptions = menu;
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                return true;
+            case R.id.action_delete:
+                toggleRemovePuzzles();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    //Remove user added puzzles
+    public void toggleRemovePuzzles(){
+        if (!removePuzzles) {
+            menuOptions.findItem(R.id.action_delete).setIcon(android.R.drawable.ic_delete);
+        } else {
+            menuOptions.findItem(R.id.action_delete).setIcon(android.R.drawable.ic_menu_delete);
+        }
+        removePuzzles = !removePuzzles;
+    }
+
+    public boolean isRemovePuzzles(){
+        return removePuzzles;
+    }
+
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         public SectionsPagerAdapter(FragmentManager fm) {
@@ -102,9 +117,9 @@ public class PuzzleSelector extends AppCompatActivity implements PuzzleGridViewF
         public Fragment getItem(int position) {
             switch (position){
                 case 0:
-                    return PuzzleGridViewFragment.newInstance("provided");
+                    return PuzzleSelectFragment.newInstance(FRAG_PROVIDED_PUZZLES);
                 case 1:
-                    return PuzzleGridViewFragment.newInstance("custom");
+                    return PuzzleSelectFragment.newInstance(FRAG_CUSTOM_PUZZLES);
             }
             return null;
         }
@@ -112,17 +127,6 @@ public class PuzzleSelector extends AppCompatActivity implements PuzzleGridViewF
         @Override
         public int getCount() {
             return 2;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return "PUZZLES";
-                case 1:
-                    return "CUSTOM PUZZLES";
-            }
-            return null;
         }
     }
 
@@ -133,7 +137,7 @@ public class PuzzleSelector extends AppCompatActivity implements PuzzleGridViewF
             Uri imageUri = data.getData();
             CropImage.activity(imageUri)
                     .setGuidelines(CropImageView.Guidelines.ON)
-                    .setRequestedSize(IMAGE_MAX_DIMENSIONS, IMAGE_MAX_DIMENSIONS, CropImageView.RequestSizeOptions.RESIZE_INSIDE)
+                    .setRequestedSize(Utility.IMAGE_DIMENSIONS, Utility.IMAGE_DIMENSIONS, CropImageView.RequestSizeOptions.RESIZE_INSIDE)
                     .setAspectRatio(50,50)
                     .start(this);
         }
@@ -142,11 +146,10 @@ public class PuzzleSelector extends AppCompatActivity implements PuzzleGridViewF
             if (resultCode == RESULT_OK && result.getUri() != null) {
                 try {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), result.getUri());
-                    insertCustomPuzzle(bitmap);
-                    startNextActivity(bitmap);
+                    insertCustomPuzzles(bitmap);
+                    openDifficultySelector(bitmap);
                 } catch (IOException e) {
-                    Toast toast = Toast.makeText(this, "Photos inaccessible", Toast.LENGTH_SHORT);
-                    toast.show();
+                    Toast.makeText(this, "Photos inaccessible", Toast.LENGTH_SHORT).show();
                 }
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
@@ -155,10 +158,10 @@ public class PuzzleSelector extends AppCompatActivity implements PuzzleGridViewF
         }
     }
 
-    private void startNextActivity(Bitmap image){
-        Utility.storeImage(this, image);
-        Intent intent = new Intent(this,DifficultySelector.class);
-        startActivity(intent);
+    private void openDifficultySelector(Bitmap bitmap){
+        FragmentManager fm = getSupportFragmentManager();
+        Utility.storeImage(this, bitmap);
+        difficultyDialog.show(fm, "Difficulty");
     }
 
     @Override
@@ -180,20 +183,11 @@ public class PuzzleSelector extends AppCompatActivity implements PuzzleGridViewF
         }
     }
 
-    @Override
-    public void onPuzzleSelected(Bitmap image){
-        startNextActivity(image);
+    public void insertCustomPuzzles(Bitmap bitmap){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("DESCRIPTION", "caption");
+        contentValues.put("PUZZLE", Utility.getBytes(bitmap));
+        getContentResolver().insert(PuzzleContentProvider.CONTENT_URI_CUSTOM, contentValues);
+        getContentResolver().notifyChange(PuzzleContentProvider.CONTENT_URI_CUSTOM, null);
     }
-
-    private void insertCustomPuzzle(Bitmap bitmap){
-        try{
-            DatabaseHelper puzzleDatabaseHelper = DatabaseHelper.getInstance(this);
-            SQLiteDatabase db = puzzleDatabaseHelper.getWritableDatabase();
-            DatabaseHelper.insertCustomPuzzle(db, "caption", bitmap);
-        } catch (SQLiteException e){
-            Toast toast = Toast.makeText(this, "Database unavailable", Toast.LENGTH_SHORT);
-            toast.show();
-        }
-    }
-
 }

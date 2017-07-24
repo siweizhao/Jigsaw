@@ -23,7 +23,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static DatabaseHelper getInstance(Context ctx) {
         if (mInstance == null) {
-            mInstance = new DatabaseHelper(ctx.getApplicationContext());
+            mInstance = new DatabaseHelper(ctx);
         }
         return mInstance;
     }
@@ -50,33 +50,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.execSQL("DROP TABLE IF EXISTS COMPLETED");
             onCreate(db);
         }
-    }
-
-    public static void insertPuzzleCompleted(SQLiteDatabase db, String description, int difficulty, long solveTime, long date, Bitmap bitmap){
-        byte[] image = Utility.getBytes(bitmap);
-        ContentValues completedPuzzle = new ContentValues();
-        completedPuzzle.put("DESCRIPTION", description);
-        completedPuzzle.put("DIFFICULTY", difficulty);
-        completedPuzzle.put("SOLVETIME", solveTime);
-        completedPuzzle.put("DATE", date);
-        completedPuzzle.put("PUZZLE", image);
-        db.insert("COMPLETED", null, completedPuzzle);
-    }
-
-    public static void insertCustomPuzzle(SQLiteDatabase db, String description, Bitmap bitmap){
-        byte[] image = Utility.getBytes(bitmap);
-        ContentValues customPuzzle = new ContentValues();
-        customPuzzle.put("DESCRIPTION", description);
-        customPuzzle.put("PUZZLE", image);
-        db.insert("CUSTOM", null, customPuzzle);
-    }
-
-    public static Cursor getAllRows(SQLiteDatabase db){
-        return db.rawQuery("SELECT * FROM COMPLETED ORDER BY _id DESC", null);
-    }
-
-    public static Cursor getCustomPuzzles(SQLiteDatabase db){
-        return db.rawQuery("SELECT * FROM CUSTOM ORDER BY _id DESC", null);
     }
 }
 

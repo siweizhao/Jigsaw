@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    style="@style/MatchParent">
+    style="@style/MatchParent"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.szhao.jigsaw.activities.TitleScreen">
 
     <ImageView
         android:id="@+id/title_logo"
         style="@style/MatchParent"
-        android:src="@drawable/puzzle_1"
+        android:src="@drawable/logo"
         />
     <Button
         style="@style/ButtonBasic"

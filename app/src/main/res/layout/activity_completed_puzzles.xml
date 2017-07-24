@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/MatchParent">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/MatchParent"
+    android:gravity="center_horizontal">
 
-    <ListView
-        android:id="@+id/listViewCompletedPuzzles"
-        style="@style/MatchParent"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/completedPuzzlesRecyclerView"
+        style="@style/Wrap"
         android:horizontalSpacing="5dp"
         android:verticalSpacing="5dp">
-    </ListView>
+    </android.support.v7.widget.RecyclerView>
 
-</RelativeLayout>
+</LinearLayout>

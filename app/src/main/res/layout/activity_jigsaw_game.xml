@@ -11,41 +11,6 @@
         android:id="@+id/gameLayout"
         style="@style/MatchParent">
     </RelativeLayout>
-    <RelativeLayout
-        android:id="@+id/gameMenuLayout"
-        style="@style/MatchParent"
-        android:background="#C0C0C0"
-        android:alpha="0.8"
-        android:visibility="invisible">
-        <RelativeLayout
-            style="@style/MatchParent"
-            android:gravity="center"
-            android:layout_gravity="center">
-
-            <Button
-                android:id="@+id/showOriginal"
-                style="@style/Wrap"
-                android:text="@string/showSolution"
-                android:onClick="showOriginal"/>
-            <Button
-                android:id="@+id/resetPuzzle"
-                style="@style/Wrap"
-                android:layout_below="@+id/showOriginal"
-                android:text="@string/resetPuzzle"
-                android:onClick="resetPuzzle"/>
-            <Button
-                android:id="@+id/goPuzzleMenu"
-                style="@style/Wrap"
-                android:layout_below="@+id/resetPuzzle"
-                android:text="@string/puzzleMenu"
-                android:onClick="returnPuzzleSelector"/>
-            <Button
-                style="@style/Wrap"
-                android:layout_below="@+id/goPuzzleMenu"
-                android:text="@string/close"
-                android:onClick="closeGameMenu"/>
-        </RelativeLayout>
-    </RelativeLayout>
 
     <ImageView
         android:id="@+id/originalImage"

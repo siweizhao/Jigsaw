@@ -23,9 +23,6 @@ public class PuzzlePiece extends android.support.v7.widget.AppCompatImageView im
     }
 
     public boolean onTouch(View view, MotionEvent event) {
-        if (gameBoard.getJigsawGame().isMenuOpen)
-            return false;
-
         view.bringToFront();
         view.invalidate();
         switch(event.getAction()){

@@ -17,6 +17,9 @@ import java.io.IOException;
 public class Utility {
 
     public static final String IMAGE_FILENAME = "puzzle.png";
+    public static final int IMAGE_DIMENSIONS = 500;
+    public static final int TABLE_CUSTOM = 0;
+    public static final int TABLE_COMPLETED = 1;
 
     private Utility(){
         throw new UnsupportedOperationException("Instantiating a utility class");
@@ -29,11 +32,6 @@ public class Utility {
         return stream.toByteArray();
     }
 
-    // convert from byte array to bitmap
-    public static Bitmap getImage(byte[] image) {
-        return BitmapFactory.decodeByteArray(image, 0, image.length);
-    }
-
     //Store image in internal storage to pass on to next activity
     public static void storeImage(Context context, Bitmap bitmap){
         try {
@@ -43,21 +41,8 @@ public class Utility {
 
             //Cleanup
             stream.close();
-            bitmap.recycle();
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public static Bitmap getStoredImage(Context context){
-        Bitmap bitmap = null;
-        try {
-            FileInputStream is = context.openFileInput(IMAGE_FILENAME);
-            bitmap = BitmapFactory.decodeStream(is);
-            is.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return bitmap;
     }
 }

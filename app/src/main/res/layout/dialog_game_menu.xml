@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    style="@style/Wrap">
+    <Button
+        android:id="@+id/showSolution"
+        style="@style/Wrap"
+        android:text="@string/showSolution"/>
+    <Button
+        android:id="@+id/resetPuzzle"
+        style="@style/Wrap"
+        android:layout_below="@+id/showSolution"
+        android:text="@string/resetPuzzle"/>
+    <Button
+        android:id="@+id/goPuzzleSelector"
+        style="@style/Wrap"
+        android:layout_below="@+id/resetPuzzle"
+        android:text="@string/puzzleMenu"/>
+
+</LinearLayout>

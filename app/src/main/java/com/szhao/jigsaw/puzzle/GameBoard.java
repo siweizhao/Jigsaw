@@ -2,6 +2,7 @@ package com.szhao.jigsaw.puzzle;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
@@ -30,10 +31,10 @@ public class GameBoard{
     private JigsawConfig[][] puzzleConfig;
     private PuzzlePiece[][] solution;
 
-    public GameBoard(JigsawGame jigsawGame, int difficulty, Bitmap original){
+    public GameBoard(JigsawGame jigsawGame, int difficulty){
         this.jigsawGame = jigsawGame;
         this.difficulty = difficulty;
-        this.original = original;
+        this.original = jigsawGame.getPuzzleImage();
     }
 
     public void initGame(){
@@ -42,13 +43,13 @@ public class GameBoard{
         for (int j = 0; j < difficulty; j++) {
             for (int i = 0; i < difficulty; i++) {
                 //Create puzzle piece from original image, the rest of the image will be blank
-                Bitmap puzzlePieceRaw = getPuzzlePieceRaw(i, j);
+                Bitmap puzzlePieceFromOriginal = getPuzzlePieceFromOriginal(i, j);
 
                 //Get position of the puzzle piece
                 Rectangle position = getPuzzlePiecePosition(i,j);
 
                 //Cuts out the puzzle piece from original image
-                Bitmap puzzlePiece = Bitmap.createBitmap(puzzlePieceRaw, position.x, position.y, position.width, position.height);
+                Bitmap puzzlePiece = Bitmap.createBitmap(puzzlePieceFromOriginal, position.x, position.y, position.width, position.height);
 
                 //Position the solved piece on the game board
                 placePuzzlePiece(i,j,puzzlePiece,position);
@@ -59,7 +60,7 @@ public class GameBoard{
         }
     }
 
-    //Position each puzzle piece randomly
+        //Position each puzzle piece randomly
     private void scramblePuzzlePiece(Bitmap puzzlePiece,int i, int j){
         Random random = new Random();
         RelativeLayout.LayoutParams params =
@@ -169,7 +170,7 @@ public class GameBoard{
     }
 
     //Creates puzzle piece from original picture
-    private Bitmap getPuzzlePieceRaw(int i, int j){
+    private Bitmap getPuzzlePieceFromOriginal(int i, int j){
         Path puzzlePath = getPuzzlePath(i, j, puzzleConfig[i][j]);
         Bitmap puzzlePiece = Bitmap.createBitmap(original.getWidth(), original.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(puzzlePiece);
@@ -180,6 +181,14 @@ public class GameBoard{
         canvas.drawPath(puzzlePath, paint);
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
         canvas.drawBitmap(original, rect, rect, paint);
+
+        Paint puzzleOutline = new Paint();
+        puzzleOutline.setStrokeWidth(5);
+        puzzleOutline.setColor(Color.BLACK);
+        puzzleOutline.setStyle(Paint.Style.STROKE);
+        puzzleOutline.setAntiAlias(true);
+        canvas.drawPath(puzzlePath, puzzleOutline);
+
         return puzzlePiece;
     }
 
@@ -228,6 +237,7 @@ public class GameBoard{
         PuzzlePiece solvedPiece = new PuzzlePiece(this,i,j);
         solution[i][j] = solvedPiece;
         solvedPiece.setImageBitmap(puzzlePiece);
+        solvedPiece.setElevation(20);
         RelativeLayout.LayoutParams params =
                 new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         params.leftMargin = position.x;

@@ -1,27 +1,36 @@
 package com.szhao.jigsaw.activities;
 
-import android.app.Activity;
+import android.app.FragmentManager;
+import android.content.ContentValues;
+import android.content.CursorLoader;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Point;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.app.LoaderManager;
+import android.content.Loader;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Display;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.szhao.jigsaw.R;
-import com.szhao.jigsaw.db.DatabaseHelper;
+import com.szhao.jigsaw.db.PuzzleContentProvider;
 import com.szhao.jigsaw.db.Utility;
+import com.szhao.jigsaw.fragments.GameMenuDialog;
 import com.szhao.jigsaw.puzzle.GameBoard;
 
-public class JigsawGame extends Activity {
+public class JigsawGame extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private RelativeLayout gameLayout;
     private RelativeLayout solutionLayout;
@@ -30,9 +39,8 @@ public class JigsawGame extends Activity {
     private CountDownTimer timer;
     private GameBoard gameBoard;
     private ImageView originalImage;
-    private RelativeLayout gameMenuLayout;
-    public boolean isMenuOpen = false;
     private int difficulty;
+    private GameMenuDialog gameMenuDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,8 +48,8 @@ public class JigsawGame extends Activity {
         setContentView(R.layout.activity_jigsaw_game);
         gameLayout = (RelativeLayout) findViewById(R.id.gameLayout);
         solutionLayout = (RelativeLayout) findViewById(R.id.solutionLayout);
-        gameMenuLayout = (RelativeLayout)findViewById(R.id.gameMenuLayout);
         originalImage = (ImageView)findViewById(R.id.originalImage);
+        gameMenuDialog = new GameMenuDialog();
 
         originalImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,16 +58,17 @@ public class JigsawGame extends Activity {
             }
         });
 
-
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
         displayWidth = size.x;
         displayHeight = size.y;
 
+        getLoaderManager().initLoader(Utility.TABLE_COMPLETED, null, this);
+
         Intent intent = getIntent();
         difficulty = intent.getExtras().getInt("difficulty");
-        initGame(difficulty);
+        initGame(this);
         startTimer();
     }
 
@@ -106,49 +115,70 @@ public class JigsawGame extends Activity {
         timer.cancel();
     }
 
-    private void initGame(int difficulty){
-        Bitmap bitmap = Utility.getStoredImage(this);
-        Bitmap scaledPicture  = Bitmap.createScaledBitmap(bitmap, displayWidth - 200, displayWidth - 200, true);
-        originalImage.setImageBitmap(scaledPicture);
-        gameBoard= new GameBoard(this, difficulty, scaledPicture);
-        gameBoard.initGame();
+    private void initGame(final JigsawGame game){
+        Glide.with(this)
+                .load(this.getFilesDir() + "/" + Utility.IMAGE_FILENAME)
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .override(displayWidth - 200, displayWidth - 200)
+                .centerCrop()
+                .into(new GlideDrawableImageViewTarget(originalImage) {
+                    @Override public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> animation) {
+                        super.onResourceReady(resource, null); // ignores animation, but handles GIFs properly.
+                        gameBoard= new GameBoard(game, difficulty);
+                        gameBoard.initGame();
+                    }
+                });
 
     }
 
     public void openGameMenu(View view){
-        isMenuOpen = true;
         stopTimer();
-        gameMenuLayout.setVisibility(View.VISIBLE);
+        gameMenuDialog.show(getSupportFragmentManager(),"Game Menu");
     }
 
-    public void showOriginal(View view){
+    public void showSolution(){
         originalImage.setVisibility(View.VISIBLE);
     }
 
-    public void resetPuzzle(View view){
+    public void resetPuzzle(){
         recreate();
     }
 
-    public void returnPuzzleSelector(View view){
+    public void goPuzzleSelector(){
         Intent intent = new Intent (this, PuzzleSelector.class);
         startActivity(intent);
     }
 
-    public void closeGameMenu(View view){
-        isMenuOpen = false;
-        gameMenuLayout.setVisibility(View.INVISIBLE);
-        startTimer();
+    public void puzzleComplete(){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("DESCRIPTION", "caption");
+        contentValues.put("DIFFICULTY", difficulty);
+        contentValues.put("SOLVETIME", totalTimeSec);
+        contentValues.put("DATE", System.currentTimeMillis());
+        contentValues.put("PUZZLE", Utility.getBytes(((GlideBitmapDrawable)originalImage.getDrawable()).getBitmap()));
+        getContentResolver().insert(PuzzleContentProvider.CONTENT_URI_COMPLETED, contentValues);
     }
 
-    public void puzzleComplete(){
-        try{
-            DatabaseHelper puzzleDatabaseHelper = DatabaseHelper.getInstance(this);
-            SQLiteDatabase db = puzzleDatabaseHelper.getWritableDatabase();
-            DatabaseHelper.insertPuzzleCompleted(db, "caption", difficulty, totalTimeSec,System.currentTimeMillis(),
-                    ((BitmapDrawable)originalImage.getDrawable()).getBitmap());
-        } catch (SQLiteException e){
-            Toast toast = Toast.makeText(this, "Database unavailable", Toast.LENGTH_SHORT);
-            toast.show();
+    public Bitmap getPuzzleImage(){
+        return ((GlideBitmapDrawable)originalImage.getDrawable()).getBitmap();
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        switch(id){
+            case Utility.TABLE_COMPLETED:
+                return new CursorLoader(this, PuzzleContentProvider.CONTENT_URI_COMPLETED, null, null, null, null);
+            default:
+                throw new IllegalArgumentException("no id handled!");
         }
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
     }
 }

@@ -3,18 +3,17 @@
 
     <string name="puzzles">Puzzles</string>
     <string name="completedPuzzles">Completed Puzzles</string>
-    <string name="uploadImage"> Upload Image</string>
     <string name="startGame">Start Game</string>
     <string name="defaultDifficulty">Difficulty: 2 x 2</string>
     <string name="showSolution">Show Solution</string>
     <string name="resetPuzzle">Reset Puzzle</string>
     <string name="puzzleMenu">Puzzle Menu</string>
     <string name="close">Close</string>
-    <string name="title_activity_crop_image">CropImage</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_puzzle_selector">PuzzleSelector</string>
-    <string name="action_settings">Settings</string>
-    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="title_activity_puzzle_selector">Select Puzzle</string>
+    <string name="title_activity_difficulty_selector">Difficulty</string>
+    <string name="title_activity_completed_puzzle">Completed Puzzles</string>
+    <string name="title_activity_shared_element">SharedElement</string>
+
+
 </resources>
