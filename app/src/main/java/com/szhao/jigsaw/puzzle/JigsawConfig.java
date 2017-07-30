@@ -1,5 +1,6 @@
 package com.szhao.jigsaw.puzzle;
 
+import android.util.Log;
 import java.util.Random;
 
 /**
@@ -37,13 +38,13 @@ public class JigsawConfig{
 
     // -1 represents indent, 1 represents outdent, 0 represents a flat surface
     // the sides of each jigsaw piece will be represented by this
-    public static JigsawConfig[][] generateJigsawConfig(int difficulty){
-        JigsawConfig[][] config = new JigsawConfig[difficulty][difficulty];
+    public static JigsawConfig[][] generateJigsawConfig(int rows, int columns){
+        JigsawConfig[][] config = new JigsawConfig[rows][columns];
         Random random = new Random();
         int top, bot, left, right;
 
-        for(int j = 0; j < difficulty; j ++) {
-            for (int i = 0; i < difficulty; i++){
+        for(int j = 0; j < columns; j ++) {
+            for (int i = 0; i < rows; i++){
                 top = random.nextInt(2) * 2 - 1;
                 right = random.nextInt(2) * 2 - 1;
                 bot = random.nextInt(2) * 2 - 1;
@@ -57,12 +58,12 @@ public class JigsawConfig{
 
                 if (i == 0)
                     left = 0;
-                else if (i == difficulty - 1)
+                else if (i == rows - 1)
                     right = 0;
 
                 if (j == 0)
                     top = 0;
-                else if (j == difficulty - 1)
+                else if (j == columns - 1)
                     bot = 0;
                 config[i][j] = new JigsawConfig(top,bot,left,right);
             }
@@ -72,6 +73,17 @@ public class JigsawConfig{
 
     @Override
     public String toString(){
-        return ("top:" + top + " bot:" + bot + " left:" + left + " right:" + right);
+        return ("top:" + top + " bot:" + bot + " left:" + left + " right:" + right + "\n");
     }
+
+    public static void printConfig(JigsawConfig[][] config){
+        for (int j = 0; j < config.length; j++){
+            for (int i = 0; i < config[0].length; i++){
+                Log.d("jigsaw config", config[i][j] + "         row:" + i + " col:" + j);
+            }
+        }
+
+
+    }
+
 }

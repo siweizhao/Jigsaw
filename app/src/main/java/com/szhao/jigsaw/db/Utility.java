@@ -20,6 +20,9 @@ public class Utility {
     public static final int IMAGE_DIMENSIONS = 500;
     public static final int TABLE_CUSTOM = 0;
     public static final int TABLE_COMPLETED = 1;
+    public static final int DISPLAY_WIDTH_OFFSET = 200;
+    public static final int DISPLAY_HEIGHT_OFFSET = 70;
+
 
     private Utility(){
         throw new UnsupportedOperationException("Instantiating a utility class");

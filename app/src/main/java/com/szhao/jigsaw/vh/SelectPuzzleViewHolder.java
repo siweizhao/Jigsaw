@@ -20,18 +20,15 @@ import com.szhao.jigsaw.db.Utility;
 public class SelectPuzzleViewHolder extends RecyclerView.ViewHolder{
 
     private ImageView puzzleImage;
-    private TextView puzzleCaption;
     private int id;
 
     public SelectPuzzleViewHolder(View view){
         super(view);
         puzzleImage = (ImageView)view.findViewById(R.id.puzzleImage);
-        puzzleCaption = (TextView)view.findViewById(R.id.puzzleCaption);
     }
 
     public void setData(Cursor cursor, Context context){
         id = cursor.getInt(cursor.getColumnIndex("_id"));
-        puzzleCaption.setText(cursor.getString(cursor.getColumnIndex("DESCRIPTION")));
         byte[] byteArr = cursor.getBlob(cursor.getColumnIndex("PUZZLE"));
 
         Glide.with(context)
@@ -43,7 +40,6 @@ public class SelectPuzzleViewHolder extends RecyclerView.ViewHolder{
     }
 
     public void setPuzzle(int imageId, Context context){
-        puzzleCaption.setText("caption");
         Glide.with(context)
                 .load(imageId)
                 .asBitmap()

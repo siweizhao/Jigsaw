@@ -1,21 +1,14 @@
 <FrameLayout  xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/completeLayout"
     style="@style/MatchParent">
     <RelativeLayout
-        android:id="@+id/solutionLayout"
-        style="@style/WrapCenterParent"
-        android:background="@drawable/border"
-        android:padding="3dp">
-    </RelativeLayout>
-    <RelativeLayout
         android:id="@+id/gameLayout"
-        style="@style/MatchParent">
-    </RelativeLayout>
-
-    <ImageView
-        android:id="@+id/originalImage"
         style="@style/WrapCenterParent"
-        android:visibility="invisible"/>
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="50dp"
+        android:background="@android:color/holo_blue_light">
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/timerDisplay"
@@ -23,10 +16,25 @@
         android:fontFamily="sans-serif-black"
         android:textSize="32sp"/>
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/puzzlePieceRecycler"
+        android:layout_gravity="bottom"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:background="@android:color/holo_orange_light"
+        android:orientation="horizontal"
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager">
+    </android.support.v7.widget.RecyclerView>
+
     <android.support.design.widget.FloatingActionButton
         style="@style/Wrap"
         android:layout_gravity="end|bottom"
         android:layout_margin="@dimen/fab_margin"
         app:srcCompat="@android:drawable/ic_dialog_email"
         android:onClick="openGameMenu"/>
+
+    <ImageView
+        android:id="@+id/originalImage"
+        style="@style/WrapCenterParent"
+        android:visibility="invisible"/>
 </FrameLayout >

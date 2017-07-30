@@ -4,16 +4,13 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     style="@style/Wrap"
     android:layout_margin="5dp"
-    card_view:cardCornerRadius="4dp"
-    card_view:cardElevation="3dp">
+    card_view:cardBackgroundColor="@android:color/transparent"
+    card_view:cardCornerRadius="0dp"
+    card_view:cardElevation="0dp">
 
-    <LinearLayout
+    <ImageView
+        android:id="@+id/puzzlePiece"
         style="@style/Wrap"
-        android:orientation="vertical">
+        android:scaleType="fitXY"/>
 
-        <ImageView
-            android:id="@+id/puzzleImage"
-            android:transitionName="image"
-            style="@style/Wrap" />
-    </LinearLayout>
 </android.support.v7.widget.CardView>

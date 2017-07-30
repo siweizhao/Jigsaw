@@ -1,19 +1,22 @@
 package com.szhao.jigsaw.activities;
 
-import android.app.FragmentManager;
+import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.app.LoaderManager;
-import android.content.Loader;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Display;
+import android.view.DragEvent;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -25,31 +28,58 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.szhao.jigsaw.R;
+import com.szhao.jigsaw.adapters.PuzzlePieceRecyclerViewAdapter;
 import com.szhao.jigsaw.db.PuzzleContentProvider;
 import com.szhao.jigsaw.db.Utility;
 import com.szhao.jigsaw.fragments.GameMenuDialog;
-import com.szhao.jigsaw.puzzle.GameBoard;
+import com.szhao.jigsaw.puzzle.Game;
+import com.szhao.jigsaw.puzzle.GlobalGameData;
 
 public class JigsawGame extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    private FrameLayout completeLayout;
     private RelativeLayout gameLayout;
-    private RelativeLayout solutionLayout;
     private int displayWidth, displayHeight;
     private int totalTimeSec = 0;
     private CountDownTimer timer;
-    private GameBoard gameBoard;
+    private Game game;
     private ImageView originalImage;
+    ImageView testImage;
     private int difficulty;
     private GameMenuDialog gameMenuDialog;
+    RecyclerView puzzlePieceRecycler;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        GlobalGameData.getInstance().setContext(this);
         setContentView(R.layout.activity_jigsaw_game);
+        completeLayout = (FrameLayout)findViewById(R.id.completeLayout);
         gameLayout = (RelativeLayout) findViewById(R.id.gameLayout);
-        solutionLayout = (RelativeLayout) findViewById(R.id.solutionLayout);
         originalImage = (ImageView)findViewById(R.id.originalImage);
         gameMenuDialog = new GameMenuDialog();
+        puzzlePieceRecycler = (RecyclerView)findViewById(R.id.puzzlePieceRecycler);
+        puzzlePieceRecycler.setOnDragListener(new View.OnDragListener() {
+            @Override
+            public boolean onDrag(View v, DragEvent event) {
+                switch(event.getAction()){
+                    case DragEvent.ACTION_DROP:
+                        View underView = puzzlePieceRecycler.findChildViewUnder(event.getX(), event.getY());
+                        int position = puzzlePieceRecycler.getChildAdapterPosition(underView) < 0 ? 0 : puzzlePieceRecycler.getChildAdapterPosition(underView);
+                        ((PuzzlePieceRecyclerViewAdapter)puzzlePieceRecycler.getAdapter()).insertPuzzlePiece(position);
+                        break;
+                }
+                return true;
+            }
+        });
+
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
         originalImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,6 +94,7 @@ public class JigsawGame extends AppCompatActivity implements LoaderManager.Loade
         displayWidth = size.x;
         displayHeight = size.y;
 
+        adjustLayoutParams(gameLayout);
         getLoaderManager().initLoader(Utility.TABLE_COMPLETED, null, this);
 
         Intent intent = getIntent();
@@ -71,21 +102,23 @@ public class JigsawGame extends AppCompatActivity implements LoaderManager.Loade
         initGame(this);
         startTimer();
     }
-
-    public int getDisplayWidth(){
-        return displayWidth;
+    private void adjustLayoutParams(View view){
+        android.view.ViewGroup.LayoutParams params = view.getLayoutParams();
+        params.width = displayWidth - Utility.DISPLAY_WIDTH_OFFSET;
+        params.height = displayHeight - Utility.DISPLAY_HEIGHT_OFFSET;
+        view.setLayoutParams(params);
     }
 
-    public int getDisplayHeight(){
-        return displayHeight;
+    public RecyclerView getPuzzlePieceRecycler(){
+        return puzzlePieceRecycler;
+    }
+
+    public FrameLayout getCompleteLayout(){
+        return completeLayout;
     }
 
     public RelativeLayout getGameLayout(){
         return gameLayout;
-    }
-
-    public RelativeLayout getSolutionLayout(){
-        return solutionLayout;
     }
 
     public void startTimer(){
@@ -117,19 +150,19 @@ public class JigsawGame extends AppCompatActivity implements LoaderManager.Loade
 
     private void initGame(final JigsawGame game){
         Glide.with(this)
-                .load(this.getFilesDir() + "/" + Utility.IMAGE_FILENAME)
-                .skipMemoryCache(true)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .override(displayWidth - 200, displayWidth - 200)
-                .centerCrop()
-                .into(new GlideDrawableImageViewTarget(originalImage) {
-                    @Override public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> animation) {
-                        super.onResourceReady(resource, null); // ignores animation, but handles GIFs properly.
-                        gameBoard= new GameBoard(game, difficulty);
-                        gameBoard.initGame();
-                    }
-                });
-
+            .load(this.getFilesDir() + "/" + Utility.IMAGE_FILENAME)
+            .skipMemoryCache(true)
+            .diskCacheStrategy(DiskCacheStrategy.NONE)
+            .override(displayWidth - Utility.DISPLAY_WIDTH_OFFSET - 200, displayHeight - Utility.DISPLAY_HEIGHT_OFFSET - 200)
+            .centerCrop()
+            .into(new GlideDrawableImageViewTarget(originalImage) {
+                @Override public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> animation) {
+                    super.onResourceReady(resource, null); // ignores animation, but handles GIFs properly.
+                    Log.d("original Image", "" + originalImage.getDrawable().getIntrinsicWidth());
+                    JigsawGame.this.game = new Game(game, difficulty + 2, difficulty);
+                    JigsawGame.this.game.initGame();
+                }
+            });
     }
 
     public void openGameMenu(View view){
@@ -138,6 +171,7 @@ public class JigsawGame extends AppCompatActivity implements LoaderManager.Loade
     }
 
     public void showSolution(){
+        originalImage.bringToFront();
         originalImage.setVisibility(View.VISIBLE);
     }
 
