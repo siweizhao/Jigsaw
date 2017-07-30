@@ -29,4 +29,8 @@ public class PuzzlePiece {
     public boolean isCorrect(){
         return currentPos.equals(correctPos);
     }
+
+    public Bitmap getImage(){
+        return image;
+    }
 }

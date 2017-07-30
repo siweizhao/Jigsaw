@@ -2,21 +2,18 @@ package com.szhao.jigsaw.adapters;
 
 import android.content.ClipData;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.szhao.jigsaw.R;
 import com.szhao.jigsaw.puzzle.GlobalGameData;
+import com.szhao.jigsaw.puzzle.PuzzlePiece;
 import com.szhao.jigsaw.vh.PuzzlePieceViewHolder;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 /**
  * Created by Owner on 7/25/2017.
@@ -24,21 +21,13 @@ import java.util.List;
 
 public class PuzzlePieceRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     private Context mContext;
-    ArrayList<Pair<Bitmap,Integer>> puzzlePieces;
+    ArrayList<PuzzlePiece> puzzlePieces;
 
 
-    public  PuzzlePieceRecyclerViewAdapter(Context context, ArrayList<Bitmap> puzzlePieces){
+    public  PuzzlePieceRecyclerViewAdapter(Context context, ArrayList<PuzzlePiece> puzzlePieces){
         mContext = context;
-        randomizePuzzlePieces(puzzlePieces);
-    }
-
-    private void randomizePuzzlePieces(ArrayList<Bitmap> puzzlePieces){
-        ArrayList<Pair<Bitmap,Integer>> randomizedPuzzlePieces = new ArrayList<>();
-        for(int i = 0; i < puzzlePieces.size(); i++){
-            randomizedPuzzlePieces.add(new Pair(puzzlePieces.get(i),i));
-        }
-        Collections.shuffle(randomizedPuzzlePieces);
-        this.puzzlePieces = randomizedPuzzlePieces;
+        this.puzzlePieces = puzzlePieces;
+        Collections.shuffle(puzzlePieces);
     }
 
     @Override
@@ -66,7 +55,7 @@ public class PuzzlePieceRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         PuzzlePieceViewHolder vh = (PuzzlePieceViewHolder)holder;
-        vh.setPuzzlePieceImage(mContext, puzzlePieces.get(position).first);
+        vh.setPuzzlePieceImage(mContext, puzzlePieces.get(position).getImage());
     }
 
     @Override
@@ -75,12 +64,13 @@ public class PuzzlePieceRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
     }
 
     public void insertPuzzlePiece(int position){
-        puzzlePieces.add(position, GlobalGameData.getInstance().getSelectedPieceData());
+        puzzlePieces.add(position, GlobalGameData.getInstance().getSelectedPuzzlePiece());
+        puzzlePieces.get(position).setCurrentPos(PuzzlePiece.UNPLACED_PIECE);
         notifyItemInserted(position);
     }
 
     public void removeItem(int position){
-        GlobalGameData.getInstance().setSelectedPieceData(puzzlePieces.get(position));
+        GlobalGameData.getInstance().setSelectedPuzzlePiece(puzzlePieces.get(position));
         puzzlePieces.remove(position);
         notifyItemRemoved(position);
     }

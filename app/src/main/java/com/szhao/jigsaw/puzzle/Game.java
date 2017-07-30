@@ -61,7 +61,6 @@ public class Game {
     public void initGame(){
         this.puzzleConfig = JigsawConfig.generateJigsawConfig(rows, columns);
         ArrayList<PuzzlePiece>puzzlePieceArrayList = new ArrayList<>();
-        ArrayList<Bitmap>arrayList = new ArrayList<>();
         Point[][] anchorPoints = new Point[rows][columns];
         for (int j = 0; j < columns; j++) {
             for (int i = 0; i < rows; i++) {
@@ -75,12 +74,10 @@ public class Game {
                 Bitmap puzzlePiece = Bitmap.createBitmap(puzzlePieceFromOriginal, dimension.x, dimension.y, dimension.width, dimension.height);
 
                 puzzlePieceArrayList.add(new PuzzlePiece(puzzlePiece, new Point(dimension.x,dimension.y)));
-                arrayList.add(puzzlePiece);
                 anchorPoints[i][j]= new Point(dimension.x,dimension.y);
             }
         }
-        GlobalGameData.getInstance().setTotalNumPieces(rows * columns);
-        PuzzlePieceRecyclerViewAdapter viewAdapter = new PuzzlePieceRecyclerViewAdapter(jigsawGame,arrayList);
+        PuzzlePieceRecyclerViewAdapter viewAdapter = new PuzzlePieceRecyclerViewAdapter(jigsawGame,puzzlePieceArrayList);
         RecyclerView recycler = jigsawGame.getPuzzlePieceRecycler();
         recycler.setAdapter(viewAdapter);
         GameLayout gameLayout = new GameLayout(jigsawGame.getGameLayout(), rows, columns, anchorPoints);
