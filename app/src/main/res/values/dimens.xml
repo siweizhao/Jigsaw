@@ -2,6 +2,7 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
 
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="border_padding">3dp</dimen>
 
     <!-- Default screen margins, per the Android Design guidelines. -->
 </resources>

@@ -14,12 +14,14 @@ public class PuzzlePiece {
     Bitmap image;
     Point currentPos;
     Point correctPos;
+    boolean isSidePiece;
     public static final Point UNPLACED_PIECE = new Point(-1,-1);
 
-    public PuzzlePiece (Bitmap image, Point correctPos){
+    public PuzzlePiece (Bitmap image, Point correctPos, boolean isSidePiece){
         this.image = image;
         this.correctPos = correctPos;
         this.currentPos = UNPLACED_PIECE;
+        this.isSidePiece = isSidePiece;
     }
 
     public void setCurrentPos(Point currentPos){
@@ -32,5 +34,9 @@ public class PuzzlePiece {
 
     public Bitmap getImage(){
         return image;
+    }
+
+    public boolean isSidePiece(){
+        return isSidePiece;
     }
 }

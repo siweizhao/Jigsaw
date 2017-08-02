@@ -17,7 +17,9 @@ import android.view.Display;
 import android.view.DragEvent;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -35,6 +37,8 @@ import com.szhao.jigsaw.fragments.GameMenuDialog;
 import com.szhao.jigsaw.puzzle.Game;
 import com.szhao.jigsaw.puzzle.GlobalGameData;
 
+
+
 public class JigsawGame extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private FrameLayout completeLayout;
@@ -44,10 +48,12 @@ public class JigsawGame extends AppCompatActivity implements LoaderManager.Loade
     private CountDownTimer timer;
     private Game game;
     private ImageView originalImage;
-    ImageView testImage;
+    ImageButton showSidePiecesBtn;
     private int difficulty;
     private GameMenuDialog gameMenuDialog;
     RecyclerView puzzlePieceRecycler;
+    boolean isShowingSidePieces = false;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,6 +63,7 @@ public class JigsawGame extends AppCompatActivity implements LoaderManager.Loade
         completeLayout = (FrameLayout)findViewById(R.id.completeLayout);
         gameLayout = (RelativeLayout) findViewById(R.id.gameLayout);
         originalImage = (ImageView)findViewById(R.id.originalImage);
+        showSidePiecesBtn = (ImageButton)findViewById(R.id.showSidePiecesBtn);
         gameMenuDialog = new GameMenuDialog();
         puzzlePieceRecycler = (RecyclerView)findViewById(R.id.puzzlePieceRecycler);
         puzzlePieceRecycler.setOnDragListener(new View.OnDragListener() {
@@ -70,21 +77,6 @@ public class JigsawGame extends AppCompatActivity implements LoaderManager.Loade
                         break;
                 }
                 return true;
-            }
-        });
-
-        getWindow().getDecorView().setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
-                        | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
-                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-
-        originalImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                originalImage.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -148,35 +140,38 @@ public class JigsawGame extends AppCompatActivity implements LoaderManager.Loade
         timer.cancel();
     }
 
-    private void initGame(final JigsawGame game){
+    private void initGame(final JigsawGame jigsawGame){
         Glide.with(this)
             .load(this.getFilesDir() + "/" + Utility.IMAGE_FILENAME)
             .skipMemoryCache(true)
             .diskCacheStrategy(DiskCacheStrategy.NONE)
-            .override(displayWidth - Utility.DISPLAY_WIDTH_OFFSET - 200, displayHeight - Utility.DISPLAY_HEIGHT_OFFSET - 200)
+            .override(displayWidth - Utility.DISPLAY_WIDTH_OFFSET, displayHeight - Utility.DISPLAY_HEIGHT_OFFSET)
             .centerCrop()
             .into(new GlideDrawableImageViewTarget(originalImage) {
                 @Override public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> animation) {
                     super.onResourceReady(resource, null); // ignores animation, but handles GIFs properly.
                     Log.d("original Image", "" + originalImage.getDrawable().getIntrinsicWidth());
-                    JigsawGame.this.game = new Game(game, difficulty + 2, difficulty);
-                    JigsawGame.this.game.initGame();
+                    game = new Game(jigsawGame, difficulty, difficulty);
+                    game.initGame();
+                    initCondensedImage();
                 }
             });
+    }
+
+    public void initCondensedImage(){
+        ImageView condensedImage = (ImageView)findViewById(R.id.condensedImage);
+        Glide.with(this)
+                .load(this.getFilesDir() + "/" + Utility.IMAGE_FILENAME)
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .override((displayWidth - Utility.DISPLAY_WIDTH_OFFSET)/2, (displayHeight - Utility.DISPLAY_HEIGHT_OFFSET)/2)
+                .centerCrop()
+                .into(condensedImage);
     }
 
     public void openGameMenu(View view){
         stopTimer();
         gameMenuDialog.show(getSupportFragmentManager(),"Game Menu");
-    }
-
-    public void showSolution(){
-        originalImage.bringToFront();
-        originalImage.setVisibility(View.VISIBLE);
-    }
-
-    public void resetPuzzle(){
-        recreate();
     }
 
     public void goPuzzleSelector(){
@@ -214,5 +209,57 @@ public class JigsawGame extends AppCompatActivity implements LoaderManager.Loade
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        //Full screen
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+    }
+
+    public void showSidePieces(View view) {
+        PuzzlePieceRecyclerViewAdapter viewAdapter = (PuzzlePieceRecyclerViewAdapter) puzzlePieceRecycler.getAdapter();
+        viewAdapter.showSidePieces();
+        if (isShowingSidePieces)
+            showSidePiecesBtn.setImageResource(android.R.drawable.ic_media_play);
+        else
+            showSidePiecesBtn.setImageResource(android.R.drawable.ic_media_next);
+
+        isShowingSidePieces = !isShowingSidePieces;
+    }
+
+    public void showSolution(View view){
+        if (originalImage.getVisibility() == View.INVISIBLE)
+            originalImage.setVisibility(View.VISIBLE);
+        else
+            originalImage.setVisibility(View.INVISIBLE);
+    }
+
+    public void showCondensedImage(View view){
+        FrameLayout wrapper = (FrameLayout)findViewById(R.id.condensedImageWrapper);
+        wrapper.setVisibility(View.VISIBLE);
+    }
+
+    public void hideCondensedImage(View view){
+        FrameLayout wrapper = (FrameLayout)findViewById(R.id.condensedImageWrapper);
+        wrapper.setVisibility(View.INVISIBLE);
+    }
+
+    public void resetGame(View view){
+        recreate();
+    }
+
+    public void changeBackGround(View view){
+    }
+
+    public void openSettings(View view){
+
     }
 }

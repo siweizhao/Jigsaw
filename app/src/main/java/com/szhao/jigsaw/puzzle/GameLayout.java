@@ -2,17 +2,20 @@ package com.szhao.jigsaw.puzzle;
 
 import android.content.ClipData;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
 import android.util.Pair;
 import android.view.DragEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -65,17 +68,19 @@ public class GameLayout {
         });
     }
 
-    private void initLongClickListener(final ImageView puzzlePiece){
-        puzzlePiece.setOnLongClickListener(new View.OnLongClickListener() {
+    private void initTouchListener(final ImageView puzzlePiece){
+        puzzlePiece.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public boolean onLongClick(View v) {
-                PuzzlePiece selectedPiece = findPuzzlePiece(((BitmapDrawable)puzzlePiece.getDrawable()).getBitmap());
-                GlobalGameData.getInstance().setSelectedPuzzlePiece(selectedPiece);
-                ClipData dragData = ClipData.newPlainText("","");
-                View.DragShadowBuilder dragShadowBuilder = new View.DragShadowBuilder(v);
-                v.startDrag(dragData,dragShadowBuilder,v,0);
-                placedPuzzlePieces.remove(selectedPiece);
-                ((RelativeLayout)layout).removeView(v);
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN){
+                    Bitmap puzzleImage = ((BitmapDrawable)puzzlePiece.getDrawable()).getBitmap();
+                    PuzzlePiece selectedPiece = findPuzzlePiece(puzzleImage);
+                    GlobalGameData.getInstance().setSelectedPuzzlePiece(selectedPiece);
+                    PuzzlePieceDragShadowBuilder dragShadowBuilder = new PuzzlePieceDragShadowBuilder(GlobalGameData.getInstance().getContext(), puzzleImage);
+                    v.startDrag(null,dragShadowBuilder,null,0);
+                    placedPuzzlePieces.remove(selectedPiece);
+                    ((RelativeLayout)layout).removeView((View)v.getParent());
+                }
                 return true;
             }
         });
@@ -105,8 +110,10 @@ public class GameLayout {
         ImageView puzzlePiece = new ImageView(GlobalGameData.getInstance().getContext());
         puzzlePiece.setImageBitmap(selectedPiece.getImage());
         puzzlePiece.setLayoutParams(params);
-        ((RelativeLayout)layout).addView(puzzlePiece);
-        initLongClickListener(puzzlePiece);
+        initTouchListener(puzzlePiece);
+        LinearLayout wrapper = new LinearLayout(GlobalGameData.getInstance().getContext());
+        wrapper.addView(puzzlePiece);
+        ((RelativeLayout)layout).addView(wrapper);
 
         animateDragToStart(puzzlePiece,currentPoint, anchor);
         selectedPiece.setCurrentPos(anchor);
@@ -149,7 +156,7 @@ public class GameLayout {
     private void animateDragToStart(View view, Point from, Point to) {
         Bitmap piece = GlobalGameData.getInstance().getSelectedPuzzlePiece().getImage();
         Animation translateAnimation = new TranslateAnimation( from.x - to.x - piece.getWidth()/2, 0, from.y - to.y - piece.getHeight()/2, 0);
-        translateAnimation.setDuration(500);
+        translateAnimation.setDuration(300);
         translateAnimation.setFillAfter(true);
         translateAnimation.setInterpolator(new AccelerateInterpolator());
         view.startAnimation(translateAnimation);

@@ -2,12 +2,31 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/completeLayout"
     style="@style/MatchParent">
+
+    <LinearLayout
+        style="@style/MatchParent"
+        android:id="@+id/background"
+        android:orientation="horizontal"
+        android:background="@drawable/bg_1"
+        android:alpha="0.7"/>
+
+    <!--Gameboard layout -->
     <RelativeLayout
-        android:id="@+id/gameLayout"
-        style="@style/WrapCenterParent"
+        style="@style/Wrap"
         android:layout_marginTop="10dp"
-        android:layout_marginBottom="50dp"
-        android:background="@android:color/holo_blue_light">
+        android:layout_centerInParent="true"
+        android:layout_gravity="center_horizontal"
+        android:padding="@dimen/border_padding"
+        android:background="@drawable/border">
+        <RelativeLayout
+            android:id="@+id/gameLayout"
+            style="@style/Wrap">
+            <ImageView
+                android:id="@+id/originalImage"
+                style="@style/WrapCenterParent"
+                android:alpha="0.6"
+                android:visibility="invisible"/>
+        </RelativeLayout>
     </RelativeLayout>
 
     <TextView
@@ -21,20 +40,76 @@
         android:layout_gravity="bottom"
         android:layout_width="match_parent"
         android:layout_height="70dp"
+        android:layout_marginRight="50dp"
         android:background="@android:color/holo_orange_light"
         android:orientation="horizontal"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager">
     </android.support.v7.widget.RecyclerView>
 
-    <android.support.design.widget.FloatingActionButton
-        style="@style/Wrap"
-        android:layout_gravity="end|bottom"
-        android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_dialog_email"
-        android:onClick="openGameMenu"/>
 
-    <ImageView
-        android:id="@+id/originalImage"
-        style="@style/WrapCenterParent"
-        android:visibility="invisible"/>
+    <!-- Left side buttons - related to settings -->
+    <RelativeLayout
+        style="@style/Wrap"
+        android:layout_gravity="left|center">
+        <ImageButton
+            style="@style/Wrap"
+            android:id="@+id/resetGameBtn"
+            android:onClick="resetGame"
+            android:src="@android:drawable/ic_menu_revert"/>
+        <ImageButton
+            style="@style/Wrap"
+            android:id="@+id/changeBackgroundBtn"
+            android:layout_below="@id/resetGameBtn"
+            android:onClick="changeBackGround"
+            android:src="@android:drawable/ic_menu_rotate"/>
+        <ImageButton
+            style="@style/Wrap"
+            android:id="@+id/openSettingsBtn"
+            android:layout_below="@id/changeBackgroundBtn"
+            android:onClick="openSettings"
+            android:src="@android:drawable/ic_menu_send"/>
+    </RelativeLayout>
+
+    <!-- Right side buttons - related to the game -->
+    <RelativeLayout
+        style="@style/Wrap"
+        android:layout_gravity="right|center">
+        <ImageButton
+            style="@style/Wrap"
+            android:id="@+id/showSidePiecesBtn"
+            android:onClick="showSidePieces"
+            android:src="@android:drawable/ic_media_next"/>
+        <ImageButton
+            style="@style/Wrap"
+            android:id="@+id/showSolutionBtn"
+            android:layout_below="@id/showSidePiecesBtn"
+            android:onClick="showSolution"
+            android:src="@android:drawable/ic_menu_today"/>
+        <ImageButton
+            style="@style/Wrap"
+            android:id="@+id/showCondensedImageBtn"
+            android:layout_below="@id/showSolutionBtn"
+            android:onClick="showCondensedImage"
+            android:src="@android:drawable/ic_menu_camera"/>
+    </RelativeLayout>
+
+    <!-- Condensed image -->
+    <FrameLayout
+        android:id="@+id/condensedImageWrapper"
+        android:layout_gravity="center"
+        android:visibility="invisible"
+        android:padding="@dimen/border_padding"
+        android:background="@drawable/border"
+        style="@style/Wrap">
+        <ImageView
+            android:id="@+id/condensedImage"
+            style="@style/Wrap" />
+        <android.support.design.widget.FloatingActionButton
+            style="@style/Wrap"
+            android:layout_gravity="top|right"
+            app:backgroundTint="@android:color/holo_red_light"
+            app:fabSize="mini"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            android:onClick="hideCondensedImage" />
+    </FrameLayout>
 </FrameLayout >

@@ -73,8 +73,10 @@ public class Game {
                 //Cuts out the puzzle piece from original image
                 Bitmap puzzlePiece = Bitmap.createBitmap(puzzlePieceFromOriginal, dimension.x, dimension.y, dimension.width, dimension.height);
 
-                puzzlePieceArrayList.add(new PuzzlePiece(puzzlePiece, new Point(dimension.x,dimension.y)));
-                anchorPoints[i][j]= new Point(dimension.x,dimension.y);
+                boolean isSidePiece = (i == 0 || i == rows - 1 || j == 0 || j == columns -1) ? true : false;
+                Point solutionCoords = new Point(dimension.x - indentSizeX,dimension.y - indentSizeY);
+                puzzlePieceArrayList.add(new PuzzlePiece(puzzlePiece, solutionCoords, isSidePiece));
+                anchorPoints[i][j]= solutionCoords;
             }
         }
         PuzzlePieceRecyclerViewAdapter viewAdapter = new PuzzlePieceRecyclerViewAdapter(jigsawGame,puzzlePieceArrayList);
@@ -207,16 +209,12 @@ public class Game {
     }
 
     private Rectangle getPuzzlePieceDimension(int i, int j){
-        JigsawConfig jigsawConfig = puzzleConfig[i][j];
-
         int width = pieceLengthX + 2 * indentSizeX;
         int x = i * pieceLengthX;
 
         int height = pieceLengthY + 2 *indentSizeY;
         int y = j * pieceLengthY;
 
-
-        Log.d("pp dimension", width + " " + height + " " + x + " "+ y);
         Rectangle position = new Rectangle();
         position.setBounds(x,y,width,height);
         return position;

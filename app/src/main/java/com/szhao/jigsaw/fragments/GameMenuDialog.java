@@ -30,28 +30,6 @@ public class GameMenuDialog extends AppCompatDialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         final View view = inflater.inflate(R.layout.dialog_game_menu, container, false);
-        showSolutionBtn = (Button)view.findViewById(R.id.showSolution);
-        showSolutionBtn.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                ((JigsawGame)getContext()).showSolution();
-            }
-        });
-        resetPuzzleBtn = (Button)view.findViewById(R.id.resetPuzzle);
-        resetPuzzleBtn.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                ((JigsawGame)getContext()).resetPuzzle();
-            }
-        });
-
-        goPuzzleSelectorBtn = (Button)view.findViewById(R.id.goPuzzleSelector);
-        goPuzzleSelectorBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((JigsawGame)getContext()).goPuzzleSelector();
-            }
-        });
         return view;
     }
 

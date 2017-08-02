@@ -32,7 +32,6 @@ public class PuzzlePieceViewHolder extends RecyclerView.ViewHolder{
 
     public void setPuzzlePieceImage(Context context, Bitmap image){
         puzzlePieceImage.setImageBitmap(image);
-        puzzlePieceImage.setBackgroundColor(Color.GREEN);
     }
 
 }
