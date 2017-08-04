@@ -17,6 +17,8 @@ public class GlobalGameData {
 
     Context context;
     PuzzlePiece selectedPuzzlePiece;
+    int soundVolume;
+    int musicVolume;
 
     public static GlobalGameData getInstance() {
         return ourInstance;
@@ -41,4 +43,19 @@ public class GlobalGameData {
         this.context = context;
     }
 
+    public int getSoundVolume(){
+        return soundVolume;
+    }
+
+    public void setSoundVolume(int soundVolume){
+        this.soundVolume = soundVolume;
+    }
+
+    public int getMusicVolume(){
+        return musicVolume;
+    }
+
+    public void setMusicVolume(int musicVolume){
+        this.musicVolume = musicVolume;
+    }
 }

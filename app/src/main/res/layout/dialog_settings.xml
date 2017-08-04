@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    style="@style/Wrap">
+
+    <RelativeLayout
+        style="@style/Wrap"
+        android:gravity="center_horizontal">
+        <ImageView
+            style="@style/Wrap"
+            android:id="@+id/ic_sound"
+            android:src="@drawable/ic_volume_up_black_24dp"/>
+        <TextView
+            style="@style/Wrap"
+            android:id="@+id/txtSound"
+            android:layout_toRightOf="@id/ic_sound"
+            android:text="Sound"
+            android:textSize="24sp"/>
+        <SeekBar
+            android:id="@+id/soundSeekBar"
+            android:layout_toRightOf="@+id/txtSound"
+            android:layout_width="300dp"
+            android:layout_height="20dp" />
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        style="@style/Wrap"
+        android:gravity="center_horizontal">
+        <ImageView
+            style="@style/Wrap"
+            android:id="@+id/ic_music"
+            android:src="@drawable/ic_music_note_black_24dp"/>
+        <TextView
+            style="@style/Wrap"
+            android:id="@+id/txtMusic"
+            android:layout_toRightOf="@+id/ic_music"
+            android:text="Music"
+            android:textSize="24sp"/>
+        <SeekBar
+            android:id="@+id/musicSeekBar"
+            android:layout_toRightOf="@+id/txtMusic"
+            android:layout_width="300dp"
+            android:layout_height="20dp" />
+    </RelativeLayout>
+</LinearLayout>

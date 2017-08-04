@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/Wrap"
-    android:orientation="vertical"
-    android:padding="@dimen/border_padding"
-    android:background="@drawable/border">
+    android:orientation="vertical">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/backgroundRecycler"
+        style="@style/Wrap"
+        android:layout_gravity="center"
+        app:layoutManager="android.support.v7.widget.GridLayoutManager">
+    </android.support.v7.widget.RecyclerView>
 
 
 </LinearLayout>

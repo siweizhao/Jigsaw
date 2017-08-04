@@ -9,7 +9,7 @@
     card_view:cardElevation="0dp">
 
     <ImageView
-        android:id="@+id/puzzlePiece"
+        android:id="@+id/image_only"
         style="@style/Wrap"
         android:adjustViewBounds="true"
         android:scaleType="centerInside"/>

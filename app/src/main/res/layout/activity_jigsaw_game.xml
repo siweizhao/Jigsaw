@@ -1,6 +1,6 @@
 <FrameLayout  xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/completeLayout"
+    android:id="@+id/masterLayout"
     style="@style/MatchParent">
 
     <LinearLayout
@@ -55,19 +55,19 @@
             style="@style/Wrap"
             android:id="@+id/resetGameBtn"
             android:onClick="resetGame"
-            android:src="@android:drawable/ic_menu_revert"/>
+            android:src="@drawable/ic_refresh_black_24dp"/>
         <ImageButton
             style="@style/Wrap"
             android:id="@+id/changeBackgroundBtn"
             android:layout_below="@id/resetGameBtn"
             android:onClick="changeBackGround"
-            android:src="@android:drawable/ic_menu_rotate"/>
+            android:src="@drawable/ic_panorama_black_24dp"/>
         <ImageButton
             style="@style/Wrap"
             android:id="@+id/openSettingsBtn"
             android:layout_below="@id/changeBackgroundBtn"
             android:onClick="openSettings"
-            android:src="@android:drawable/ic_menu_send"/>
+            android:src="@drawable/ic_settings_black_24dp"/>
     </RelativeLayout>
 
     <!-- Right side buttons - related to the game -->
@@ -77,20 +77,21 @@
         <ImageButton
             style="@style/Wrap"
             android:id="@+id/showSidePiecesBtn"
+            android:tag="false"
             android:onClick="showSidePieces"
-            android:src="@android:drawable/ic_media_next"/>
+            android:src="@drawable/ic_grid_off_black_24dp"/>
         <ImageButton
             style="@style/Wrap"
             android:id="@+id/showSolutionBtn"
             android:layout_below="@id/showSidePiecesBtn"
             android:onClick="showSolution"
-            android:src="@android:drawable/ic_menu_today"/>
+            android:src="@drawable/ic_view_module_black_24dp"/>
         <ImageButton
             style="@style/Wrap"
             android:id="@+id/showCondensedImageBtn"
             android:layout_below="@id/showSolutionBtn"
             android:onClick="showCondensedImage"
-            android:src="@android:drawable/ic_menu_camera"/>
+            android:src="@drawable/ic_remove_red_eye_black_24dp"/>
     </RelativeLayout>
 
     <!-- Condensed image -->

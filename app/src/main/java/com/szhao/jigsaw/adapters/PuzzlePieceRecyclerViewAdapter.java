@@ -1,6 +1,5 @@
 package com.szhao.jigsaw.adapters;
 
-import android.content.ClipData;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
@@ -9,13 +8,12 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.szhao.jigsaw.R;
 import com.szhao.jigsaw.puzzle.GlobalGameData;
 import com.szhao.jigsaw.puzzle.PuzzlePiece;
 import com.szhao.jigsaw.puzzle.PuzzlePieceDragShadowBuilder;
-import com.szhao.jigsaw.vh.PuzzlePieceViewHolder;
+import com.szhao.jigsaw.vh.ImageViewHolder;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -50,8 +48,8 @@ public class PuzzlePieceRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(mContext).inflate(R.layout.jigsaw_puzzle_pieces, parent, false);
-        final PuzzlePieceViewHolder vh = new PuzzlePieceViewHolder(v);
+        View v = LayoutInflater.from(mContext).inflate(R.layout.cv_image_only, parent, false);
+        final ImageViewHolder vh = new ImageViewHolder(mContext,v);
         v.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -77,8 +75,8 @@ public class PuzzlePieceRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        PuzzlePieceViewHolder vh = (PuzzlePieceViewHolder)holder;
-        vh.setPuzzlePieceImage(mContext, puzzlePieces.get(position).getImage());
+        ImageViewHolder vh = (ImageViewHolder)holder;
+        vh.setPuzzlePieceImage(puzzlePieces.get(position).getImage());
     }
 
     @Override

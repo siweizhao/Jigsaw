@@ -12,20 +12,11 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.support.constraint.solver.widgets.Rectangle;
 import android.support.v7.widget.RecyclerView;
-import android.text.Layout;
-import android.util.Log;
-import android.view.DragEvent;
-import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
-import com.szhao.jigsaw.R;
 import com.szhao.jigsaw.activities.JigsawGame;
 import com.szhao.jigsaw.adapters.PuzzlePieceRecyclerViewAdapter;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 /**
  * Created by Owner on INDENT_RATIO/15/2017.
@@ -83,7 +74,7 @@ public class Game {
         RecyclerView recycler = jigsawGame.getPuzzlePieceRecycler();
         recycler.setAdapter(viewAdapter);
         GameLayout gameLayout = new GameLayout(jigsawGame.getGameLayout(), rows, columns, anchorPoints);
-        gameLayout.setBoundary(jigsawGame.getCompleteLayout());
+        gameLayout.setBoundary(jigsawGame.getMasterLayout());
     }
 
     //Generate the path for puzzle piece cutout

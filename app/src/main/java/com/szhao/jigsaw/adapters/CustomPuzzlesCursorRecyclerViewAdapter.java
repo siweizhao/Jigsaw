@@ -28,7 +28,7 @@ public class CustomPuzzlesCursorRecyclerViewAdapter extends CursorRecyclerViewAd
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
-        View v = LayoutInflater.from(mContext).inflate(R.layout.puzzle_select_layout, parent, false);
+        View v = LayoutInflater.from(mContext).inflate(R.layout.cv_puzzle_select_layout, parent, false);
         return new SelectPuzzleViewHolder(v);
     }
 

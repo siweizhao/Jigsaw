@@ -9,6 +9,9 @@
     <string name="resetPuzzle">Reset Puzzle</string>
     <string name="puzzleMenu">Puzzle Menu</string>
     <string name="close">Close</string>
+    <string name="background">bg</string>
+    <string name="music_volume">music_volume</string>
+    <string name="sound_volume">sound_volume</string>
 
     <string name="title_activity_puzzle_selector">Select Puzzle</string>
     <string name="title_activity_difficulty_selector">Difficulty</string>
