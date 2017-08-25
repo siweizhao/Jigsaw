@@ -3,7 +3,7 @@
     android:orientation="vertical"
     style="@style/MatchParent"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.szhao.jigsaw.activities.TitleScreen">
+    tools:context=".Old.TitleScreen">
 
     <ImageView
         android:id="@+id/title_logo"

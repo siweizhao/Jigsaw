@@ -5,7 +5,7 @@
     android:id="@+id/main_content"
     style="@style/MatchParent"
     android:fitsSystemWindows="true"
-    tools:context="com.szhao.jigsaw.activities.PuzzleSelector">
+    tools:context=".Old.PuzzleSelector">
 
     <include
         android:id="@+id/tool_bar"

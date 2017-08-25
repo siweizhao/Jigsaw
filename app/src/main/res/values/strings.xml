@@ -17,6 +17,10 @@
     <string name="title_activity_difficulty_selector">Difficulty</string>
     <string name="title_activity_completed_puzzle">Completed Puzzles</string>
     <string name="title_activity_shared_element">SharedElement</string>
+    <string name="title_activity_dashboard">Dashboard</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>

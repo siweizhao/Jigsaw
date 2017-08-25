@@ -1,7 +1,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/MatchParent"
-    tools:context="com.szhao.jigsaw.fragments.PuzzleSelectFragment">
+    tools:context=".Old.fragments.PuzzleSelectFragment">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/puzzlesRecyclerView"

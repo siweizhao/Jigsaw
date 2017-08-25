@@ -29,28 +29,42 @@
         </RelativeLayout>
     </RelativeLayout>
 
-    <TextView
-        android:id="@+id/timerDisplay"
-        style="@style/Wrap"
-        android:fontFamily="sans-serif-black"
-        android:textSize="32sp"/>
+
+    <RelativeLayout
+        style="@style/Wrap">
+        <ImageView
+            android:id="@+id/timerImage"
+            style="@style/Wrap"
+            android:src="@drawable/ic_timer_black_24dp"/>
+        <TextView
+            android:id="@+id/timerDisplay"
+            style="@style/Wrap"
+            android:layout_below="@id/timerImage"
+            android:fontFamily="sans-serif-black"
+            android:textSize="18sp" />
+    </RelativeLayout>
+
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/puzzlePieceRecycler"
         android:layout_gravity="bottom"
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:layout_marginRight="50dp"
         android:background="@android:color/holo_orange_light"
         android:orientation="horizontal"
-        app:layoutManager="android.support.v7.widget.LinearLayoutManager">
-    </android.support.v7.widget.RecyclerView>
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager"/>
 
+    <ImageButton
+        style="@style/Wrap"
+        android:layout_gravity="top|right"
+        android:id="@+id/openSettingsBtn"
+        android:onClick="openSettings"
+        android:src="@drawable/ic_settings_black_24dp"/>
 
-    <!-- Left side buttons - related to settings -->
+    <!-- Right side buttons - related to settings -->
     <RelativeLayout
         style="@style/Wrap"
-        android:layout_gravity="left|center">
+        android:layout_gravity="right|center">
         <ImageButton
             style="@style/Wrap"
             android:id="@+id/resetGameBtn"
@@ -62,18 +76,12 @@
             android:layout_below="@id/resetGameBtn"
             android:onClick="changeBackGround"
             android:src="@drawable/ic_panorama_black_24dp"/>
-        <ImageButton
-            style="@style/Wrap"
-            android:id="@+id/openSettingsBtn"
-            android:layout_below="@id/changeBackgroundBtn"
-            android:onClick="openSettings"
-            android:src="@drawable/ic_settings_black_24dp"/>
     </RelativeLayout>
 
-    <!-- Right side buttons - related to the game -->
+    <!-- Left side buttons - related to the game -->
     <RelativeLayout
         style="@style/Wrap"
-        android:layout_gravity="right|center">
+        android:layout_gravity="left|center">
         <ImageButton
             style="@style/Wrap"
             android:id="@+id/showSidePiecesBtn"

@@ -38,7 +38,7 @@
             android:text="Music"
             android:textSize="24sp"/>
         <SeekBar
-            android:id="@+id/musicSeekBar"
+            android:id="@+id/bgmSeekBar"
             android:layout_toRightOf="@+id/txtMusic"
             android:layout_width="300dp"
             android:layout_height="20dp" />

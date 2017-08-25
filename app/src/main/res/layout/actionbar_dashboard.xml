@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/holo_red_light">
+
+    <ImageButton
+        style="@style/Wrap"
+        android:layout_gravity="center_horizontal"
+        android:onClick="createCustomPuzzle"
+        android:src="@drawable/ic_photo_camera_black_24dp"/>
+
+    <ImageButton
+        style="@style/Wrap"
+        android:id="@+id/dashboardSettingsBtn"
+        android:layout_gravity="end"
+        android:onClick="openSettings"
+        android:src="@drawable/ic_settings_black_24dp"/>
+</FrameLayout>

@@ -23,6 +23,10 @@
     <style name="TextViewBasic" parent="@style/Wrap">
         <item name="android:textSize">32sp</item>
     </style>
+    
+    <style name="ImageButtonTransparentBG" parent="@style/Wrap">
+        <item name="android:background">?android:selectableItemBackground</item>
+    </style>
 
     <style name="AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
