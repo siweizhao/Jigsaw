@@ -22,8 +22,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.szhao.jigsaw.R;
-import com.szhao.jigsaw.Old.db.PuzzleContentProvider;
-import com.szhao.jigsaw.Global.Utility;
+import com.szhao.jigsaw.db.PuzzleContentProvider;
+import com.szhao.jigsaw.global.Utility;
 import com.szhao.jigsaw.Old.fragments.DifficultyDialog;
 import com.szhao.jigsaw.Old.fragments.PuzzleSelectFragment;
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -185,7 +185,7 @@ public class PuzzleSelector extends AppCompatActivity {
         ContentValues contentValues = new ContentValues();
         contentValues.put("DESCRIPTION", "caption");
         contentValues.put("PUZZLE", Utility.getBytes(bitmap));
-        getContentResolver().insert(PuzzleContentProvider.CONTENT_URI_CUSTOM, contentValues);
-        getContentResolver().notifyChange(PuzzleContentProvider.CONTENT_URI_CUSTOM, null);
+        //getContentResolver().insert(PuzzleContentProvider.CONTENT_URI_CUSTOM, contentValues);
+        //getContentResolver().notifyChange(PuzzleContentProvider.CONTENT_URI_CUSTOM, null);
     }
 }

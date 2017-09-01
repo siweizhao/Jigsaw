@@ -3,6 +3,7 @@
     android:id="@+id/masterLayout"
     style="@style/MatchParent">
 
+    <!--Background -->
     <LinearLayout
         style="@style/MatchParent"
         android:id="@+id/background"
@@ -67,7 +68,13 @@
         android:layout_gravity="right|center">
         <ImageButton
             style="@style/Wrap"
+            android:id="@+id/goMenuBtn"
+            android:src="@drawable/ic_menu_black_24dp"
+            android:onClick="goNavigationActivity"/>
+        <ImageButton
+            style="@style/Wrap"
             android:id="@+id/resetGameBtn"
+            android:layout_below="@id/goMenuBtn"
             android:onClick="resetGame"
             android:src="@drawable/ic_refresh_black_24dp"/>
         <ImageButton

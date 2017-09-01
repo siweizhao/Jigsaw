@@ -10,7 +10,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.szhao.jigsaw.R;
-import com.szhao.jigsaw.Global.Utility;
+import com.szhao.jigsaw.global.Utility;
 
 /**
  * Created by Owner on 7/11/2017.

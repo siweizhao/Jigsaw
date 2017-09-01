@@ -1,0 +1,51 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/MatchParent"
+    tools:context="com.szhao.jigsaw.activities.dashboard.fragment.DifficultyFragment"
+    android:gravity="center"
+    android:clickable="true"
+    android:background="@android:color/holo_blue_dark">
+
+    <RelativeLayout
+        style="@style/Wrap">
+        <ImageView
+            style="@style/Wrap"
+            android:id="@+id/difficultyFragmentPuzzleImage"/>
+
+        <RelativeLayout
+            style="@style/Wrap"
+            android:gravity="center"
+            android:background="@android:color/holo_orange_light"
+            android:layout_toRightOf="@id/difficultyFragmentPuzzleImage">
+            <TextView
+                style="@style/Wrap"
+                android:id="@+id/difficultyFragmentDifficultyTxt"
+                android:textSize="24sp"
+                android:text="Difficulty:2 x 2"
+                android:layout_centerHorizontal="true"
+                android:textAlignment="center"/>
+            <SeekBar
+                android:id="@+id/difficultyFragmentSeekBar"
+                android:layout_below="@id/difficultyFragmentDifficultyTxt"
+                android:layout_width="210dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:max="8"/>
+            <TextView
+                style="@style/Wrap"
+                android:id="@+id/difficultyFragmentBestTime"
+                android:textSize="24sp"
+                android:text="Best Time 0:00"
+                android:layout_centerHorizontal="true"
+                android:textAlignment="center"
+                android:layout_below="@id/difficultyFragmentSeekBar"/>
+            <Button
+                style="@style/ButtonBasic"
+                android:id="@+id/difficultyFragmentStartGameBtn"
+                android:layout_below="@id/difficultyFragmentBestTime"
+                android:text="Start Game" />
+        </RelativeLayout>
+        
+    </RelativeLayout>
+
+</RelativeLayout>

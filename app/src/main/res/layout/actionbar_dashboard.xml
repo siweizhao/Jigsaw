@@ -6,6 +6,12 @@
 
     <ImageButton
         style="@style/Wrap"
+        android:layout_gravity="left"
+        android:onClick="goBack"
+        android:src="@drawable/ic_arrow_back_black_24dp"/>
+
+    <ImageButton
+        style="@style/Wrap"
         android:layout_gravity="center_horizontal"
         android:onClick="createCustomPuzzle"
         android:src="@drawable/ic_photo_camera_black_24dp"/>

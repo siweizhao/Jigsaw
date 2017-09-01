@@ -1,0 +1,50 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/MatchParent"
+    tools:context="com.szhao.jigsaw.activities.dashboard.fragment.CustomPuzzlesFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:id="@+id/customPuzzleFragmentTopWrapper"
+        android:background="@android:color/holo_orange_light"
+        android:gravity="center">
+        <RelativeLayout
+            android:id="@+id/customPuzzleFragmentAddPuzzleWrapper"
+            style="@style/Wrap">
+            <TextView
+                style="@style/Wrap"
+                android:id="@+id/customPuzzleFragmentTitle"
+                android:text="Select a photo from your gallery"
+                android:textSize="24sp"/>
+            <ImageButton
+                style="@style/Wrap"
+                android:id="@+id/addCustomPuzzleBtn"
+                android:layout_toRightOf="@id/customPuzzleFragmentTitle"
+                android:src="@drawable/ic_photo_black_24dp"/>
+        </RelativeLayout>
+        <RelativeLayout
+            style="@style/Wrap"
+            android:layout_below="@id/customPuzzleFragmentAddPuzzleWrapper">
+            <TextView
+                style="@style/Wrap"
+                android:id="@+id/customPuzzleFragmentRemovePuzzleTitle"
+                android:text="Remove puzzle"
+                android:textSize="24sp"/>
+            <ImageButton
+                style="@style/Wrap"
+                android:id="@+id/removeCustomPuzzleBtn"
+                android:layout_toRightOf="@id/customPuzzleFragmentRemovePuzzleTitle"
+                android:src="@drawable/ic_delete_black_24dp"/>
+        </RelativeLayout>
+    </RelativeLayout>
+    <android.support.v7.widget.RecyclerView
+        android:layout_below="@id/customPuzzleFragmentTopWrapper"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/customPuzzlesRecycler"
+        android:background="@android:color/holo_blue_bright"
+        android:orientation="horizontal"
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager"/>
+</RelativeLayout>

@@ -11,8 +11,8 @@ import android.support.v7.widget.RecyclerView;
 
 import com.szhao.jigsaw.R;
 import com.szhao.jigsaw.Old.adapters.CompletedPuzzlesCursorAdapter;
-import com.szhao.jigsaw.Old.db.PuzzleContentProvider;
-import com.szhao.jigsaw.Global.Utility;
+import com.szhao.jigsaw.db.PuzzleContentProvider;
+import com.szhao.jigsaw.global.Utility;
 
 public class CompletedPuzzles extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     RecyclerView completedPuzzlesRecycler;

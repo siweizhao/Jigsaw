@@ -15,8 +15,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.szhao.jigsaw.R;
-import com.szhao.jigsaw.activities.JigsawGame.JigsawGameActivity;
-import com.szhao.jigsaw.Global.Utility;
+import com.szhao.jigsaw.activities.jigsawgame.JigsawGameActivity;
+import com.szhao.jigsaw.global.Utility;
 
 /**
  * Created by Owner on 7/17/2017.

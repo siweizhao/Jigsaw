@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light">
         <activity
-            android:name=".activities.JigsawGame.JigsawGameActivity"
+            android:name=".activities.jigsawgame.JigsawGameActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="landscape"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
@@ -26,6 +26,7 @@
             android:label="@string/title_activity_completed_puzzle" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:screenOrientation="landscape"
             android:theme="@style/Theme.AppCompat.Light" />
         <activity
             android:name=".Old.PuzzleSelector"
@@ -33,13 +34,13 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <provider
-            android:name=".Old.db.PuzzleContentProvider"
+            android:name=".db.PuzzleContentProvider"
             android:authorities="${applicationId}"
             android:enabled="true"
             android:exported="true" />
 
         <activity
-            android:name=".activities.Dashboard.DashboardActivity"
+            android:name=".activities.dashboard.DashboardActivity"
             android:label="@string/title_activity_dashboard"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="landscape"

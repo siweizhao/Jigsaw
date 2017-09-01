@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.szhao.jigsaw.R;
-import com.szhao.jigsaw.Global.Utility;
+import com.szhao.jigsaw.global.Utility;
 
 import java.util.Date;
 import java.util.Locale;

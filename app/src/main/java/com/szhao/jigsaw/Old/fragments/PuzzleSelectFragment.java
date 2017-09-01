@@ -17,8 +17,8 @@ import com.szhao.jigsaw.R;
 import com.szhao.jigsaw.Old.PuzzleSelector;
 import com.szhao.jigsaw.Old.adapters.CustomPuzzlesCursorRecyclerViewAdapter;
 import com.szhao.jigsaw.Old.adapters.ProvidedPuzzlesRecyclerViewAdapter;
-import com.szhao.jigsaw.Old.db.PuzzleContentProvider;
-import com.szhao.jigsaw.Global.Utility;
+import com.szhao.jigsaw.db.PuzzleContentProvider;
+import com.szhao.jigsaw.global.Utility;
 
 public class PuzzleSelectFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
     RecyclerView customPuzzlesRecycler;
@@ -91,14 +91,14 @@ public class PuzzleSelectFragment extends Fragment implements LoaderManager.Load
                             @Override
                             public void onClick(Bitmap bitmap, int id) {
                                 if (((PuzzleSelector)getContext()).isRemovePuzzles()){
-                                    getContext().getContentResolver().delete(PuzzleContentProvider.CONTENT_URI_CUSTOM, "_id = ?", new String[]{String.valueOf(id)});
-                                    getContext().getContentResolver().notifyChange(PuzzleContentProvider.CONTENT_URI_CUSTOM, null);
+                                    //getContext().getContentResolver().delete(PuzzleContentProvider.CONTENT_URI_CUSTOM, "_id = ?", new String[]{String.valueOf(id)});
+                                    //getContext().getContentResolver().notifyChange(PuzzleContentProvider.CONTENT_URI_CUSTOM, null);
                                 } else {
                                     showDialog(bitmap);
                                 }
                             }
                         });
-                return new CursorLoader(getContext(), PuzzleContentProvider.CONTENT_URI_CUSTOM, null, null, null, "_id DESC");
+                //return new CursorLoader(getContext(), PuzzleContentProvider.CONTENT_URI_CUSTOM, null, null, null, "_id DESC");
             default:
                 throw new IllegalArgumentException("no id handled!");
         }
