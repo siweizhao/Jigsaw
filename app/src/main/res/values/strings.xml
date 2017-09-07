@@ -2,9 +2,6 @@
     <string name="app_name">Jigsaw</string>
 
     <string name="puzzles">Puzzles</string>
-    <string name="completedPuzzles">Completed Puzzles</string>
-    <string name="startGame">Start Game</string>
-    <string name="defaultDifficulty">Difficulty: 2 x 2</string>
     <string name="showSolution">Show Solution</string>
     <string name="resetPuzzle">Reset Puzzle</string>
     <string name="puzzleMenu">Puzzle Menu</string>
@@ -12,15 +9,13 @@
     <string name="background">bg</string>
     <string name="music_volume">music_volume</string>
     <string name="sound_volume">sound_volume</string>
+    <string name="start_game">Start Game</string>
+    <string name="continue_game">Continue Game</string>
 
     <string name="title_activity_puzzle_selector">Select Puzzle</string>
     <string name="title_activity_difficulty_selector">Difficulty</string>
     <string name="title_activity_completed_puzzle">Completed Puzzles</string>
     <string name="title_activity_shared_element">SharedElement</string>
     <string name="title_activity_dashboard">Dashboard</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
 
 </resources>

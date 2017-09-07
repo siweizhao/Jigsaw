@@ -1,15 +1,22 @@
 package com.szhao.jigsaw.activities.dashboard.adapter;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.GravityEnum;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.szhao.jigsaw.R;
 import com.szhao.jigsaw.activities.dashboard.vh.ContentViewHolder;
+import com.szhao.jigsaw.global.PointSystem;
+import com.szhao.jigsaw.global.Utility;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,15 +32,13 @@ public class ContentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     private ArrayList<String> puzzles;
     private ItemSelectListener listener;
     private Cursor startedPuzzlesCursor;
-    ArrayList<Integer> startedDifficulties;
-    ArrayList<String> startedPositions;
+    private ArrayList<Integer> startedDifficulties;
 
     public ContentRecyclerViewAdapter(Context context, Cursor cursor){
         this.context = context;
         this.startedPuzzlesCursor = cursor;
         puzzles = new ArrayList<>();
         startedDifficulties = new ArrayList<>();
-        startedPositions = new ArrayList<>();
     }
 
     @Override
@@ -44,10 +49,34 @@ public class ContentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             @Override
             public void onClick(View v) {
                 if (listener != null){
-                    int currAdapterPosition = vh.getAdapterPosition();
-                    int difficulty =  startedDifficulties.size() == 0 ? 2 : startedDifficulties.get(currAdapterPosition);
-                    String positions = startedPositions.size() == 0 ? "" : startedPositions.get(currAdapterPosition);
-                    listener.onClick(puzzles.get(currAdapterPosition), difficulty, positions);
+                    if (vh.getLockStatus()) {
+                        //Need to unlock puzzle
+                        new MaterialDialog.Builder(context)
+                                .content("Would you like to unlock this puzzle for 100 points?")
+                                .contentGravity(GravityEnum.CENTER)
+                                .positiveText("Yes")
+                                .negativeText("No")
+                                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                    @Override
+                                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                        PointSystem.getInstance().spendPoints(context, 100);
+                                        PointSystem.getInstance().savePuzzle(context, puzzles.get(vh.getAdapterPosition()));
+                                        vh.setUnlock();
+                                        PointSystem.getInstance().increaseCountVH();
+                                    }
+                                })
+                                .dismissListener(new DialogInterface.OnDismissListener() {
+                                    @Override
+                                    public void onDismiss(DialogInterface dialog) {
+                                        Utility.startImmersiveMode(context);
+                                    }
+                                })
+                                .show();
+                    } else {
+                        int currAdapterPosition = vh.getAdapterPosition();
+                        int difficulty = startedDifficulties.size() == 0 ? 2 : startedDifficulties.get(currAdapterPosition);
+                        listener.onClick(puzzles.get(currAdapterPosition), difficulty);
+                    }
                 }
             }
         });
@@ -58,29 +87,40 @@ public class ContentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         ContentViewHolder vh = (ContentViewHolder)holder;
         vh.setPuzzleImage(puzzles.get(position));
+
+        //If the puzzle was downloaded it needs to be unlocked by paying coins
+        File downloadedDir = context.getDir("DL", Context.MODE_PRIVATE);
+        if (puzzles.get(position).contains(downloadedDir.getName()) && !PointSystem.getInstance().isPuzzleUnlocked(puzzles.get(position))) {
+            vh.setLock();
+        } else {
+            vh.setUnlock();
+        }
     }
 
     public void setPuzzles(String category){
         puzzles.clear();
         startedDifficulties.clear();
-        startedPositions.clear();
         if (category.equals("Started")){
-            startedPuzzlesCursor.move(-1);
+            startedPuzzlesCursor.moveToPosition(-1);
             while(startedPuzzlesCursor.moveToNext()){
                 puzzles.add(startedPuzzlesCursor.getString(startedPuzzlesCursor.getColumnIndex("PUZZLE")));
                 startedDifficulties.add(startedPuzzlesCursor.getInt(startedPuzzlesCursor.getColumnIndex("DIFFICULTY")));
-                startedPositions.add(startedPuzzlesCursor.getString(startedPuzzlesCursor.getColumnIndex("POSITIONS")));
             }
             Collections.reverse(puzzles);
+            Collections.reverse(startedDifficulties);
         } else {
-            String[] puzzleFilePaths = null;
             try {
-                puzzleFilePaths = context.getAssets().list(category);
+                String[] puzzleFilePaths = context.getAssets().list(category);
+                for (String path : puzzleFilePaths) {
+                    puzzles.add("android_asset/" + category + "/" + path);
+                }
+
+                //DLed puzzle
+                if (puzzleFilePaths.length == 0) {
+                    setDLPuzzles(category);
+                }
             } catch (IOException e) {
-                Log.d("set puzzles", "Error getting puzzles from assets " + e.getStackTrace());
-            }
-            for (String path : puzzleFilePaths) {
-                puzzles.add("android_asset/" + category + "/" + path);
+                Log.d("set puzzles", "Error getting puzzles from assets " + e.getMessage());
             }
         }
         notifyDataSetChanged();
@@ -90,6 +130,18 @@ public class ContentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         puzzles.clear();
         File dir = context.getDir("custom_puzzles", Context.MODE_PRIVATE);
         File[] puzzleFilePaths = dir.listFiles();
+        for (File filePath : puzzleFilePaths) {
+            puzzles.add(filePath.getAbsolutePath());
+        }
+        Collections.reverse(puzzles);
+        notifyDataSetChanged();
+    }
+
+    private void setDLPuzzles(String category) {
+        puzzles.clear();
+        File dir = context.getDir("DL", Context.MODE_PRIVATE);
+        File categoryDir = new File(dir, category);
+        File[] puzzleFilePaths = categoryDir.listFiles();
         for (File filePath : puzzleFilePaths){
             puzzles.add(filePath.getAbsolutePath());
         }

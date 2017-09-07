@@ -5,8 +5,9 @@
     android:background="@android:color/holo_red_light">
 
     <ImageButton
+        android:id="@+id/dashboardBackBtn"
         style="@style/Wrap"
-        android:layout_gravity="left"
+        android:layout_gravity="start"
         android:onClick="goBack"
         android:src="@drawable/ic_arrow_back_black_24dp"/>
 
@@ -16,9 +17,16 @@
         android:onClick="createCustomPuzzle"
         android:src="@drawable/ic_photo_camera_black_24dp"/>
 
-    <ImageButton
+    <TextView
+        android:id="@+id/dashboardPointsTxt"
         style="@style/Wrap"
+        android:layout_gravity="end"
+        android:layout_marginEnd="70dp"
+        android:textSize="24sp" />
+
+    <ImageButton
         android:id="@+id/dashboardSettingsBtn"
+        style="@style/Wrap"
         android:layout_gravity="end"
         android:onClick="openSettings"
         android:src="@drawable/ic_settings_black_24dp"/>

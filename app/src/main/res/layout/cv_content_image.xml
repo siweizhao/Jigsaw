@@ -11,10 +11,19 @@
     <FrameLayout
         style="@style/Wrap">
         <ImageView
-            style="@style/Wrap"
             android:id="@+id/content_image"
+            style="@style/Wrap"
             android:adjustViewBounds="true"
             android:scaleType="centerInside"/>
+
+        <ImageView
+            android:id="@+id/content_locked"
+            style="@style/Wrap"
+            android:layout_gravity="center"
+            android:adjustViewBounds="true"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_lock_outline_black_50dp"
+            android:visibility="invisible" />
     </FrameLayout>
 
 </android.support.v7.widget.CardView>

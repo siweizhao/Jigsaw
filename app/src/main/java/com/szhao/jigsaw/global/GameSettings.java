@@ -21,19 +21,18 @@ import java.util.Random;
  */
 
 public class GameSettings {
-    Context context;
+    private static final int MAX_VOLUME = 8;
     private static int[] CLICK_SOUNDS = new int[]{
             R.raw.click_1,
             R.raw.click_2,
             R.raw.click_3
     };
-
-    private MediaPlayer bgmPlayer;
     private static SoundPool soundPool;
-
-    public static int soundVolume;
-    public static int bgmVolume;
-    MaterialDialog settingsDialog;
+    private static int soundVolume;
+    private static int bgmVolume;
+    private Context context;
+    private MediaPlayer bgmPlayer;
+    private MaterialDialog settingsDialog;
 
     public GameSettings(Context context){
         this.context = context;
@@ -42,23 +41,11 @@ public class GameSettings {
         initSettingsDialog();
     }
 
-    public void startBGM(){
-        float finalVolume = calculateVolume(context, bgmVolume);
-        bgmPlayer.setVolume(finalVolume, finalVolume);
-        bgmPlayer.start();
-
-    }
-
-    public static float calculateVolume(Context context, int vol){
+    private static float calculateVolume(Context context, int vol) {
         AudioManager audioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
         int currentDeviceVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
         int maxDeviceVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-        return ((float)currentDeviceVolume/maxDeviceVolume) * ((float)(1 - Math.log(Utility.MAX_VOLUME - vol)/ Math.log(Utility.MAX_VOLUME)));
-    }
-
-    public void initMediaPlayers() {
-        bgmPlayer = MediaPlayer.create(context, R.raw.bg_music);
-        bgmPlayer.setLooping(true);
+        return ((float) currentDeviceVolume / maxDeviceVolume) * ((float) (1 - Math.log(MAX_VOLUME - vol) / Math.log(MAX_VOLUME)));
     }
 
     //Soundpool too unreliable(sometimes does not play sounds and reports no errors) so I used Mediaplayer here
@@ -76,13 +63,28 @@ public class GameSettings {
         clickPlayer.start();
     }
 
-    public void loadSavedVolumes(){
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-        soundVolume = sharedPref.getInt(context.getString(R.string.sound_volume), Utility.MAX_VOLUME);
-        bgmVolume = sharedPref.getInt(context.getString(R.string.music_volume), Utility.MAX_VOLUME);
+    public void startBGM() {
+        float finalVolume = calculateVolume(context, bgmVolume);
+        bgmPlayer.setVolume(finalVolume, finalVolume);
+        bgmPlayer.start();
     }
 
-    public void initSettingsDialog(){
+    public void stopBGM() {
+        bgmPlayer.stop();
+    }
+
+    private void initMediaPlayers() {
+        bgmPlayer = MediaPlayer.create(context, R.raw.bg_music);
+        bgmPlayer.setLooping(true);
+    }
+
+    private void loadSavedVolumes() {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+        soundVolume = sharedPref.getInt(context.getString(R.string.sound_volume), MAX_VOLUME);
+        bgmVolume = sharedPref.getInt(context.getString(R.string.music_volume), MAX_VOLUME);
+    }
+
+    private void initSettingsDialog() {
         settingsDialog = new MaterialDialog.Builder(context)
                 .customView(R.layout.dialog_settings, false)
                 .titleGravity(GravityEnum.CENTER)
@@ -97,7 +99,7 @@ public class GameSettings {
         View v = settingsDialog.getCustomView();
 
         SeekBar soundSeekbar = (SeekBar)v.findViewById(R.id.soundSeekBar);
-        soundSeekbar.setMax(Utility.MAX_VOLUME);
+        soundSeekbar.setMax(MAX_VOLUME);
         soundSeekbar.setProgress(soundVolume);
         soundSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -116,7 +118,7 @@ public class GameSettings {
         });
 
         SeekBar bgmSeekbar = (SeekBar)v.findViewById(R.id.bgmSeekBar);
-        bgmSeekbar.setMax(Utility.MAX_VOLUME);
+        bgmSeekbar.setMax(MAX_VOLUME);
         bgmSeekbar.setProgress(bgmVolume);
         bgmSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override

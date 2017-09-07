@@ -1,7 +1,5 @@
 package com.szhao.jigsaw.global;
 
-import android.content.Context;
-
 import com.szhao.jigsaw.activities.jigsawgame.jigsaw.PuzzlePiece;
 
 /**
@@ -10,15 +8,13 @@ import com.szhao.jigsaw.activities.jigsawgame.jigsaw.PuzzlePiece;
 
 public class GlobalGameData {
     private static final GlobalGameData ourInstance = new GlobalGameData();
+    private PuzzlePiece selectedPuzzlePiece;
 
-    Context context;
-    PuzzlePiece selectedPuzzlePiece;
+    private GlobalGameData() {
+    }
 
     public static GlobalGameData getInstance() {
         return ourInstance;
-    }
-
-    private GlobalGameData() {
     }
 
     public PuzzlePiece getSelectedPuzzlePiece() {
@@ -28,13 +24,4 @@ public class GlobalGameData {
     public void setSelectedPuzzlePiece(PuzzlePiece selectedPuzzlePiece){
         this.selectedPuzzlePiece = selectedPuzzlePiece;
     }
-
-    public Context getContext() {
-        return context;
-    }
-
-    public void setContext(Context context) {
-        this.context = context;
-    }
-
 }

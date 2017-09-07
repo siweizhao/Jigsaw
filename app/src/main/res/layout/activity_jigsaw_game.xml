@@ -5,28 +5,29 @@
 
     <!--Background -->
     <LinearLayout
-        style="@style/MatchParent"
         android:id="@+id/background"
-        android:orientation="horizontal"
+        style="@style/MatchParent"
+        android:alpha="0.7"
         android:background="@drawable/bg_1"
-        android:alpha="0.7"/>
+        android:orientation="horizontal" />
 
     <!--Gameboard layout -->
     <RelativeLayout
         style="@style/Wrap"
-        android:layout_marginTop="10dp"
-        android:layout_centerInParent="true"
         android:layout_gravity="center_horizontal"
-        android:padding="@dimen/border_padding"
-        android:background="@drawable/border">
+        android:layout_marginTop="10dp"
+        android:background="@drawable/border"
+        android:padding="@dimen/border_padding">
+
+        <ImageView
+            android:id="@+id/originalImage"
+            style="@style/WrapCenterParent"
+            android:alpha="0.6"
+            android:visibility="invisible" />
         <RelativeLayout
             android:id="@+id/gameLayout"
             style="@style/Wrap">
-            <ImageView
-                android:id="@+id/originalImage"
-                style="@style/WrapCenterParent"
-                android:alpha="0.6"
-                android:visibility="invisible"/>
+
         </RelativeLayout>
     </RelativeLayout>
 
@@ -48,38 +49,39 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/puzzlePieceRecycler"
-        android:layout_gravity="bottom"
         android:layout_width="match_parent"
         android:layout_height="70dp"
+        android:layout_gravity="bottom"
         android:background="@android:color/holo_orange_light"
         android:orientation="horizontal"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"/>
 
     <ImageButton
-        style="@style/Wrap"
-        android:layout_gravity="top|right"
         android:id="@+id/openSettingsBtn"
+        style="@style/Wrap"
+        android:layout_gravity="top|end"
         android:onClick="openSettings"
         android:src="@drawable/ic_settings_black_24dp"/>
 
     <!-- Right side buttons - related to settings -->
     <RelativeLayout
         style="@style/Wrap"
-        android:layout_gravity="right|center">
+        android:layout_gravity="end|center">
         <ImageButton
-            style="@style/Wrap"
             android:id="@+id/goMenuBtn"
-            android:src="@drawable/ic_menu_black_24dp"
-            android:onClick="goNavigationActivity"/>
-        <ImageButton
             style="@style/Wrap"
+            android:onClick="goNavigationActivity"
+            android:src="@drawable/ic_menu_black_24dp" />
+
+        <ImageButton
             android:id="@+id/resetGameBtn"
+            style="@style/Wrap"
             android:layout_below="@id/goMenuBtn"
             android:onClick="resetGame"
             android:src="@drawable/ic_refresh_black_24dp"/>
         <ImageButton
-            style="@style/Wrap"
             android:id="@+id/changeBackgroundBtn"
+            style="@style/Wrap"
             android:layout_below="@id/resetGameBtn"
             android:onClick="changeBackGround"
             android:src="@drawable/ic_panorama_black_24dp"/>
@@ -88,22 +90,22 @@
     <!-- Left side buttons - related to the game -->
     <RelativeLayout
         style="@style/Wrap"
-        android:layout_gravity="left|center">
+        android:layout_gravity="start|center">
         <ImageButton
-            style="@style/Wrap"
             android:id="@+id/showSidePiecesBtn"
-            android:tag="false"
-            android:onClick="showSidePieces"
-            android:src="@drawable/ic_grid_off_black_24dp"/>
-        <ImageButton
             style="@style/Wrap"
+            android:onClick="showSidePieces"
+            android:src="@drawable/ic_grid_off_black_24dp"
+            android:tag="false" />
+        <ImageButton
             android:id="@+id/showSolutionBtn"
+            style="@style/Wrap"
             android:layout_below="@id/showSidePiecesBtn"
             android:onClick="showSolution"
             android:src="@drawable/ic_view_module_black_24dp"/>
         <ImageButton
-            style="@style/Wrap"
             android:id="@+id/showCondensedImageBtn"
+            style="@style/Wrap"
             android:layout_below="@id/showSolutionBtn"
             android:onClick="showCondensedImage"
             android:src="@drawable/ic_remove_red_eye_black_24dp"/>
@@ -112,20 +114,20 @@
     <!-- Condensed image -->
     <FrameLayout
         android:id="@+id/condensedImageWrapper"
+        style="@style/Wrap"
         android:layout_gravity="center"
-        android:visibility="invisible"
-        android:padding="@dimen/border_padding"
         android:background="@drawable/border"
-        style="@style/Wrap">
+        android:padding="@dimen/border_padding"
+        android:visibility="invisible">
         <ImageView
             android:id="@+id/condensedImage"
             style="@style/Wrap" />
         <android.support.design.widget.FloatingActionButton
             style="@style/Wrap"
-            android:layout_gravity="top|right"
-            app:backgroundTint="@android:color/holo_red_light"
-            app:fabSize="mini"
+            android:layout_gravity="top|end"
+            android:onClick="hideCondensedImage"
             android:src="@android:drawable/ic_menu_close_clear_cancel"
-            android:onClick="hideCondensedImage" />
+            app:backgroundTint="@android:color/holo_red_light"
+            app:fabSize="mini" />
     </FrameLayout>
 </FrameLayout >

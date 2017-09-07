@@ -23,10 +23,6 @@ public class Utility {
     public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 2;
     public static final String IMAGE_FILENAME = "puzzle.png";
     public static final int DEFAULT_BACKGROUND = R.drawable.bg_1;
-    public static final int MAX_VOLUME = 8;
-    public static final int IMAGE_DIMENSIONS = 500;
-    public static final int TABLE_CUSTOM = 0;
-    public static final int TABLE_COMPLETED = 1;
     public static final int DISPLAY_WIDTH_OFFSET = 200;
     public static final int DISPLAY_HEIGHT_OFFSET = 250;
     public static int[] backgroundIds = new int[]{
@@ -55,6 +51,10 @@ public class Utility {
             R.drawable.bg_23,
     };
 
+    private Utility() {
+        throw new UnsupportedOperationException("Instantiating a utility class");
+    }
+
     public static void startImmersiveMode(Context context){
         ((Activity)context).getWindow().getDecorView().setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -71,10 +71,6 @@ public class Utility {
         editor.putInt(key,value);
         editor.commit();
     }
-
-    private Utility(){
-        throw new UnsupportedOperationException("Instantiating a utility class");
-    };
 
     // convert from bitmap to byte array
     public static byte[] getBytes(Bitmap bitmap) {

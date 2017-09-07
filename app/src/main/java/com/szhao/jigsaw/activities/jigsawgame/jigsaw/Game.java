@@ -12,7 +12,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.support.constraint.solver.widgets.Rectangle;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 
 import com.szhao.jigsaw.activities.jigsawgame.JigsawGameActivity;
 import com.szhao.jigsaw.activities.jigsawgame.adapter.PuzzlePieceRecyclerViewAdapter;
@@ -24,16 +23,16 @@ import java.util.ArrayList;
  */
 
 public class Game {
-    public final static int SEGMENT_RATIO = 3;
-    public final static int INDENT_RATIO = 4;
+    private final static int SEGMENT_RATIO = 3;
+    private final static int INDENT_RATIO = 4;
 
     private JigsawGameActivity jigsawGameActivity;
     private int rows, columns;
     private Bitmap original;
     private JigsawConfig[][] puzzleConfig;
-    int pieceLengthX, pieceLengthY, indentSizeX, indentSizeY;
-    GameBoard gameBoard;
-    PuzzlePieceRecyclerViewAdapter puzzlePieceRecyclerViewAdapter;
+    private int pieceLengthX, pieceLengthY, indentSizeX, indentSizeY;
+    private GameBoard gameBoard;
+    private PuzzlePieceRecyclerViewAdapter puzzlePieceRecyclerViewAdapter;
 
     public Game(JigsawGameActivity jigsawGameActivity, int rows, int columns){
         this.jigsawGameActivity = jigsawGameActivity;
@@ -65,7 +64,7 @@ public class Game {
                 //Cuts out the puzzle piece from original image
                 Bitmap puzzlePiece = Bitmap.createBitmap(puzzlePieceFromOriginal, dimension.x, dimension.y, dimension.width, dimension.height);
 
-                boolean isSidePiece = (i == 0 || i == rows - 1 || j == 0 || j == columns -1) ? true : false;
+                boolean isSidePiece = (i == 0 || i == rows - 1 || j == 0 || j == columns - 1);
                 Point solutionCoords = new Point(dimension.x - indentSizeX,dimension.y - indentSizeY);
                 puzzlePieceArrayList.add(new PuzzlePiece(puzzlePiece, solutionCoords, isSidePiece));
                 anchorPoints[i][j]= solutionCoords;
@@ -191,7 +190,7 @@ public class Game {
         canvas.drawBitmap(original, rect, rect, paint);
 
         Paint puzzleOutline = new Paint();
-        puzzleOutline.setStrokeWidth(3);
+        puzzleOutline.setStrokeWidth(2);
         puzzleOutline.setColor(Color.BLACK);
         puzzleOutline.setStyle(Paint.Style.STROKE);
         puzzleOutline.setAntiAlias(true);
@@ -201,8 +200,11 @@ public class Game {
     }
 
     private Rectangle getPuzzlePieceDimension(int i, int j){
-        int width = pieceLengthX + 2 * indentSizeX;
-        int x = i * pieceLengthX;
+        int offset = 5;
+        //Increase width so nothing gets cut off
+        int width = pieceLengthX + 2 * indentSizeX + offset;
+        int x = i * pieceLengthX - offset;
+        x = x < 0 ? 0 : x;
 
         int height = pieceLengthY + 2 *indentSizeY;
         int y = j * pieceLengthY;
@@ -217,7 +219,6 @@ public class Game {
     }
 
     public void loadSavedPositions(String positions){
-        Log.d("loadsave,", positions);
         String[] savedPosition = positions.split(",");
         Point[] currentPositionPoints = new Point[savedPosition.length];
         Point[] correctPositionPoints = new Point[savedPosition.length];

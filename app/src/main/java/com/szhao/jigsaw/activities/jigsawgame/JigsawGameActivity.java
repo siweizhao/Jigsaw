@@ -1,12 +1,9 @@
 package com.szhao.jigsaw.activities.jigsawgame;
 
-import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.Loader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -19,7 +16,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Display;
 import android.view.DragEvent;
 import android.view.View;
@@ -29,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.GravityEnum;
@@ -40,7 +37,6 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.szhao.jigsaw.Old.PuzzleSelector;
 import com.szhao.jigsaw.R;
 import com.szhao.jigsaw.activities.dashboard.DashboardActivity;
 import com.szhao.jigsaw.activities.jigsawgame.adapter.BackgroundViewAdapter;
@@ -49,7 +45,7 @@ import com.szhao.jigsaw.activities.jigsawgame.jigsaw.Game;
 import com.szhao.jigsaw.activities.jigsawgame.jigsaw.PuzzlePiece;
 import com.szhao.jigsaw.db.PuzzleContentProvider;
 import com.szhao.jigsaw.global.GameSettings;
-import com.szhao.jigsaw.global.GlobalGameData;
+import com.szhao.jigsaw.global.PointSystem;
 import com.szhao.jigsaw.global.Utility;
 
 import java.io.File;
@@ -65,17 +61,17 @@ public class JigsawGameActivity extends AppCompatActivity{
     private CountDownTimer timer;
     private Game game;
     private ImageView originalImage;
-    ImageButton showSidePiecesBtn;
+    private ImageButton showSidePiecesBtn;
     private int difficulty;
-    RecyclerView puzzlePieceRecycler;
-    GameSettings gameSettings;
-    String filePath;
-    String positions;
+    private RecyclerView puzzlePieceRecycler;
+    private GameSettings gameSettings;
+    private String filePath;
+    private String positions;
+    private boolean isPuzzleComplete;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        GlobalGameData.getInstance().setContext(this);
         setContentView(R.layout.activity_jigsaw_game);
         masterLayout = (FrameLayout)findViewById(R.id.masterLayout);
         gameLayout = (RelativeLayout) findViewById(R.id.gameLayout);
@@ -104,12 +100,10 @@ public class JigsawGameActivity extends AppCompatActivity{
         filePath = intent.getExtras().getString("filePath");
         positions = intent.getExtras().getString("positions");
         totalTimeSec = intent.getExtras().getInt("currTime");
-
         gameSettings = new GameSettings(this);
 
         loadSharedPreferences();
         startTimer();
-        gameSettings.startBGM();
         initGame(this);
     }
 
@@ -198,6 +192,11 @@ public class JigsawGameActivity extends AppCompatActivity{
     }
 
     public void puzzleComplete(){
+        isPuzzleComplete = true;
+        originalImage.setAlpha(1.0f);
+        originalImage.setVisibility(View.VISIBLE);
+        PointSystem.getInstance().addPoints(this, difficulty * 10);
+        Toast.makeText(this, "Puzzle Completed, " + difficulty * 10 + " points have been added", Toast.LENGTH_LONG).show();
         stopTimer();
         ContentValues contentValues = new ContentValues();
         contentValues.put("DIFFICULTY", difficulty);
@@ -206,8 +205,11 @@ public class JigsawGameActivity extends AppCompatActivity{
 
         String whereClause = "PUZZLE = ? AND DIFFICULTY = ?";
         String[] args = new String[]{filePath, String.valueOf(difficulty)};
+        //Remove puzzle from Started
+        getContentResolver().delete(PuzzleContentProvider.CONTENT_URI_STARTED, whereClause, args);
+
         Cursor cursor = getContentResolver().query(PuzzleContentProvider.CONTENT_URI_COMPLETED, null, whereClause, args, null);
-        if (cursor.moveToNext()){
+        if (cursor != null && cursor.moveToNext()) {
             int lastSolveTime = cursor.getInt(cursor.getColumnIndex("SOLVETIME"));
             //Faster solve time so update db
             if (lastSolveTime > totalTimeSec){
@@ -216,6 +218,7 @@ public class JigsawGameActivity extends AppCompatActivity{
         } else {
             getContentResolver().insert(PuzzleContentProvider.CONTENT_URI_COMPLETED, contentValues);
         }
+        cursor.close();
     }
 
     public Bitmap getPuzzleImage(){
@@ -225,8 +228,8 @@ public class JigsawGameActivity extends AppCompatActivity{
     @Override
     public void onResume(){
         super.onResume();
-        GlobalGameData.getInstance().setContext(this);
-        Utility.startImmersiveMode(JigsawGameActivity.this);
+        gameSettings.startBGM();
+        Utility.startImmersiveMode(this);
     }
 
     public void showSidePieces(View view) {
@@ -309,8 +312,7 @@ public class JigsawGameActivity extends AppCompatActivity{
     private int getSavedBackgroundImage(){
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         int defaultBackground = Utility.DEFAULT_BACKGROUND;
-        int savedBackground = sharedPref.getInt(getString(R.string.background), defaultBackground);
-        return savedBackground;
+        return sharedPref.getInt(getString(R.string.background), defaultBackground);
     }
 
     private void loadBackgroundImage(int bgId){
@@ -358,13 +360,17 @@ public class JigsawGameActivity extends AppCompatActivity{
 
     public void saveCurrentProgress(){
         ArrayList<PuzzlePiece> allPieces = game.getPlacedPieces();
+        //If no pieces placed, dont save
+        if (allPieces.size() == 0 || isPuzzleComplete)
+            return;
         StringBuilder puzzlepiecePositions = new StringBuilder();
         for (PuzzlePiece p : allPieces){
             puzzlepiecePositions.append(p.getCurrentPos().x + "." + p.getCurrentPos().y
                     + ":" + p.getCorrectPos().x + "." + p.getCorrectPos().y + ",");
         }
         //Get rid of last comma
-        puzzlepiecePositions.deleteCharAt(puzzlepiecePositions.length() - 1);
+        if (puzzlepiecePositions.length() > 0)
+            puzzlepiecePositions.deleteCharAt(puzzlepiecePositions.length() - 1);
 
         ContentValues contentValues = new ContentValues();
         contentValues.put("DIFFICULTY", difficulty);
@@ -375,10 +381,17 @@ public class JigsawGameActivity extends AppCompatActivity{
         String whereClause = "PUZZLE = ? AND DIFFICULTY = ?";
         String[] args = new String[]{filePath, String.valueOf(difficulty)};
         Cursor cursor = getContentResolver().query(PuzzleContentProvider.CONTENT_URI_STARTED, null, whereClause, args, null);
-        if (cursor.moveToNext()){
+        if (cursor.moveToNext()) {
             getContentResolver().update(PuzzleContentProvider.CONTENT_URI_STARTED, contentValues, whereClause, args);
         } else {
             getContentResolver().insert(PuzzleContentProvider.CONTENT_URI_STARTED, contentValues);
         }
+        cursor.close();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        gameSettings.stopBGM();
     }
 }

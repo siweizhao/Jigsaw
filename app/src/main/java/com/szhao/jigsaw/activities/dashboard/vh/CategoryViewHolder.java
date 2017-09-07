@@ -1,7 +1,6 @@
 package com.szhao.jigsaw.activities.dashboard.vh;
 
 import android.content.Context;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -36,6 +35,13 @@ public class CategoryViewHolder extends RecyclerView.ViewHolder {
                 .override(380,240)
                 .centerCrop()
                 .into(categoryImage);
+    }
+
+    public void increaseCount() {
+        int curr = Integer.valueOf((categoryCount.getText().toString()).split("/")[0]);
+        int total = Integer.valueOf((categoryCount.getText().toString()).split("/")[1]);
+        curr++;
+        setCount(curr, total);
     }
 
     public void setCount(int curr, int total){

@@ -22,8 +22,6 @@ import com.szhao.jigsaw.R;
 import com.szhao.jigsaw.activities.jigsawgame.JigsawGameActivity;
 import com.szhao.jigsaw.db.PuzzleContentProvider;
 
-import org.w3c.dom.Text;
-
 import java.io.File;
 
 /**
@@ -32,15 +30,14 @@ import java.io.File;
  * create an instance of this fragment.
  */
 public class DifficultyFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+    public static final int DIFFICULTY_MIN_VALUE = 2;
+    public static final int TABLE_COMPLETED = 1;
+    public static final int TABLE_STARTED = 2;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "item";
     private static final String ARG_PARAM2 = "difficulty";
     private static final String ARG_PARAM3 = "positions";
-
-    // TODO: Rename and change types of parameters
-    private String item;
-    private int difficulty;
     View masterLayout;
     LoaderManager loaderManager;
     ImageView puzzleImage;
@@ -48,17 +45,16 @@ public class DifficultyFragment extends Fragment implements LoaderManager.Loader
     int[] bestSolveTimes;
     String[] startedPuzzlesPositions;
     int[] currentTime;
-    public static final int DIFFICULTY_MIN_VALUE = 2;
-
-    public static final int TABLE_COMPLETED = 1;
-    public static final int TABLE_STARTED = 2;
+    // TODO: Rename and change types of parameters
+    private String item;
+    private int difficulty;
     private int loadFinished;
 
     public DifficultyFragment() {
         // Required empty public constructor
     }
 
-    public static DifficultyFragment newInstance(String filePath, int difficulty, String positions) {
+    public static DifficultyFragment newInstance(String filePath, int difficulty) {
         DifficultyFragment fragment = new DifficultyFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, filePath);
@@ -125,9 +121,9 @@ public class DifficultyFragment extends Fragment implements LoaderManager.Loader
                 setBestTime(seekBar.getProgress());
                 Button startGameBtn = (Button)masterLayout.findViewById(R.id.difficultyFragmentStartGameBtn);
                 if (startedPuzzlesPositions[seekBar.getProgress() + DIFFICULTY_MIN_VALUE] == null){
-                    startGameBtn.setText("Start Game");
+                    startGameBtn.setText(getContext().getString(R.string.start_game));
                 } else {
-                    startGameBtn.setText("Continue");
+                    startGameBtn.setText(getContext().getString(R.string.continue_game));
                 }
             }
 

@@ -5,5 +5,5 @@ package com.szhao.jigsaw.activities.dashboard.adapter;
  */
 
 public interface ItemSelectListener {
-    void onClick(String item, int progress, String positions);
+    void onClick(String item, int difficulty);
 }

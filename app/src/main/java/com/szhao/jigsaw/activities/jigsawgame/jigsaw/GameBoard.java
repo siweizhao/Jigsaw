@@ -13,7 +13,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.szhao.jigsaw.activities.jigsawgame.JigsawGameActivity;
 import com.szhao.jigsaw.global.GameSettings;
@@ -26,11 +25,12 @@ import java.util.ArrayList;
  */
 
 public class GameBoard {
-    View layout;
-    int rows, columns;
-    Point[][] anchorPoints;
-    ArrayList<PuzzlePiece> placedPuzzlePieces;
-    JigsawGameActivity jigsawGameActivity;
+    private View layout;
+    private int rows, columns;
+    private Point[][] anchorPoints;
+    private ArrayList<PuzzlePiece> placedPuzzlePieces;
+    private JigsawGameActivity jigsawGameActivity;
+
     public GameBoard(JigsawGameActivity jigsawGameActivity, View layout, int rows, int columns, Point[][] anchorPoints){
         this.jigsawGameActivity = jigsawGameActivity;
         this.layout = layout;
@@ -77,7 +77,7 @@ public class GameBoard {
                     Bitmap puzzleImage = ((BitmapDrawable)puzzlePiece.getDrawable()).getBitmap();
                     PuzzlePiece selectedPiece = findPuzzlePiece(puzzleImage);
                     GlobalGameData.getInstance().setSelectedPuzzlePiece(selectedPiece);
-                    PuzzlePieceDragShadowBuilder dragShadowBuilder = new PuzzlePieceDragShadowBuilder(GlobalGameData.getInstance().getContext(), puzzleImage);
+                    PuzzlePieceDragShadowBuilder dragShadowBuilder = new PuzzlePieceDragShadowBuilder(jigsawGameActivity, puzzleImage);
                     v.startDrag(null,dragShadowBuilder,null,0);
                     placedPuzzlePieces.remove(selectedPiece);
                     ((RelativeLayout)layout).removeView((View)v.getParent());
@@ -87,7 +87,7 @@ public class GameBoard {
         });
     }
 
-    public PuzzlePiece findPuzzlePiece(Bitmap image){
+    private PuzzlePiece findPuzzlePiece(Bitmap image) {
         int index = -1;
         for (int i = 0; i < placedPuzzlePieces.size(); i++){
             if (placedPuzzlePieces.get(i).getImage().sameAs(image)) {
@@ -105,11 +105,12 @@ public class GameBoard {
         ImageView puzzlePiece = setPuzzlePiece(selectedPiece, anchor);
         Point currentPoint = new Point(Math.round(event.getX()),Math.round(event.getY()));
         animateDragToStart(puzzlePiece,currentPoint, anchor);
-        GameSettings.playClick(GlobalGameData.getInstance().getContext());
+        GameSettings.playClick(jigsawGameActivity);
         selectedPiece.setCurrentPos(anchor);
         if (isPuzzleComplete()){
+            placedPuzzlePieces.clear();
+            ((RelativeLayout) layout).removeAllViews();
             jigsawGameActivity.puzzleComplete();
-            Toast.makeText(GlobalGameData.getInstance().getContext(), "Puzzle Complete", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -168,11 +169,11 @@ public class GameBoard {
         params.leftMargin = currentPos.x;
         params.topMargin = currentPos.y;
 
-        ImageView puzzlePiece = new ImageView(GlobalGameData.getInstance().getContext());
+        ImageView puzzlePiece = new ImageView(jigsawGameActivity);
         puzzlePiece.setImageBitmap(p.getImage());
         puzzlePiece.setLayoutParams(params);
         initTouchListener(puzzlePiece);
-        LinearLayout wrapper = new LinearLayout(GlobalGameData.getInstance().getContext());
+        LinearLayout wrapper = new LinearLayout(jigsawGameActivity);
         wrapper.addView(puzzlePiece);
         ((RelativeLayout)layout).addView(wrapper);
         return puzzlePiece;

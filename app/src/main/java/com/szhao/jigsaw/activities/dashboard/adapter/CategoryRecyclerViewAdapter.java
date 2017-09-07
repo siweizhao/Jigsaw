@@ -1,7 +1,6 @@
 package com.szhao.jigsaw.activities.dashboard.adapter;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,8 +9,9 @@ import android.view.ViewGroup;
 
 import com.szhao.jigsaw.R;
 import com.szhao.jigsaw.activities.dashboard.vh.CategoryViewHolder;
-import com.szhao.jigsaw.db.PuzzleContentProvider;
+import com.szhao.jigsaw.global.PointSystem;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -23,8 +23,9 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     private Context context;
     private ArrayList<String> categories;
     private ItemSelectListener listener;
-    String startedPuzzle;
-    int numStartedPuzzles;
+    private String startedPuzzle;
+    private int numStartedPuzzles;
+    private int numCategories;
 
     public CategoryRecyclerViewAdapter(Context context, String startedPuzzle, int numStartedPuzzles){
         this.context = context;
@@ -36,6 +37,7 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         }
         categories.add("Animals");
         categories.add("Landscapes");
+        numCategories = categories.size();
     }
 
     @Override
@@ -46,29 +48,51 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             @Override
             public void onClick(View v) {
                 if (listener != null){
-                    listener.onClick(categories.get(vh.getAdapterPosition()),2,"");
+                    listener.onClick(categories.get(vh.getAdapterPosition()), 2);
                 }
             }
         });
         return vh;
     }
 
+    public void setDLPuzzle() {
+        File dir = context.getDir("DL", Context.MODE_PRIVATE);
+        File[] dlCategories = dir.listFiles();
+        for (File category : dlCategories)
+            categories.add(category.getName());
+        notifyDataSetChanged();
+    }
+
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         CategoryViewHolder vh = (CategoryViewHolder)holder;
+        //Load started puzzles
         if (categories.contains("Started") && position == 0){
             vh.setCount(numStartedPuzzles, numStartedPuzzles);
             vh.setDescription("Started");
             vh.setImage(startedPuzzle);
         } else {
-            vh.setDescription(categories.get(position));
-            try {
-                int numPuzzles = context.getAssets().list(categories.get(position)).length;
-                vh.setCount(numPuzzles, numPuzzles);
-                String filepath = "android_asset/" + categories.get(position) + "/" + context.getAssets().list(categories.get(position))[0];
-                vh.setImage(filepath);
-            } catch (IOException e) {
-                Log.d("CategoryVH", "Error accessing assets folder " + e.getStackTrace());
+            String title = categories.get(position);
+            vh.setDescription(title);
+            if (position < numCategories) {
+                //Load initial puzzles
+                try {
+                    int numPuzzles = context.getAssets().list(categories.get(position)).length;
+                    vh.setCount(numPuzzles, numPuzzles);
+                    String filepath = "android_asset/" + categories.get(position) + "/" + context.getAssets().list(categories.get(position))[0];
+                    vh.setImage(filepath);
+                } catch (IOException e) {
+                    Log.d("CategoryVH", "Error accessing assets folder " + e.getMessage());
+                }
+            } else {
+                //Load downloaded puzzles
+                File dir = new File(context.getDir("DL", Context.MODE_PRIVATE), title);
+                int numPuzzles = dir.listFiles().length;
+                int numAvailablePuzzles = PointSystem.getInstance().getNumAvailablePuzzlesByCategory(title);
+                vh.setCount(numAvailablePuzzles, numPuzzles);
+                String filePath = dir.listFiles()[numPuzzles - 1].getAbsolutePath();
+                vh.setImage(filePath);
+                PointSystem.getInstance().setCategoryViewHolder(vh);
             }
         }
     }

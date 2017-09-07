@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -18,21 +19,9 @@
             android:screenOrientation="landscape"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".Old.TitleScreen"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        </activity>
-        <activity
-            android:name=".Old.CompletedPuzzles"
-            android:label="@string/title_activity_completed_puzzle" />
-        <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:screenOrientation="landscape"
             android:theme="@style/Theme.AppCompat.Light" />
-        <activity
-            android:name=".Old.PuzzleSelector"
-            android:label="@string/title_activity_puzzle_selector"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-
         <provider
             android:name=".db.PuzzleContentProvider"
             android:authorities="${applicationId}"
@@ -41,8 +30,8 @@
 
         <activity
             android:name=".activities.dashboard.DashboardActivity"
-            android:label="@string/title_activity_dashboard"
             android:configChanges="orientation|screenSize"
+            android:label="@string/title_activity_dashboard"
             android:screenOrientation="landscape"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
