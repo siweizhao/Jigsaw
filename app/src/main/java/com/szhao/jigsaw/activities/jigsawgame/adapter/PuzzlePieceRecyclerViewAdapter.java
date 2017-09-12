@@ -4,19 +4,16 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.szhao.jigsaw.R;
-import com.szhao.jigsaw.global.GlobalGameData;
 import com.szhao.jigsaw.activities.jigsawgame.jigsaw.PuzzlePiece;
 import com.szhao.jigsaw.activities.jigsawgame.jigsaw.PuzzlePieceDragShadowBuilder;
 import com.szhao.jigsaw.activities.jigsawgame.vh.ImageViewHolder;
+import com.szhao.jigsaw.global.GlobalGameData;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -25,12 +22,11 @@ import java.util.Collections;
  */
 
 public class PuzzlePieceRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
-    private Context mContext;
     ArrayList<PuzzlePiece> puzzlePieces;
     ArrayList<PuzzlePiece> sidePieces;
     ArrayList<PuzzlePiece> allPuzzlePieces;
-
     boolean isShowingSidePieces = false;
+    private Context mContext;
 
     public  PuzzlePieceRecyclerViewAdapter(Context context, ArrayList<PuzzlePiece> puzzlePieces){
         mContext = context;
@@ -52,17 +48,15 @@ public class PuzzlePieceRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(mContext).inflate(R.layout.cv_image_only, parent, false);
         final ImageViewHolder vh = new ImageViewHolder(mContext,v);
-        v.setOnTouchListener(new View.OnTouchListener() {
+        v.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN){
-                    int position = vh.getAdapterPosition();
-                    GlobalGameData.getInstance().setSelectedPuzzlePiece(puzzlePieces.get(position));
-                    Bitmap puzzleImage = GlobalGameData.getInstance().getSelectedPuzzlePiece().getImage();
-                    PuzzlePieceDragShadowBuilder dragShadowBuilder = new PuzzlePieceDragShadowBuilder(mContext, puzzleImage);
-                    v.startDrag(null,dragShadowBuilder,null,0);
-                    removeItem(position);
-                }
+            public boolean onLongClick(View v) {
+                int position = vh.getAdapterPosition();
+                GlobalGameData.getInstance().setSelectedPuzzlePiece(puzzlePieces.get(position));
+                Bitmap puzzleImage = GlobalGameData.getInstance().getSelectedPuzzlePiece().getImage();
+                PuzzlePieceDragShadowBuilder dragShadowBuilder = new PuzzlePieceDragShadowBuilder(mContext, puzzleImage);
+                v.startDrag(null, dragShadowBuilder, null, 0);
+                removeItem(position);
                 return true;
             }
         });
@@ -98,7 +92,11 @@ public class PuzzlePieceRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
             allPuzzlePieces.add(position, insertedPiece);
         } else {
             if (insertedPiece.isSidePiece()) {
-                sidePieces.add(position, insertedPiece);
+                if (position > sidePieces.size()) {
+                    sidePieces.add(sidePieces.size() - 1, insertedPiece);
+                } else {
+                    sidePieces.add(position, insertedPiece);
+                }
             }
             puzzlePieces.add(position, insertedPiece);
             notifyItemInserted(position);

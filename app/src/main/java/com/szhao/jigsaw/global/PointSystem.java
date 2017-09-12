@@ -79,7 +79,7 @@ public class PointSystem {
 
     public void loadPoints(Context context) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-        int defaultPoints = 1000;
+        int defaultPoints = 500;
         points = sharedPref.getInt(SHARED_PREF_POINTS, defaultPoints);
         listener.pointChanged(this.points);
     }

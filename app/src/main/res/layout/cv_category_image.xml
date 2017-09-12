@@ -5,32 +5,38 @@
     style="@style/Wrap"
     android:layout_margin="5dp"
     card_view:cardBackgroundColor="@android:color/transparent"
-    card_view:cardCornerRadius="0dp"
-    card_view:cardElevation="0dp">
+    card_view:cardElevation="5dp">
 
     <RelativeLayout
         style="@style/Wrap">
-        <FrameLayout
-            style="@style/Wrap"
-            android:layout_centerHorizontal="true"
-            android:id="@+id/category_image_wrapper">
-            <ImageView
-                style="@style/Wrap"
-                android:id="@+id/category_image"
-                android:adjustViewBounds="true"
-                android:scaleType="centerInside"/>
-            <TextView
-                style="@style/Wrap"
-                android:id="@+id/category_image_count"
-                android:textColor="@android:color/holo_red_light"
-                android:layout_gravity="center|bottom"/>
-        </FrameLayout>
-        <TextView
-            style="@style/Wrap"
-            android:id="@+id/category_description"
-            android:layout_below="@id/category_image_wrapper"
-            android:layout_centerHorizontal="true"
-            android:gravity="center"/>
-    </RelativeLayout>
 
+        <ImageView
+            android:id="@+id/category_image"
+            style="@style/Wrap"
+            android:adjustViewBounds="true"
+            android:background="@drawable/border_white3dp"
+            android:padding="@dimen/border_padding"
+            android:scaleType="centerInside" />
+
+        <RelativeLayout
+            style="@style/Wrap"
+            android:layout_below="@id/category_image"
+            android:layout_centerHorizontal="true">
+            <TextView
+                android:id="@+id/category_description"
+                style="@style/Wrap"
+                android:fontFamily="sans-serif-condensed"
+                android:textColor="@android:color/white"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/category_image_count"
+                style="@style/Wrap"
+                android:layout_marginStart="10dp"
+                android:layout_toRightOf="@id/category_description"
+                android:fontFamily="sans-serif-condensed"
+                android:textColor="@android:color/white"
+                android:textStyle="bold" />
+        </RelativeLayout>
+    </RelativeLayout>
 </android.support.v7.widget.CardView>

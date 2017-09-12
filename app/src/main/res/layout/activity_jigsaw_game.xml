@@ -15,8 +15,8 @@
     <RelativeLayout
         style="@style/Wrap"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/border"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/border_black"
         android:padding="@dimen/border_padding">
 
         <ImageView
@@ -31,52 +31,52 @@
         </RelativeLayout>
     </RelativeLayout>
 
-
     <RelativeLayout
-        style="@style/Wrap">
-        <ImageView
-            android:id="@+id/timerImage"
+        style="@style/Wrap"
+        android:layout_gravity="top|start">
+
+        <ImageButton
+            android:id="@+id/goMenuBtn"
             style="@style/Wrap"
-            android:src="@drawable/ic_timer_black_24dp"/>
-        <TextView
-            android:id="@+id/timerDisplay"
-            style="@style/Wrap"
-            android:layout_below="@id/timerImage"
-            android:fontFamily="sans-serif-black"
-            android:textSize="18sp" />
+            android:onClick="goNavigationActivity"
+            android:src="@drawable/ic_arrow_back_black_24dp" />
     </RelativeLayout>
 
-
+    <!-- Holds unused jigsaw pieces -->
     <android.support.v7.widget.RecyclerView
         android:id="@+id/puzzlePieceRecycler"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="0dp"
         android:layout_gravity="bottom"
-        android:background="@android:color/holo_orange_light"
+        android:background="@drawable/bg_metal"
         android:orientation="horizontal"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"/>
+
+    <ImageButton
+        android:id="@+id/finishBtn"
+        style="@style/Wrap"
+        android:layout_gravity="bottom|center"
+        android:layout_margin="20dp"
+        android:onClick="showFinishDialog"
+        android:src="@drawable/ic_done_black_24dp"
+        android:visibility="gone" />
 
     <ImageButton
         android:id="@+id/openSettingsBtn"
         style="@style/Wrap"
         android:layout_gravity="top|end"
         android:onClick="openSettings"
-        android:src="@drawable/ic_settings_black_24dp"/>
+        android:src="@drawable/ic_music_double24dp" />
 
     <!-- Right side buttons - related to settings -->
     <RelativeLayout
+        android:id="@+id/rightSideBtnWrapper"
         style="@style/Wrap"
         android:layout_gravity="end|center">
-        <ImageButton
-            android:id="@+id/goMenuBtn"
-            style="@style/Wrap"
-            android:onClick="goNavigationActivity"
-            android:src="@drawable/ic_menu_black_24dp" />
 
         <ImageButton
             android:id="@+id/resetGameBtn"
             style="@style/Wrap"
-            android:layout_below="@id/goMenuBtn"
             android:onClick="resetGame"
             android:src="@drawable/ic_refresh_black_24dp"/>
         <ImageButton
@@ -89,13 +89,14 @@
 
     <!-- Left side buttons - related to the game -->
     <RelativeLayout
+        android:id="@+id/leftSideBtnWrapper"
         style="@style/Wrap"
         android:layout_gravity="start|center">
         <ImageButton
             android:id="@+id/showSidePiecesBtn"
             style="@style/Wrap"
             android:onClick="showSidePieces"
-            android:src="@drawable/ic_grid_off_black_24dp"
+            android:src="@drawable/ic_jigsaw24dp"
             android:tag="false" />
         <ImageButton
             android:id="@+id/showSolutionBtn"
@@ -116,7 +117,7 @@
         android:id="@+id/condensedImageWrapper"
         style="@style/Wrap"
         android:layout_gravity="center"
-        android:background="@drawable/border"
+        android:background="@drawable/border_black"
         android:padding="@dimen/border_padding"
         android:visibility="invisible">
         <ImageView

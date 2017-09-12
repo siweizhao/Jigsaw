@@ -14,12 +14,25 @@ import com.szhao.jigsaw.global.PointSystem;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Created by Owner on 8/6/2017.
  */
 
 public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+
+    //Puzzles that come with the game
+    private static final String[] PUZZLE_CATEGORIES = {
+            "Beach",
+            "Birds",
+            "Farm",
+            "Forest",
+            "Mountains",
+            "Pets",
+            "Skylines",
+            "Sunsets"
+    };
     private Context context;
     private ArrayList<String> categories;
     private ItemSelectListener listener;
@@ -35,8 +48,7 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             this.startedPuzzle = startedPuzzle;
             this.numStartedPuzzles = numStartedPuzzles;
         }
-        categories.add("Animals");
-        categories.add("Landscapes");
+        Collections.addAll(categories, PUZZLE_CATEGORIES);
         numCategories = categories.size();
     }
 
@@ -58,8 +70,9 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     public void setDLPuzzle() {
         File dir = context.getDir("DL", Context.MODE_PRIVATE);
         File[] dlCategories = dir.listFiles();
-        for (File category : dlCategories)
-            categories.add(category.getName());
+        if (dlCategories != null)
+            for (File category : dlCategories)
+                categories.add(category.getName());
         notifyDataSetChanged();
     }
 
@@ -87,12 +100,15 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             } else {
                 //Load downloaded puzzles
                 File dir = new File(context.getDir("DL", Context.MODE_PRIVATE), title);
-                int numPuzzles = dir.listFiles().length;
-                int numAvailablePuzzles = PointSystem.getInstance().getNumAvailablePuzzlesByCategory(title);
-                vh.setCount(numAvailablePuzzles, numPuzzles);
-                String filePath = dir.listFiles()[numPuzzles - 1].getAbsolutePath();
-                vh.setImage(filePath);
-                PointSystem.getInstance().setCategoryViewHolder(vh);
+                File[] dirFiles = dir.listFiles();
+                if (dirFiles != null) {
+                    int numPuzzles = dirFiles.length;
+                    int numAvailablePuzzles = PointSystem.getInstance().getNumAvailablePuzzlesByCategory(title);
+                    vh.setCount(numAvailablePuzzles, numPuzzles);
+                    String filePath = dirFiles[numPuzzles - 1].getAbsolutePath();
+                    vh.setImage(filePath);
+                    PointSystem.getInstance().setCategoryViewHolder(vh);
+                }
             }
         }
     }

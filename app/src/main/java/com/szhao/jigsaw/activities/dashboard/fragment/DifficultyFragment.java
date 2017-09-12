@@ -33,11 +33,9 @@ public class DifficultyFragment extends Fragment implements LoaderManager.Loader
     public static final int DIFFICULTY_MIN_VALUE = 2;
     public static final int TABLE_COMPLETED = 1;
     public static final int TABLE_STARTED = 2;
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
     private static final String ARG_PARAM1 = "item";
     private static final String ARG_PARAM2 = "difficulty";
-    private static final String ARG_PARAM3 = "positions";
     View masterLayout;
     LoaderManager loaderManager;
     ImageView puzzleImage;
@@ -45,7 +43,6 @@ public class DifficultyFragment extends Fragment implements LoaderManager.Loader
     int[] bestSolveTimes;
     String[] startedPuzzlesPositions;
     int[] currentTime;
-    // TODO: Rename and change types of parameters
     private String item;
     private int difficulty;
     private int loadFinished;
@@ -167,6 +164,8 @@ public class DifficultyFragment extends Fragment implements LoaderManager.Loader
             case TABLE_STARTED:
                 cursorLoader = new CursorLoader(getContext(),PuzzleContentProvider.CONTENT_URI_STARTED, null, whereClause, null, null);
                 break;
+            default:
+                break;
         }
         return cursorLoader;
     }
@@ -195,6 +194,8 @@ public class DifficultyFragment extends Fragment implements LoaderManager.Loader
                     currentTime[difficulty] = time;
                 }
                 loadFinished++;
+                break;
+            default:
                 break;
         }
         //Both tables finished loading

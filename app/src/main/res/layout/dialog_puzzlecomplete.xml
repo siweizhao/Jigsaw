@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/Wrap"
+    android:layout_gravity="center"
+    android:orientation="vertical">
+
+    <LinearLayout
+        style="@style/Wrap"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            style="@style/Wrap"
+            android:layout_margin="20dp"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/Wrap"
+                android:fontFamily="sans-serif-condensed"
+                android:text="Difficulty:"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                style="@style/Wrap"
+                android:fontFamily="sans-serif-condensed"
+                android:text="Time:"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                style="@style/Wrap"
+                android:fontFamily="sans-serif-condensed"
+                android:text="Reward:"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Values -->
+        <LinearLayout
+            style="@style/Wrap"
+            android:layout_margin="20dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/dialogPuzzleComplete_difficultyTxt"
+                style="@style/Wrap"
+                android:fontFamily="sans-serif-condensed"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/dialogPuzzleComplete_TimeTxt"
+                style="@style/Wrap"
+                android:fontFamily="sans-serif-condensed"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                style="@style/Wrap"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/dialogPuzzleComplete_RewardTxt"
+                    style="@style/Wrap"
+                    android:fontFamily="sans-serif-condensed"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    style="@style/Wrap"
+                    android:layout_marginLeft="5dp"
+                    android:src="@drawable/ic_coin24dp" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/dialogPuzzleComplete_finishBtn"
+        style="@style/Wrap"
+        android:layout_gravity="bottom|center"
+        android:fontFamily="sans-serif-condensed"
+        android:text="Finish"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+</LinearLayout>

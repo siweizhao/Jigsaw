@@ -15,7 +15,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.szhao.jigsaw.activities.jigsawgame.JigsawGameActivity;
-import com.szhao.jigsaw.global.GameSettings;
 import com.szhao.jigsaw.global.GlobalGameData;
 
 import java.util.ArrayList;
@@ -49,6 +48,8 @@ public class GameBoard {
                     case DragEvent.ACTION_DROP:
                         handleDropEvent(event);
                         break;
+                    default:
+                        break;
                 }
                 return true;
             }
@@ -62,6 +63,8 @@ public class GameBoard {
                 switch (event.getAction()) {
                     case DragEvent.ACTION_DROP:
                         handleDropEvent(event);
+                        break;
+                    default:
                         break;
                 }
                 return true;
@@ -105,7 +108,7 @@ public class GameBoard {
         ImageView puzzlePiece = setPuzzlePiece(selectedPiece, anchor);
         Point currentPoint = new Point(Math.round(event.getX()),Math.round(event.getY()));
         animateDragToStart(puzzlePiece,currentPoint, anchor);
-        GameSettings.playClick(jigsawGameActivity);
+        jigsawGameActivity.playClickSoundEff();
         selectedPiece.setCurrentPos(anchor);
         if (isPuzzleComplete()){
             placedPuzzlePieces.clear();

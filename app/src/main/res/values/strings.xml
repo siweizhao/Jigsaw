@@ -10,7 +10,7 @@
     <string name="music_volume">music_volume</string>
     <string name="sound_volume">sound_volume</string>
     <string name="start_game">Start Game</string>
-    <string name="continue_game">Continue Game</string>
+    <string name="continue_game">Continue</string>
 
     <string name="title_activity_puzzle_selector">Select Puzzle</string>
     <string name="title_activity_difficulty_selector">Difficulty</string>

@@ -1,47 +1,47 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/MatchParent"
-    tools:context="com.szhao.jigsaw.activities.dashboard.fragment.DifficultyFragment"
-    android:gravity="center"
+    android:background="@drawable/bg_lightblue"
     android:clickable="true"
-    android:background="@android:color/holo_blue_dark">
+    android:gravity="center"
+    tools:context="com.szhao.jigsaw.activities.dashboard.fragment.DifficultyFragment">
 
     <RelativeLayout
         style="@style/Wrap">
         <ImageView
-            style="@style/Wrap"
-            android:id="@+id/difficultyFragmentPuzzleImage"/>
+            android:id="@+id/difficultyFragmentPuzzleImage"
+            style="@style/Wrap" />
 
         <RelativeLayout
             style="@style/Wrap"
-            android:gravity="center"
+            android:layout_toRightOf="@id/difficultyFragmentPuzzleImage"
             android:background="@android:color/holo_orange_light"
-            android:layout_toRightOf="@id/difficultyFragmentPuzzleImage">
+            android:gravity="center">
             <TextView
-                style="@style/Wrap"
                 android:id="@+id/difficultyFragmentDifficultyTxt"
-                android:textSize="24sp"
-                android:text="Difficulty:2 x 2"
+                style="@style/Wrap"
                 android:layout_centerHorizontal="true"
-                android:textAlignment="center"/>
+                android:text="Difficulty:2 x 2"
+                android:textAlignment="center"
+                android:textSize="24sp" />
             <SeekBar
                 android:id="@+id/difficultyFragmentSeekBar"
-                android:layout_below="@id/difficultyFragmentDifficultyTxt"
                 android:layout_width="210dp"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/difficultyFragmentDifficultyTxt"
                 android:layout_margin="15dp"
                 android:max="8"/>
             <TextView
-                style="@style/Wrap"
                 android:id="@+id/difficultyFragmentBestTime"
-                android:textSize="24sp"
-                android:text="Best Time 0:00"
+                style="@style/Wrap"
+                android:layout_below="@id/difficultyFragmentSeekBar"
                 android:layout_centerHorizontal="true"
+                android:text="Best Time 0:00"
                 android:textAlignment="center"
-                android:layout_below="@id/difficultyFragmentSeekBar"/>
+                android:textSize="24sp" />
             <Button
-                style="@style/ButtonBasic"
                 android:id="@+id/difficultyFragmentStartGameBtn"
+                style="@style/ButtonBasic"
                 android:layout_below="@id/difficultyFragmentBestTime"
                 android:text="Start Game" />
         </RelativeLayout>

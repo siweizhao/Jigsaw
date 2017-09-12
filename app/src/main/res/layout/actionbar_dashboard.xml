@@ -2,32 +2,52 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@android:color/holo_red_light">
+    android:background="@drawable/bg_metal">
 
     <ImageButton
         android:id="@+id/dashboardBackBtn"
         style="@style/Wrap"
-        android:layout_gravity="start"
+        android:layout_gravity="start|center_vertical"
         android:onClick="goBack"
         android:src="@drawable/ic_arrow_back_black_24dp"/>
 
-    <ImageButton
-        style="@style/Wrap"
-        android:layout_gravity="center_horizontal"
-        android:onClick="createCustomPuzzle"
-        android:src="@drawable/ic_photo_camera_black_24dp"/>
 
-    <TextView
-        android:id="@+id/dashboardPointsTxt"
+    <LinearLayout
         style="@style/Wrap"
-        android:layout_gravity="end"
-        android:layout_marginEnd="70dp"
-        android:textSize="24sp" />
+        android:layout_gravity="center"
+        android:background="@android:color/darker_gray">
+
+        <ImageView
+            style="@style/Wrap"
+            android:src="@drawable/ic_coin24dp" />
+
+        <TextView
+            android:id="@+id/dashboardPointsTxt"
+            style="@style/Wrap"
+            android:fontFamily="sans-serif-condensed"
+            android:textColor="@android:color/black"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
     <ImageButton
         android:id="@+id/dashboardSettingsBtn"
         style="@style/Wrap"
-        android:layout_gravity="end"
+        android:layout_gravity="end|center_vertical"
         android:onClick="openSettings"
-        android:src="@drawable/ic_settings_black_24dp"/>
+        android:src="@drawable/ic_music_double24dp" />
+
+    <ImageButton
+        style="@style/Wrap"
+        android:layout_gravity="end|center_vertical"
+        android:layout_marginEnd="60dp"
+        android:onClick="createCustomPuzzle"
+        android:src="@drawable/ic_photo_camera_black_24dp" />
+
+    <ImageButton
+        style="@style/Wrap"
+        android:layout_gravity="end|center_vertical"
+        android:layout_marginEnd="120dp"
+        android:onClick="dlPuzzles"
+        android:src="@drawable/ic_file_download_black_24dp" />
 </FrameLayout>

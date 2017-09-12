@@ -11,7 +11,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "puzzles";
-    private static final int DB_VERSION = 14;
+    private static final int DB_VERSION = 15;
     private static DatabaseHelper mInstance = null;
 
     private DatabaseHelper(Context context){

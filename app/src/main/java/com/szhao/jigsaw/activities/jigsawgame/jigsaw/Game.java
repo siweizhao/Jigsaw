@@ -225,8 +225,8 @@ public class Game {
 
         for (int i = 0; i < savedPosition.length; i++){
             String currentPos = savedPosition[i].split(":")[0];
-            int currPosX = Integer.valueOf(currentPos.split("\\.")[0]);
-            int currPosY = Integer.valueOf(currentPos.split("\\.")[1]);
+            int currPosX = Integer.parseInt(currentPos.split("\\.")[0]);
+            int currPosY = Integer.parseInt(currentPos.split("\\.")[1]);
             currentPositionPoints[i] = new Point(currPosX, currPosY);
 
             String correctPos = savedPosition[i].split(":")[1];

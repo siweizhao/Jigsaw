@@ -1,46 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    style="@style/Wrap">
+    style="@style/Wrap"
+    android:orientation="horizontal">
 
-    <RelativeLayout
+    <LinearLayout
         style="@style/Wrap"
-        android:gravity="center_horizontal">
-        <ImageView
+        android:layout_marginStart="20dp"
+        android:orientation="vertical">
+
+        <RelativeLayout
             style="@style/Wrap"
-            android:id="@+id/ic_sound"
-            android:src="@drawable/ic_volume_up_black_24dp"/>
-        <TextView
+            android:layout_marginBottom="10dp"
+            android:gravity="center_horizontal">
+
+            <ImageView
+                android:id="@+id/ic_sound"
+                style="@style/Wrap"
+                android:src="@drawable/ic_volume_up_black_24dp" />
+
+            <TextView
+                android:id="@+id/txtSound"
+                style="@style/Wrap"
+                android:layout_marginStart="5dp"
+                android:layout_toRightOf="@id/ic_sound"
+                android:text="Sound Eff"
+                android:textSize="18sp" />
+        </RelativeLayout>
+
+        <RelativeLayout
             style="@style/Wrap"
-            android:id="@+id/txtSound"
-            android:layout_toRightOf="@id/ic_sound"
-            android:text="Sound"
-            android:textSize="24sp"/>
+            android:gravity="center_horizontal">
+
+            <ImageView
+                android:id="@+id/ic_music"
+                style="@style/Wrap"
+                android:src="@drawable/ic_music_note_black_24dp" />
+
+            <TextView
+                android:id="@+id/txtMusic"
+                style="@style/Wrap"
+                android:layout_marginStart="5dp"
+                android:layout_toRightOf="@+id/ic_music"
+                android:text="BGM"
+                android:textSize="18sp" />
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/Wrap"
+        android:orientation="vertical">
         <SeekBar
             android:id="@+id/soundSeekBar"
-            android:layout_toRightOf="@+id/txtSound"
-            android:layout_width="300dp"
-            android:layout_height="20dp" />
-    </RelativeLayout>
+            android:layout_width="200dp"
+            android:layout_height="20dp"
+            android:maxHeight="10dp" />
 
-
-    <RelativeLayout
-        style="@style/Wrap"
-        android:gravity="center_horizontal">
-        <ImageView
-            style="@style/Wrap"
-            android:id="@+id/ic_music"
-            android:src="@drawable/ic_music_note_black_24dp"/>
-        <TextView
-            style="@style/Wrap"
-            android:id="@+id/txtMusic"
-            android:layout_toRightOf="@+id/ic_music"
-            android:text="Music"
-            android:textSize="24sp"/>
         <SeekBar
             android:id="@+id/bgmSeekBar"
-            android:layout_toRightOf="@+id/txtMusic"
-            android:layout_width="300dp"
-            android:layout_height="20dp" />
-    </RelativeLayout>
+            android:layout_width="200dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="15dp"
+            android:maxHeight="10dp" />
+    </LinearLayout>
 </LinearLayout>

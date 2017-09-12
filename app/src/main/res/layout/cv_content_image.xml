@@ -5,8 +5,8 @@
     style="@style/Wrap"
     android:layout_margin="5dp"
     card_view:cardBackgroundColor="@android:color/transparent"
-    card_view:cardCornerRadius="0dp"
-    card_view:cardElevation="0dp">
+    card_view:cardElevation="5dp"
+    card_view:cardUseCompatPadding="true">
 
     <FrameLayout
         style="@style/Wrap">
@@ -14,6 +14,8 @@
             android:id="@+id/content_image"
             style="@style/Wrap"
             android:adjustViewBounds="true"
+            android:background="@drawable/border_white5dp"
+            android:padding="5dp"
             android:scaleType="centerInside"/>
 
         <ImageView

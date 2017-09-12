@@ -109,15 +109,10 @@ public class CustomPuzzlesFragment extends Fragment implements ItemSelectListene
                                            String permissions[], int[] grantResults) {
         switch (requestCode) {
             case Utility.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE: {
-                // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-
-                } else {
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
+                    Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+                    startActivityForResult(intent, Utility.PICK_IMAGE);
                 }
             }
         }
@@ -131,7 +126,7 @@ public class CustomPuzzlesFragment extends Fragment implements ItemSelectListene
             Uri imageUri = data.getData();
             CropImage.activity(imageUri)
                     .setGuidelines(CropImageView.Guidelines.ON)
-                    .setAspectRatio(60,45)
+                    .setAspectRatio((int) (Utility.GOLDEN_RATIO * 100), 100)
                     .start(getActivity(),CustomPuzzlesFragment.this);
         }
         //Result from image cropper
@@ -151,9 +146,8 @@ public class CustomPuzzlesFragment extends Fragment implements ItemSelectListene
     public void storeCustomPuzzle(Uri uri){
         File dir = getActivity().getDir("custom_puzzles", Context.MODE_PRIVATE);
         File newPath = new File(dir, "puzzle_" + String.valueOf(System.currentTimeMillis()));
-        try {
-            FileInputStream in = new FileInputStream(uri.getPath());
-            FileOutputStream out = new FileOutputStream(newPath);
+        try (FileInputStream in = new FileInputStream(uri.getPath());
+             FileOutputStream out = new FileOutputStream(newPath)) {
             byte[] buffer = new byte[1024];
             int read;
             while((read = in.read(buffer)) != -1){
@@ -169,10 +163,11 @@ public class CustomPuzzlesFragment extends Fragment implements ItemSelectListene
 
     @Override
     public void onClick(String item, int difficulty) {
-        new File(item).delete();
-        String whereClause = "PUZZLE = ?";
-        String[] args = new String[]{item};
-        getContext().getContentResolver().delete(PuzzleContentProvider.CONTENT_URI_COMPLETED,whereClause,args);
-        contentAdapter.setCustomPuzzles();
+        if (new File(item).delete()) {
+            String whereClause = "PUZZLE = ?";
+            String[] args = new String[]{item};
+            getContext().getContentResolver().delete(PuzzleContentProvider.CONTENT_URI_COMPLETED, whereClause, args);
+            contentAdapter.setCustomPuzzles();
+        }
     }
 }

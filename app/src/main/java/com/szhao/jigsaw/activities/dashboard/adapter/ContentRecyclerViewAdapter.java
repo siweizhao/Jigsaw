@@ -51,27 +51,7 @@ public class ContentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 if (listener != null){
                     if (vh.getLockStatus()) {
                         //Need to unlock puzzle
-                        new MaterialDialog.Builder(context)
-                                .content("Would you like to unlock this puzzle for 100 points?")
-                                .contentGravity(GravityEnum.CENTER)
-                                .positiveText("Yes")
-                                .negativeText("No")
-                                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                                    @Override
-                                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                        PointSystem.getInstance().spendPoints(context, 100);
-                                        PointSystem.getInstance().savePuzzle(context, puzzles.get(vh.getAdapterPosition()));
-                                        vh.setUnlock();
-                                        PointSystem.getInstance().increaseCountVH();
-                                    }
-                                })
-                                .dismissListener(new DialogInterface.OnDismissListener() {
-                                    @Override
-                                    public void onDismiss(DialogInterface dialog) {
-                                        Utility.startImmersiveMode(context);
-                                    }
-                                })
-                                .show();
+                        showUnlockDialog(vh);
                     } else {
                         int currAdapterPosition = vh.getAdapterPosition();
                         int difficulty = startedDifficulties.size() == 0 ? 2 : startedDifficulties.get(currAdapterPosition);
@@ -101,13 +81,7 @@ public class ContentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         puzzles.clear();
         startedDifficulties.clear();
         if (category.equals("Started")){
-            startedPuzzlesCursor.moveToPosition(-1);
-            while(startedPuzzlesCursor.moveToNext()){
-                puzzles.add(startedPuzzlesCursor.getString(startedPuzzlesCursor.getColumnIndex("PUZZLE")));
-                startedDifficulties.add(startedPuzzlesCursor.getInt(startedPuzzlesCursor.getColumnIndex("DIFFICULTY")));
-            }
-            Collections.reverse(puzzles);
-            Collections.reverse(startedDifficulties);
+            setStartPuzzles();
         } else {
             try {
                 String[] puzzleFilePaths = context.getAssets().list(category);
@@ -156,5 +130,39 @@ public class ContentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
     public void setListener(ItemSelectListener listener){
         this.listener = listener;
+    }
+
+    private void showUnlockDialog(final ContentViewHolder vh) {
+        new MaterialDialog.Builder(context)
+                .content("Would you like to unlock this puzzle for 100 points?")
+                .contentGravity(GravityEnum.CENTER)
+                .positiveText("Yes")
+                .negativeText("No")
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        PointSystem.getInstance().spendPoints(context, 100);
+                        PointSystem.getInstance().savePuzzle(context, puzzles.get(vh.getAdapterPosition()));
+                        vh.setUnlock();
+                        PointSystem.getInstance().increaseCountVH();
+                    }
+                })
+                .dismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        Utility.startImmersiveMode(context);
+                    }
+                })
+                .show();
+    }
+
+    private void setStartPuzzles() {
+        startedPuzzlesCursor.moveToPosition(-1);
+        while (startedPuzzlesCursor.moveToNext()) {
+            puzzles.add(startedPuzzlesCursor.getString(startedPuzzlesCursor.getColumnIndex("PUZZLE")));
+            startedDifficulties.add(startedPuzzlesCursor.getInt(startedPuzzlesCursor.getColumnIndex("DIFFICULTY")));
+        }
+        Collections.reverse(puzzles);
+        Collections.reverse(startedDifficulties);
     }
 }

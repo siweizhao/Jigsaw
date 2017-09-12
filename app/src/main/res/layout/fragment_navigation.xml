@@ -1,22 +1,21 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/MatchParent">
 
     <android.support.v7.widget.RecyclerView
+        android:id="@+id/categorySelectRecycler"
         android:layout_width="match_parent"
         android:layout_height="120dp"
-        android:id="@+id/categorySelectRecycler"
-        android:background="@android:color/holo_orange_light"
+        android:background="@drawable/bg_dark"
         android:orientation="horizontal"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"/>
 
     <android.support.v7.widget.RecyclerView
-        android:layout_below="@id/categorySelectRecycler"
-        android:layout_width="match_parent"
-        android:layout_height="fill_parent"
         android:id="@+id/contentSelectRecycler"
-        android:background="@android:color/holo_blue_bright"
+        style="@style/MatchParent"
+        android:layout_below="@id/categorySelectRecycler"
+        android:layout_gravity="center"
+        android:background="@drawable/bg_lightblue"
         android:orientation="horizontal"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"/>
 </RelativeLayout>

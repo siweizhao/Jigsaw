@@ -40,7 +40,7 @@ public class ImageViewHolder extends RecyclerView.ViewHolder{
     }
 
     public void setBorder(){
-        mImage.setBackgroundResource(R.drawable.border);
+        mImage.setBackgroundResource(R.drawable.border_black);
     }
 
 }

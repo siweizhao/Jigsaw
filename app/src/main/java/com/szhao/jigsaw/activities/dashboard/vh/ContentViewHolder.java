@@ -7,6 +7,8 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.szhao.jigsaw.R;
+import com.szhao.jigsaw.global.DisplayDimensions;
+import com.szhao.jigsaw.global.Utility;
 
 import java.io.File;
 
@@ -19,12 +21,15 @@ public class ContentViewHolder extends RecyclerView.ViewHolder{
     private ImageView puzzleImage;
     private ImageView lockImage;
     private boolean isLocked;
+    private int width, height;
 
     public ContentViewHolder(Context context, View view){
         super(view);
         this.context = context;
         puzzleImage = (ImageView)view.findViewById(R.id.content_image);
         lockImage = (ImageView) view.findViewById(R.id.content_locked);
+        height = DisplayDimensions.getInstance().getContentRecyclerHeight() - 50;
+        width = (int) (Utility.GOLDEN_RATIO * height);
     }
 
     public boolean getLockStatus() {
@@ -46,7 +51,7 @@ public class ContentViewHolder extends RecyclerView.ViewHolder{
     public void setPuzzleImage(String filePath){
         Glide.with(context)
                 .load(new File(filePath))
-                .override(700,550)
+                .override(width, height)
                 .centerCrop()
                 .into(puzzleImage);
     }
