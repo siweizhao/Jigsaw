@@ -12,23 +12,30 @@
         android:src="@drawable/ic_arrow_back_black_24dp"/>
 
 
-    <LinearLayout
+    <FrameLayout
         style="@style/Wrap"
-        android:layout_gravity="center"
-        android:background="@android:color/darker_gray">
+        android:layout_gravity="center">
 
+        <LinearLayout
+            style="@style/Wrap"
+            android:layout_gravity="center"
+            android:background="@drawable/black_rect_round_corner">
+
+            <TextView
+                android:id="@+id/dashboardPointsTxt"
+                style="@style/Wrap"
+                android:fontFamily="sans-serif-condensed"
+                android:paddingEnd="26dp"
+                android:paddingStart="4dp"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </LinearLayout>
         <ImageView
             style="@style/Wrap"
-            android:src="@drawable/ic_coin24dp" />
-
-        <TextView
-            android:id="@+id/dashboardPointsTxt"
-            style="@style/Wrap"
-            android:fontFamily="sans-serif-condensed"
-            android:textColor="@android:color/black"
-            android:textSize="24sp"
-            android:textStyle="bold" />
-    </LinearLayout>
+            android:layout_marginStart="62dp"
+            android:src="@drawable/ic_coin36dp" />
+    </FrameLayout>
 
     <ImageButton
         android:id="@+id/dashboardSettingsBtn"

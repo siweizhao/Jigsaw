@@ -70,7 +70,7 @@
                 <ImageView
                     style="@style/Wrap"
                     android:layout_marginLeft="5dp"
-                    android:src="@drawable/ic_coin24dp" />
+                    android:src="@drawable/ic_coin36dp" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

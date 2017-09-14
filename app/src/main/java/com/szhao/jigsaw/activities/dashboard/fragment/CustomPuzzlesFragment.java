@@ -15,11 +15,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 
 import com.szhao.jigsaw.R;
 import com.szhao.jigsaw.activities.dashboard.adapter.ContentRecyclerViewAdapter;
 import com.szhao.jigsaw.activities.dashboard.adapter.ItemSelectListener;
 import com.szhao.jigsaw.db.PuzzleContentProvider;
+import com.szhao.jigsaw.global.DisplayDimensions;
 import com.szhao.jigsaw.global.Utility;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -55,18 +57,25 @@ public class CustomPuzzlesFragment extends Fragment implements ItemSelectListene
                 addImage();
             }
         });
-        ImageButton removeImageBtn = (ImageButton)v.findViewById(R.id.removeCustomPuzzleBtn);
+        final ImageButton removeImageBtn = (ImageButton) v.findViewById(R.id.removeCustomPuzzleBtn);
         removeImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 isRemoveImage = !isRemoveImage;
                 if (isRemoveImage){
+                    removeImageBtn.setImageResource(R.drawable.ic_trashcan_open64dp);
                     contentAdapter.setListener(CustomPuzzlesFragment.this);
                 } else {
+                    removeImageBtn.setImageResource(R.drawable.ic_trashcan_close64dp);
                     contentAdapter.setListener(mListener);
                 }
             }
         });
+
+        LinearLayout topWrapper = (LinearLayout) v.findViewById(R.id.customPuzzleFragmentTopWrapper);
+        ViewGroup.LayoutParams recyclerParams = topWrapper.getLayoutParams();
+        recyclerParams.height = (int) (DisplayDimensions.getInstance().getHeight() * 0.3);
+        topWrapper.setLayoutParams(recyclerParams);
 
         RecyclerView customPuzzleRecycler = (RecyclerView)v.findViewById(R.id.customPuzzlesRecycler);
         contentAdapter = new ContentRecyclerViewAdapter(getContext(),null);
@@ -115,6 +124,8 @@ public class CustomPuzzlesFragment extends Fragment implements ItemSelectListene
                     startActivityForResult(intent, Utility.PICK_IMAGE);
                 }
             }
+            default:
+                break;
         }
     }
 

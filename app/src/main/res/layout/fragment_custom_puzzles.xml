@@ -4,45 +4,30 @@
     style="@style/MatchParent"
     tools:context="com.szhao.jigsaw.activities.dashboard.fragment.CustomPuzzlesFragment">
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/customPuzzleFragmentTopWrapper"
         android:layout_width="match_parent"
         android:layout_height="120dp"
-        android:background="@android:color/holo_orange_light"
-        android:gravity="center">
-        <RelativeLayout
-            android:id="@+id/customPuzzleFragmentAddPuzzleWrapper"
-            style="@style/Wrap">
-            <TextView
-                android:id="@+id/customPuzzleFragmentTitle"
-                style="@style/Wrap"
-                android:text="Select a photo from your gallery"
-                android:textSize="24sp"/>
-            <ImageButton
+        android:background="@drawable/bg_dark"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ImageButton
                 android:id="@+id/addCustomPuzzleBtn"
                 style="@style/Wrap"
-                android:layout_toRightOf="@id/customPuzzleFragmentTitle"
-                android:src="@drawable/ic_photo_black_24dp"/>
-        </RelativeLayout>
-        <RelativeLayout
-            style="@style/Wrap"
-            android:layout_below="@id/customPuzzleFragmentAddPuzzleWrapper">
-            <TextView
-                android:id="@+id/customPuzzleFragmentRemovePuzzleTitle"
-                style="@style/Wrap"
-                android:text="Remove puzzle"
-                android:textSize="24sp"/>
-            <ImageButton
+            android:layout_marginEnd="30dp"
+            android:src="@drawable/ic_photo64dp" />
+
+        <ImageButton
                 android:id="@+id/removeCustomPuzzleBtn"
                 style="@style/Wrap"
-                android:layout_toRightOf="@id/customPuzzleFragmentRemovePuzzleTitle"
-                android:src="@drawable/ic_delete_black_24dp"/>
-        </RelativeLayout>
-    </RelativeLayout>
+            android:layout_marginStart="30dp"
+            android:src="@drawable/ic_trashcan_close64dp" />
+
+    </LinearLayout>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/customPuzzlesRecycler"
-        android:layout_width="match_parent"
-        android:layout_height="fill_parent"
+        style="@style/MatchParent"
         android:layout_below="@id/customPuzzleFragmentTopWrapper"
         android:background="@drawable/bg_lightblue"
         android:orientation="horizontal"

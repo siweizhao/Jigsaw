@@ -8,7 +8,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,7 +50,6 @@ public class NavigationFragment extends Fragment implements LoaderManager.Loader
             @Override
             public void run() {
                 DisplayDimensions.getInstance().initContentRecyclerHeight(contentRecycler.getHeight());
-                Log.d("contentrecycler", contentRecycler.getHeight() + " " + DisplayDimensions.getInstance().getHeight() + " " + DisplayDimensions.getInstance().getWidth());
             }
         });
         return masterLayout;

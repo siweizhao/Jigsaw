@@ -54,13 +54,21 @@
             android:id="@+id/soundSeekBar"
             android:layout_width="200dp"
             android:layout_height="20dp"
-            android:maxHeight="10dp" />
+            android:maxHeight="15dp"
+            android:minHeight="15dp"
+            android:progressDrawable="@drawable/seek_style"
+            android:splitTrack="false"
+            android:thumb="@drawable/thumb" />
 
         <SeekBar
             android:id="@+id/bgmSeekBar"
             android:layout_width="200dp"
             android:layout_height="20dp"
             android:layout_marginTop="15dp"
-            android:maxHeight="10dp" />
+            android:maxHeight="15dp"
+            android:minHeight="15dp"
+            android:progressDrawable="@drawable/seek_style"
+            android:splitTrack="false"
+            android:thumb="@drawable/thumb" />
     </LinearLayout>
 </LinearLayout>

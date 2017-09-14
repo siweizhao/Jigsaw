@@ -134,7 +134,7 @@ public class ContentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
     private void showUnlockDialog(final ContentViewHolder vh) {
         new MaterialDialog.Builder(context)
-                .content("Would you like to unlock this puzzle for 100 points?")
+                .content("Would you like to unlock this puzzle for 100 coins?")
                 .contentGravity(GravityEnum.CENTER)
                 .positiveText("Yes")
                 .negativeText("No")

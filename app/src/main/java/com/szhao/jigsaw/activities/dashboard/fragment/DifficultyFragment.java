@@ -21,8 +21,11 @@ import com.bumptech.glide.Glide;
 import com.szhao.jigsaw.R;
 import com.szhao.jigsaw.activities.jigsawgame.JigsawGameActivity;
 import com.szhao.jigsaw.db.PuzzleContentProvider;
+import com.szhao.jigsaw.global.DisplayDimensions;
+import com.szhao.jigsaw.global.Utility;
 
 import java.io.File;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -86,9 +89,12 @@ public class DifficultyFragment extends Fragment implements LoaderManager.Loader
     }
 
     private void loadImage(){
+
+        int height = DisplayDimensions.getInstance().getHeight() / 2;
+        int width = Math.round(height * Utility.GOLDEN_RATIO);
         Glide.with(getContext())
                 .load(new File(item))
-                .override(700,550)
+                .override(width, height)
                 .centerCrop()
                 .into(puzzleImage);
     }
@@ -116,6 +122,7 @@ public class DifficultyFragment extends Fragment implements LoaderManager.Loader
                 difficultyTxt.setText("Difficulty: "+ (seekBar.getProgress() + DIFFICULTY_MIN_VALUE)
                         + " x " + (seekBar.getProgress() + DIFFICULTY_MIN_VALUE));
                 setBestTime(seekBar.getProgress());
+                setReward(seekBar.getProgress() + DIFFICULTY_MIN_VALUE);
                 Button startGameBtn = (Button)masterLayout.findViewById(R.id.difficultyFragmentStartGameBtn);
                 if (startedPuzzlesPositions[seekBar.getProgress() + DIFFICULTY_MIN_VALUE] == null){
                     startGameBtn.setText(getContext().getString(R.string.start_game));
@@ -143,9 +150,13 @@ public class DifficultyFragment extends Fragment implements LoaderManager.Loader
         int bestTimeSec = bestSolveTimes[difficulty + DIFFICULTY_MIN_VALUE] % 60;
         int bestTimeMin = bestSolveTimes[difficulty + DIFFICULTY_MIN_VALUE] / 60;
         ((TextView)masterLayout.findViewById(R.id.difficultyFragmentBestTime))
-                .setText("Best Time: " + bestTimeMin + ":" + bestTimeSec);
+                .setText(String.format(Locale.getDefault(), "Best Time: %02d:%02d", bestTimeMin, bestTimeSec));
     }
 
+    private void setReward(int difficulty) {
+        ((TextView) masterLayout.findViewById(R.id.difficultyFragmentReward))
+                .setText("Reward: " + String.valueOf(difficulty * 10));
+    }
     @Override
     public void onResume() {
         super.onResume();

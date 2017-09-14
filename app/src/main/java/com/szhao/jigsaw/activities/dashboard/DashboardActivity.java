@@ -53,7 +53,6 @@ public class DashboardActivity extends AppCompatActivity implements ItemSelectLi
         requestQueue = Volley.newRequestQueue(this);
     }
 
-
     private void initPointSystem() {
         PointSystem.getInstance().setListener(this);
         PointSystem.getInstance().loadPoints(this);
@@ -63,18 +62,17 @@ public class DashboardActivity extends AppCompatActivity implements ItemSelectLi
     private void initNavigationFragment(){
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.fragmentContainer, new NavigationFragment())
-                .addToBackStack("Navigation")
+                .add(R.id.fragmentContainer, new NavigationFragment(), "Navigation")
                 .commit();
         findViewById(R.id.dashboardBackBtn).setVisibility(View.INVISIBLE);
     }
 
     public void goBack(View view){
-        if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
-            findViewById(R.id.dashboardBackBtn).setVisibility(View.INVISIBLE);
-            getSupportFragmentManager().popBackStack();
-        }
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0)
+            getSupportFragmentManager().popBackStackImmediate();
 
+        if (getSupportFragmentManager().getBackStackEntryCount() == 0)
+            findViewById(R.id.dashboardBackBtn).setVisibility(View.INVISIBLE);
     }
 
     public void openSettings(View view){
@@ -84,7 +82,7 @@ public class DashboardActivity extends AppCompatActivity implements ItemSelectLi
     public void createCustomPuzzle(View view){
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.fragmentContainer, new CustomPuzzlesFragment())
+                .replace(R.id.fragmentContainer, new CustomPuzzlesFragment(), "Custom")
                 .addToBackStack("Custom")
                 .commit();
         findViewById(R.id.dashboardBackBtn).setVisibility(View.VISIBLE);
@@ -136,7 +134,7 @@ public class DashboardActivity extends AppCompatActivity implements ItemSelectLi
         requestQueue.add(jsonObjectRequest);
     }
 
-    public void downloadPuzzleByCategory(String category) {
+    private void downloadPuzzleByCategory(String category) {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(serverUrl + "/" + category + "/", null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -163,12 +161,11 @@ public class DashboardActivity extends AppCompatActivity implements ItemSelectLi
         requestQueue.add(jsonObjectRequest);
     }
 
-
     @Override
     public void onClick(String item, int difficulty) {
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.fragmentContainer, DifficultyFragment.newInstance(item, difficulty))
+                .replace(R.id.fragmentContainer, DifficultyFragment.newInstance(item, difficulty), "Difficulty")
                 .addToBackStack("Difficulty")
                 .commit();
         findViewById(R.id.dashboardBackBtn).setVisibility(View.VISIBLE);
@@ -192,7 +189,7 @@ public class DashboardActivity extends AppCompatActivity implements ItemSelectLi
         ((TextView) findViewById(R.id.dashboardPointsTxt)).setText(String.valueOf(points));
     }
 
-    public void storeDownloadedImage(String category, String title, byte[] image) {
+    private void storeDownloadedImage(String category, String title, byte[] image) {
         File dir = this.getDir("DL", Context.MODE_PRIVATE);
         File categoryDir = new File(dir, category);
 

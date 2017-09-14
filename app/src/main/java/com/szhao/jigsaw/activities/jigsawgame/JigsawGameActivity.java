@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -16,8 +15,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.Display;
 import android.view.DragEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,6 +42,7 @@ import com.szhao.jigsaw.activities.jigsawgame.adapter.PuzzlePieceRecyclerViewAda
 import com.szhao.jigsaw.activities.jigsawgame.jigsaw.Game;
 import com.szhao.jigsaw.activities.jigsawgame.jigsaw.PuzzlePiece;
 import com.szhao.jigsaw.db.PuzzleContentProvider;
+import com.szhao.jigsaw.global.DisplayDimensions;
 import com.szhao.jigsaw.global.PointSystem;
 import com.szhao.jigsaw.global.SoundSettings;
 import com.szhao.jigsaw.global.Utility;
@@ -59,7 +57,6 @@ public class JigsawGameActivity extends AppCompatActivity{
     private static final String SHARED_PREF_BG = "bg";
     private FrameLayout masterLayout;
     private RelativeLayout gameLayout;
-    private int displayWidth, displayHeight;
     private int totalTimeSec = 0;
     private CountDownTimer timer;
     private Game game;
@@ -111,19 +108,21 @@ public class JigsawGameActivity extends AppCompatActivity{
     }
 
     private void setPuzzleImageDim() {
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        displayWidth = size.x;
-        displayHeight = size.y;
 
         ViewGroup.LayoutParams recyclerParams = puzzlePieceRecycler.getLayoutParams();
-        recyclerParams.height = displayHeight / 6;
+        recyclerParams.height = DisplayDimensions.getInstance().getHeight() / 6;
         puzzlePieceRecycler.setLayoutParams(recyclerParams);
 
         int marginHeight = 50;
-        puzzleHeight = displayHeight * 5 / 6 - marginHeight;
+        puzzleHeight = DisplayDimensions.getInstance().getHeight() * 5 / 6 - marginHeight;
         puzzleWidth = Math.round(puzzleHeight * Utility.GOLDEN_RATIO);
+
+        //Prevent puzzle from overlapping with buttons on the side
+        int sideButtonsSpace = 120;
+        if (puzzleWidth > DisplayDimensions.getInstance().getWidth() - sideButtonsSpace) {
+            puzzleWidth = DisplayDimensions.getInstance().getWidth() - sideButtonsSpace;
+            puzzleHeight = Math.round(puzzleWidth / Utility.GOLDEN_RATIO);
+        }
 
         android.view.ViewGroup.LayoutParams params = gameLayout.getLayoutParams();
         params.width = puzzleWidth;
@@ -349,14 +348,12 @@ public class JigsawGameActivity extends AppCompatActivity{
     }
 
     private void loadBackgroundImage(int bgId){
-        Log.d("bgimage", bgId + "");
         Utility.setSharedPrefValues(this, SHARED_PREF_BG, bgId);
-        Log.d("bgimag2", getSavedBackgroundImage() + "");
 
         //Display bg
         Glide.with(getApplicationContext())
                 .load(bgId).asBitmap()
-                .into(new SimpleTarget<Bitmap>(displayWidth, displayHeight) {
+                .into(new SimpleTarget<Bitmap>(DisplayDimensions.getInstance().getWidth(), DisplayDimensions.getInstance().getHeight()) {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                         Drawable drawable = new BitmapDrawable(resource);

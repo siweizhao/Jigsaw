@@ -6,46 +6,77 @@
     android:gravity="center"
     tools:context="com.szhao.jigsaw.activities.dashboard.fragment.DifficultyFragment">
 
-    <RelativeLayout
+    <LinearLayout
         style="@style/Wrap">
         <ImageView
             android:id="@+id/difficultyFragmentPuzzleImage"
-            style="@style/Wrap" />
-
-        <RelativeLayout
             style="@style/Wrap"
-            android:layout_toRightOf="@id/difficultyFragmentPuzzleImage"
-            android:background="@android:color/holo_orange_light"
-            android:gravity="center">
+            android:background="@drawable/border_white5dp"
+            android:padding="5dp" />
+
+        <LinearLayout
+            style="@style/Wrap"
+            android:layout_gravity="center"
+            android:background="@drawable/black_rect_round_corner"
+            android:gravity="center"
+            android:orientation="vertical">
             <TextView
                 android:id="@+id/difficultyFragmentDifficultyTxt"
                 style="@style/Wrap"
-                android:layout_centerHorizontal="true"
-                android:text="Difficulty:2 x 2"
+                android:layout_marginTop="10dp"
+                android:fontFamily="sans-serif-condensed"
                 android:textAlignment="center"
-                android:textSize="24sp" />
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
             <SeekBar
                 android:id="@+id/difficultyFragmentSeekBar"
-                android:layout_width="210dp"
+                android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/difficultyFragmentDifficultyTxt"
-                android:layout_margin="15dp"
-                android:max="8"/>
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:max="8"
+                android:maxHeight="15dp"
+                android:minHeight="15dp"
+                android:progressDrawable="@drawable/seek_style"
+                android:splitTrack="false"
+                android:thumb="@drawable/thumb" />
+
             <TextView
                 android:id="@+id/difficultyFragmentBestTime"
                 style="@style/Wrap"
-                android:layout_below="@id/difficultyFragmentSeekBar"
-                android:layout_centerHorizontal="true"
-                android:text="Best Time 0:00"
+                android:fontFamily="sans-serif-condensed"
                 android:textAlignment="center"
-                android:textSize="24sp" />
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                style="@style/Wrap"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:id="@+id/difficultyFragmentReward"
+                    style="@style/Wrap"
+                    android:fontFamily="sans-serif-condensed"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    style="@style/Wrap"
+                    android:layout_marginStart="5dp"
+                    android:src="@drawable/ic_coin24dp" />
+            </LinearLayout>
+
             <Button
                 android:id="@+id/difficultyFragmentStartGameBtn"
                 style="@style/ButtonBasic"
-                android:layout_below="@id/difficultyFragmentBestTime"
                 android:text="Start Game" />
-        </RelativeLayout>
-        
-    </RelativeLayout>
+        </LinearLayout>
+
+    </LinearLayout>
 
 </RelativeLayout>

@@ -6,4 +6,6 @@
     <color name="transparent">#80000000</color>
     <color name="black">#FF000000</color>
     <color name="whitegrey">#FFF2F2F2</color>
+    <color name="darkgrey">#656565</color>
+    <color name="orange">#c19700</color>
 </resources>
