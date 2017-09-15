@@ -57,7 +57,7 @@ public class PuzzlePieceRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
                 PuzzlePieceDragShadowBuilder dragShadowBuilder = new PuzzlePieceDragShadowBuilder(mContext, puzzleImage);
                 v.startDrag(null, dragShadowBuilder, null, 0);
                 removeItem(position);
-                return true;
+                return false;
             }
         });
 

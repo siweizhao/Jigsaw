@@ -230,8 +230,8 @@ public class Game {
             currentPositionPoints[i] = new Point(currPosX, currPosY);
 
             String correctPos = savedPosition[i].split(":")[1];
-            int correctPosX = Integer.parseInt(correctPos.split("\\.")[0]);
-            int correctPosY = Integer.parseInt(correctPos.split("\\.")[1]);
+            int correctPosX = Integer.valueOf(correctPos.split("\\.")[0]);
+            int correctPosY = Integer.valueOf(correctPos.split("\\.")[1]);
             correctPositionPoints[i] = new Point(correctPosX, correctPosY);
         }
 

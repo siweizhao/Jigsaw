@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "401733058263",
+    "firebase_url": "https://jigsaw-63c1b.firebaseio.com",
+    "project_id": "jigsaw-63c1b",
+    "storage_bucket": "jigsaw-63c1b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:401733058263:android:24b04dfa136a1f18",
+        "android_client_info": {
+          "package_name": "com.szhao.jigsaw"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "401733058263-8h4e0mk5kj1sc1tf8nre7qm5qdfnlj0o.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.szhao.jigsaw",
+            "certificate_hash": "6def949b19a0950ee2578c0b7f5e9e6f235c9203"
+          }
+        },
+        {
+          "client_id": "401733058263-m2i2q0g1eshgs1hb67npbrgve972smp0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyALUdw-hZZXI33lCMUol440_o3sFH_MViU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "401733058263-m2i2q0g1eshgs1hb67npbrgve972smp0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

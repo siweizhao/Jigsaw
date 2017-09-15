@@ -2,6 +2,8 @@ package com.szhao.jigsaw.activities.dashboard;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -13,12 +15,13 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.szhao.jigsaw.R;
+import com.szhao.jigsaw.activities.dashboard.adapter.CategoryRecyclerViewAdapter;
 import com.szhao.jigsaw.activities.dashboard.adapter.ItemSelectListener;
 import com.szhao.jigsaw.activities.dashboard.fragment.CustomPuzzlesFragment;
 import com.szhao.jigsaw.activities.dashboard.fragment.DifficultyFragment;
@@ -28,18 +31,13 @@ import com.szhao.jigsaw.global.PointSystem;
 import com.szhao.jigsaw.global.SoundSettings;
 import com.szhao.jigsaw.global.Utility;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class DashboardActivity extends AppCompatActivity implements ItemSelectListener, PointSystem.PointChangeListener {
     SoundSettings soundSettings;
-    RequestQueue requestQueue;
-    String serverUrl = "http://10.215.5.203:8000/puzzles";
+    CategoryRecyclerViewAdapter categoryAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +47,8 @@ public class DashboardActivity extends AppCompatActivity implements ItemSelectLi
         soundSettings = new SoundSettings(this);
         initNavigationFragment();
         initPointSystem();
+        deleteDL();
         Utility.startImmersiveMode(this);
-        requestQueue = Volley.newRequestQueue(this);
     }
 
     private void initPointSystem() {
@@ -98,7 +96,7 @@ public class DashboardActivity extends AppCompatActivity implements ItemSelectLi
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        connectToServer();
+                        checkNewPuzzles();
                     }
                 })
                 .dismissListener(new DialogInterface.OnDismissListener() {
@@ -110,55 +108,70 @@ public class DashboardActivity extends AppCompatActivity implements ItemSelectLi
                 .show();
     }
 
-    public void connectToServer() {
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(serverUrl, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONArray categories = response.getJSONArray("categories");
-                            for (int i = 0; i < categories.length(); i++) {
-                                String category = categories.getJSONObject(i).getString("title");
-                                downloadPuzzleByCategory(category);
-                            }
-                        } catch (JSONException e) {
-                            Log.d("jsonexception", Log.getStackTraceString(e));
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d("json", "Server connection failed " + Log.getStackTraceString(error));
-            }
-        });
-        requestQueue.add(jsonObjectRequest);
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
-    private void downloadPuzzleByCategory(String category) {
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(serverUrl + "/" + category + "/", null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            String category = response.getString("category");
-                            JSONArray puzzles = response.getJSONArray("puzzles");
-                            for (int i = 0; i < puzzles.length(); i++) {
-                                String title = puzzles.getJSONObject(i).getString("title");
-                                String b64Image = puzzles.getJSONObject(i).getString("img");
-                                final byte[] decodedBytes = Base64.decode(b64Image, Base64.DEFAULT);
-                                storeDownloadedImage(category, title, decodedBytes);
-                            }
-                        } catch (JSONException e) {
-                            Log.d("jsonexception", Log.getStackTraceString(e));
+    private void checkNewPuzzles() {
+        if (!isOnline()) {
+            new MaterialDialog.Builder(this)
+                    .titleGravity(GravityEnum.CENTER)
+                    .title("No connection found")
+                    .content("Please try again later")
+                    .positiveText("Ok")
+                    .dismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                            Utility.startImmersiveMode(DashboardActivity.this);
                         }
-                    }
-                }, new Response.ErrorListener() {
+                    })
+                    .show();
+            return;
+        }
+        DatabaseReference firebaseDB = FirebaseDatabase.getInstance().getReference().child("categories");
+        firebaseDB.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d("json", "Server connection failed " + Log.getStackTraceString(error));
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                String category = dataSnapshot.child("category").getValue(String.class);
+                DataSnapshot puzzles = dataSnapshot.child("puzzles");
+                downloadPuzzles(category, puzzles);
+
+                if (categoryAdapter != null)
+                    categoryAdapter.setDLPuzzle();
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
             }
         });
-        requestQueue.add(jsonObjectRequest);
+    }
+
+    private void downloadPuzzles(String category, DataSnapshot puzzles) {
+        for (DataSnapshot p : puzzles.getChildren()) {
+            String title = p.child("title").getValue(String.class);
+            String b64img = p.child("img").getValue(String.class);
+            byte[] decodedBytes = Base64.decode(b64img, Base64.DEFAULT);
+            storeDownloadedImage(category, title, decodedBytes);
+        }
     }
 
     @Override
@@ -189,12 +202,29 @@ public class DashboardActivity extends AppCompatActivity implements ItemSelectLi
         ((TextView) findViewById(R.id.dashboardPointsTxt)).setText(String.valueOf(points));
     }
 
+    private void deleteDL() {
+        File dir = this.getDir("DL", Context.MODE_PRIVATE);
+        if (dir == null)
+            return;
+        File[] categories = dir.listFiles();
+        for (File c : categories) {
+            File[] puzzles = c.listFiles();
+            for (File p : puzzles) {
+                p.delete();
+            }
+            c.delete();
+        }
+        dir.delete();
+    }
+
     private void storeDownloadedImage(String category, String title, byte[] image) {
         File dir = this.getDir("DL", Context.MODE_PRIVATE);
+        if (!dir.exists())
+            dir.mkdir();
         File categoryDir = new File(dir, category);
 
         //Create dir if it does not exist
-        if (!categoryDir.exists() || categoryDir.mkdir()) {
+        if (categoryDir.exists() || categoryDir.mkdir()) {
             File imageFile = new File(categoryDir, title);
             try (FileOutputStream out = new FileOutputStream(imageFile)) {
                 out.write(image);
@@ -203,5 +233,9 @@ public class DashboardActivity extends AppCompatActivity implements ItemSelectLi
                 Log.d("Save DL file", e.getMessage());
             }
         }
+    }
+
+    public void setCategoryAdapter(CategoryRecyclerViewAdapter categoryAdapter) {
+        this.categoryAdapter = categoryAdapter;
     }
 }

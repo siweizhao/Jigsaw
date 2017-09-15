@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.szhao.jigsaw.R;
+import com.szhao.jigsaw.activities.dashboard.DashboardActivity;
 import com.szhao.jigsaw.activities.dashboard.adapter.CategoryRecyclerViewAdapter;
 import com.szhao.jigsaw.activities.dashboard.adapter.ContentRecyclerViewAdapter;
 import com.szhao.jigsaw.activities.dashboard.adapter.ItemSelectListener;
@@ -101,7 +102,7 @@ public class NavigationFragment extends Fragment implements LoaderManager.Loader
         });
         categoryAdapter.setDLPuzzle();
         categoryRecycler.setAdapter(categoryAdapter);
-
+        ((DashboardActivity) getActivity()).setCategoryAdapter(categoryAdapter);
     }
 
     @Override
