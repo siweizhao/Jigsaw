@@ -7,8 +7,8 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.szhao.jigsaw.R;
+import com.szhao.jigsaw.global.Constants;
 import com.szhao.jigsaw.global.DisplayDimensions;
-import com.szhao.jigsaw.global.Utility;
 
 import java.io.File;
 
@@ -28,8 +28,8 @@ public class ContentViewHolder extends RecyclerView.ViewHolder{
         this.context = context;
         puzzleImage = (ImageView)view.findViewById(R.id.content_image);
         lockImage = (ImageView) view.findViewById(R.id.content_locked);
-        height = DisplayDimensions.getInstance().getContentRecyclerHeight() - 50;
-        width = (int) (Utility.GOLDEN_RATIO * height);
+        height = DisplayDimensions.getInstance().getContentRecyclerHeight() - Constants.CONTENT_VH_MARGIN;
+        width = Math.round(Constants.GOLDEN_RATIO * height);
     }
 
     public boolean getLockStatus() {
@@ -38,13 +38,13 @@ public class ContentViewHolder extends RecyclerView.ViewHolder{
 
     public void setLock() {
         isLocked = true;
-        puzzleImage.setAlpha(0.4f);
+        puzzleImage.setImageAlpha(Constants.LOCKED_ALPHA);
         lockImage.setVisibility(View.VISIBLE);
     }
 
     public void setUnlock() {
         isLocked = false;
-        puzzleImage.setAlpha(1f);
+        puzzleImage.setImageAlpha(Constants.UNLOCKED_ALPHA);
         lockImage.setVisibility(View.INVISIBLE);
     }
 

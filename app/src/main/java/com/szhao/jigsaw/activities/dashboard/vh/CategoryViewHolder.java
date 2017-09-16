@@ -8,8 +8,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.szhao.jigsaw.R;
+import com.szhao.jigsaw.global.Constants;
 import com.szhao.jigsaw.global.DisplayDimensions;
-import com.szhao.jigsaw.global.Utility;
 
 import java.io.File;
 
@@ -30,9 +30,9 @@ public class CategoryViewHolder extends RecyclerView.ViewHolder {
         categoryImage = (ImageView)view.findViewById(R.id.category_image);
         categoryCount = (TextView)view.findViewById(R.id.category_image_count);
         categoryDescription = (TextView)view.findViewById(R.id.category_description);
-        int categoryRecyclerHeight = (int) (DisplayDimensions.getInstance().getHeight() * 0.3);
-        height = categoryRecyclerHeight - 100;
-        width = (int) (Utility.GOLDEN_RATIO * height);
+        int categoryRecyclerHeight = (int) (DisplayDimensions.getInstance().getHeight() * Constants.CATEGORY_RECYCLER_HEIGHT);
+        height = categoryRecyclerHeight - Constants.CATEGORY_VH_MARGIN;
+        width = Math.round(Constants.GOLDEN_RATIO * height);
 
     }
 

@@ -18,6 +18,7 @@ import com.szhao.jigsaw.activities.dashboard.adapter.CategoryRecyclerViewAdapter
 import com.szhao.jigsaw.activities.dashboard.adapter.ContentRecyclerViewAdapter;
 import com.szhao.jigsaw.activities.dashboard.adapter.ItemSelectListener;
 import com.szhao.jigsaw.db.PuzzleContentProvider;
+import com.szhao.jigsaw.global.Constants;
 import com.szhao.jigsaw.global.DisplayDimensions;
 
 public class NavigationFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
@@ -43,7 +44,7 @@ public class NavigationFragment extends Fragment implements LoaderManager.Loader
         RecyclerView categoryRecycler = (RecyclerView) masterLayout.findViewById(R.id.categorySelectRecycler);
 
         ViewGroup.LayoutParams recyclerParams = categoryRecycler.getLayoutParams();
-        recyclerParams.height = (int) (DisplayDimensions.getInstance().getHeight() * 0.3);
+        recyclerParams.height = Math.round(DisplayDimensions.getInstance().getHeight() * Constants.CATEGORY_RECYCLER_HEIGHT);
         categoryRecycler.setLayoutParams(recyclerParams);
 
         final RecyclerView contentRecycler = (RecyclerView) masterLayout.findViewById(R.id.contentSelectRecycler);
@@ -88,7 +89,7 @@ public class NavigationFragment extends Fragment implements LoaderManager.Loader
         String categoryImage = null;
         if (data.getCount() > 0){
             data.moveToLast();
-            categoryImage = data.getString(data.getColumnIndex("PUZZLE"));
+            categoryImage = data.getString(data.getColumnIndex(Constants.DB_PUZZLE));
         }
 
         RecyclerView categoryRecycler = (RecyclerView)masterLayout.findViewById(R.id.categorySelectRecycler);

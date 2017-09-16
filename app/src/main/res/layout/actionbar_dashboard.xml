@@ -23,13 +23,10 @@
 
             <TextView
                 android:id="@+id/dashboardPointsTxt"
-                style="@style/Wrap"
-                android:fontFamily="sans-serif-condensed"
+                style="@style/TextView"
                 android:paddingEnd="26dp"
                 android:paddingStart="4dp"
-                android:textColor="@android:color/white"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textColor="@android:color/white"/>
         </LinearLayout>
         <ImageView
             style="@style/Wrap"

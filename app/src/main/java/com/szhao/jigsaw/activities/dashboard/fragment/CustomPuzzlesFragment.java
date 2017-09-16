@@ -21,6 +21,7 @@ import com.szhao.jigsaw.R;
 import com.szhao.jigsaw.activities.dashboard.adapter.ContentRecyclerViewAdapter;
 import com.szhao.jigsaw.activities.dashboard.adapter.ItemSelectListener;
 import com.szhao.jigsaw.db.PuzzleContentProvider;
+import com.szhao.jigsaw.global.Constants;
 import com.szhao.jigsaw.global.DisplayDimensions;
 import com.szhao.jigsaw.global.Utility;
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -106,22 +107,22 @@ public class CustomPuzzlesFragment extends Fragment implements ItemSelectListene
         if (android.os.Build.VERSION.SDK_INT > 23 && getContext().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                    Utility.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+                    Constants.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
             return;
         }
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-        startActivityForResult(intent, Utility.PICK_IMAGE);
+        startActivityForResult(intent, Constants.PICK_IMAGE);
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
         switch (requestCode) {
-            case Utility.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE: {
+            case Constants.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE: {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-                    startActivityForResult(intent, Utility.PICK_IMAGE);
+                    startActivityForResult(intent, Constants.PICK_IMAGE);
                 }
             }
             default:
@@ -133,11 +134,11 @@ public class CustomPuzzlesFragment extends Fragment implements ItemSelectListene
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode,requestCode,data);
         //Result from pick image
-        if(requestCode == Utility.PICK_IMAGE && resultCode == Activity.RESULT_OK){
+        if(requestCode == Constants.PICK_IMAGE && resultCode == Activity.RESULT_OK){
             Uri imageUri = data.getData();
             CropImage.activity(imageUri)
                     .setGuidelines(CropImageView.Guidelines.ON)
-                    .setAspectRatio((int) (Utility.GOLDEN_RATIO * 100), 100)
+                    .setAspectRatio(Math.round(Constants.GOLDEN_RATIO * 100), 100)
                     .start(getActivity(),CustomPuzzlesFragment.this);
         }
         //Result from image cropper
@@ -155,7 +156,7 @@ public class CustomPuzzlesFragment extends Fragment implements ItemSelectListene
     }
 
     public void storeCustomPuzzle(Uri uri){
-        File dir = getActivity().getDir("custom_puzzles", Context.MODE_PRIVATE);
+        File dir = getActivity().getDir(Constants.CUSTOM_PUZZLES_DIR, Context.MODE_PRIVATE);
         File newPath = new File(dir, "puzzle_" + String.valueOf(System.currentTimeMillis()));
         try (FileInputStream in = new FileInputStream(uri.getPath());
              FileOutputStream out = new FileOutputStream(newPath)) {

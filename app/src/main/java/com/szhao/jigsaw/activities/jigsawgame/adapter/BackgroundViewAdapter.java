@@ -7,8 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.szhao.jigsaw.R;
-import com.szhao.jigsaw.global.Utility;
 import com.szhao.jigsaw.activities.jigsawgame.vh.ImageViewHolder;
+import com.szhao.jigsaw.global.Constants;
 
 /**
  * Created by Owner on 8/2/2017.
@@ -33,7 +33,7 @@ public class BackgroundViewAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             @Override
             public void onClick(View v) {
                 if (listener != null){
-                    listener.onClick(Utility.backgroundIds[vh.getAdapterPosition()]);
+                    listener.onClick(Constants.backgroundIds[vh.getAdapterPosition()]);
                 }
             }
         });
@@ -43,12 +43,12 @@ public class BackgroundViewAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         ImageViewHolder vh = (ImageViewHolder)holder;
-        vh.setBackgroundImage(Utility.backgroundIds[position]);
+        vh.setBackgroundImage(Constants.backgroundIds[position]);
     }
 
     @Override
     public int getItemCount() {
-        return Utility.backgroundIds.length;
+        return Constants.backgroundIds.length;
     }
 
     public void setListener(BackgroundSelectListener listener){

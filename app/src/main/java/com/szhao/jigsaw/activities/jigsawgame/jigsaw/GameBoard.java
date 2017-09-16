@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.szhao.jigsaw.activities.jigsawgame.JigsawGameActivity;
+import com.szhao.jigsaw.global.Constants;
 import com.szhao.jigsaw.global.GlobalGameData;
 
 import java.util.ArrayList;
@@ -150,7 +151,7 @@ public class GameBoard {
     private void animateDragToStart(View view, Point from, Point to) {
         Bitmap piece = GlobalGameData.getInstance().getSelectedPuzzlePiece().getImage();
         Animation translateAnimation = new TranslateAnimation( from.x - to.x - piece.getWidth()/2, 0, from.y - to.y - piece.getHeight()/2, 0);
-        translateAnimation.setDuration(300);
+        translateAnimation.setDuration(Constants.PUZZLE_PIECE_ANIMATION_DURATION);
         translateAnimation.setFillAfter(true);
         translateAnimation.setInterpolator(new AccelerateInterpolator());
         view.startAnimation(translateAnimation);

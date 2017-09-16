@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import com.szhao.jigsaw.R;
 import com.szhao.jigsaw.activities.dashboard.vh.CategoryViewHolder;
+import com.szhao.jigsaw.global.Constants;
 import com.szhao.jigsaw.global.PointSystem;
 
 import java.io.File;
@@ -33,14 +34,14 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         this.context = context;
         categories = new ArrayList<>();
         if (startedPuzzle != null) {
-            categories.add("Started");
+            categories.add(context.getString(R.string.started));
             this.startedPuzzle = startedPuzzle;
             this.numStartedPuzzles = numStartedPuzzles;
         }
 
         String[] puzzleCategories = null;
         try {
-            puzzleCategories = context.getAssets().list("Puzzles");
+            puzzleCategories = context.getAssets().list(Constants.ALL_PUZZLES_DIR);
         } catch (IOException e) {
             Log.d("preload", e.getMessage());
         }
@@ -64,7 +65,7 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     }
 
     public void setDLPuzzle() {
-        File dir = context.getDir("DL", Context.MODE_PRIVATE);
+        File dir = context.getDir(Constants.DOWNLOADED_PUZZLES_DIR, Context.MODE_PRIVATE);
         if (!dir.exists())
             return;
         File[] dlCategories = dir.listFiles();
@@ -80,9 +81,9 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         CategoryViewHolder vh = (CategoryViewHolder)holder;
         //Load started puzzles
-        if (categories.contains("Started") && position == 0){
+        if (categories.contains(context.getString(R.string.started)) && position == 0){
             vh.setCount(numStartedPuzzles, numStartedPuzzles);
-            vh.setDescription("Started");
+            vh.setDescription(context.getString(R.string.started));
             vh.setImage(startedPuzzle);
         } else {
             String title = categories.get(position);
@@ -99,7 +100,7 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
                 }
             } else {
                 //Load downloaded puzzles
-                File dir = new File(context.getDir("DL", Context.MODE_PRIVATE), title);
+                File dir = new File(context.getDir(Constants.DOWNLOADED_PUZZLES_DIR, Context.MODE_PRIVATE), title);
                 File[] dirFiles = dir.listFiles();
                 if (dirFiles.length > 0) {
                     int numPuzzles = dirFiles.length;

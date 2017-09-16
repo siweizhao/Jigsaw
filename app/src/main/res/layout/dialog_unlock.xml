@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/Wrap"
+    android:orientation="horizontal">
+    <TextView
+        style="@style/TextView"
+        android:text="Cost for unlocking this puzzle:"/>
+
+    <LinearLayout
+        style="@style/Wrap">
+        <TextView
+            android:id="@+id/dialogUnlockCostTxt"
+            style="@style/TextView"/>
+        <ImageView
+            style="@style/Wrap"
+            android:layout_marginLeft="5dp"
+            android:src="@drawable/ic_coin24dp" />
+    </LinearLayout>
+
+</LinearLayout>

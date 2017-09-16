@@ -6,40 +6,11 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.view.View;
 
-import com.szhao.jigsaw.R;
-
 /**
  * Created by Owner on 5/30/2017.
  */
 
 public class Utility {
-
-    public static final int PICK_IMAGE = 1;
-    public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 2;
-    public static final int DEFAULT_BACKGROUND = R.drawable.bg_1;
-    public static final float GOLDEN_RATIO = 1.618f;
-    public static int[] backgroundIds = new int[]{
-            R.drawable.bg_1,
-            R.drawable.bg_2,
-            R.drawable.bg_3,
-            R.drawable.bg_4,
-            R.drawable.bg_5,
-            R.drawable.bg_6,
-            R.drawable.bg_7,
-            R.drawable.bg_8,
-            R.drawable.bg_9,
-            R.drawable.bg_10,
-            R.drawable.bg_11,
-            R.drawable.bg_12,
-            R.drawable.bg_13,
-            R.drawable.bg_14,
-            R.drawable.bg_15,
-            R.drawable.bg_16,
-            R.drawable.bg_17,
-            R.drawable.bg_18,
-            R.drawable.bg_19,
-            R.drawable.bg_20
-    };
 
     private Utility() {
         throw new UnsupportedOperationException("Instantiating a utility class");

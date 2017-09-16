@@ -24,19 +24,17 @@
             android:layout_centerHorizontal="true">
             <TextView
                 android:id="@+id/category_description"
-                style="@style/Wrap"
-                android:fontFamily="sans-serif-condensed"
-                android:textColor="@android:color/white"
-                android:textStyle="bold" />
+                style="@style/TextView"
+                android:textSize="14sp"
+                android:textColor="@android:color/white"/>
 
             <TextView
                 android:id="@+id/category_image_count"
-                style="@style/Wrap"
+                style="@style/TextView"
+                android:textSize="14sp"
                 android:layout_marginStart="10dp"
                 android:layout_toRightOf="@id/category_description"
-                android:fontFamily="sans-serif-condensed"
-                android:textColor="@android:color/white"
-                android:textStyle="bold" />
+                android:textColor="@android:color/white"/>
         </RelativeLayout>
     </RelativeLayout>
 </android.support.v7.widget.CardView>

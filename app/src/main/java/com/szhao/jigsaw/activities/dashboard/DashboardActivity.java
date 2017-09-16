@@ -26,6 +26,7 @@ import com.szhao.jigsaw.activities.dashboard.adapter.ItemSelectListener;
 import com.szhao.jigsaw.activities.dashboard.fragment.CustomPuzzlesFragment;
 import com.szhao.jigsaw.activities.dashboard.fragment.DifficultyFragment;
 import com.szhao.jigsaw.activities.dashboard.fragment.NavigationFragment;
+import com.szhao.jigsaw.global.Constants;
 import com.szhao.jigsaw.global.DisplayDimensions;
 import com.szhao.jigsaw.global.PointSystem;
 import com.szhao.jigsaw.global.SoundSettings;
@@ -47,7 +48,6 @@ public class DashboardActivity extends AppCompatActivity implements ItemSelectLi
         soundSettings = new SoundSettings(this);
         initNavigationFragment();
         initPointSystem();
-        deleteDL();
         Utility.startImmersiveMode(this);
     }
 
@@ -89,10 +89,10 @@ public class DashboardActivity extends AppCompatActivity implements ItemSelectLi
     public void dlPuzzles(View view) {
         new MaterialDialog.Builder(this)
                 .titleGravity(GravityEnum.CENTER)
-                .title("Download Puzzles")
-                .content("Would you like to check for new available puzzles?")
-                .positiveText("Yes")
-                .negativeText("No")
+                .title(getString(R.string.download_puzzles))
+                .content(R.string.check_new_puzzles)
+                .positiveText(getString(R.string.yes))
+                .negativeText(getString(R.string.no))
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
@@ -119,9 +119,9 @@ public class DashboardActivity extends AppCompatActivity implements ItemSelectLi
         if (!isOnline()) {
             new MaterialDialog.Builder(this)
                     .titleGravity(GravityEnum.CENTER)
-                    .title("No connection found")
-                    .content("Please try again later")
-                    .positiveText("Ok")
+                    .title(getString(R.string.no_connection))
+                    .content(getString(R.string.try_again_later))
+                    .positiveText(getString(R.string.ok))
                     .dismissListener(new DialogInterface.OnDismissListener() {
                         @Override
                         public void onDismiss(DialogInterface dialog) {
@@ -203,7 +203,7 @@ public class DashboardActivity extends AppCompatActivity implements ItemSelectLi
     }
 
     private void deleteDL() {
-        File dir = this.getDir("DL", Context.MODE_PRIVATE);
+        File dir = this.getDir(Constants.DOWNLOADED_PUZZLES_DIR, Context.MODE_PRIVATE);
         if (dir == null)
             return;
         File[] categories = dir.listFiles();
@@ -218,7 +218,7 @@ public class DashboardActivity extends AppCompatActivity implements ItemSelectLi
     }
 
     private void storeDownloadedImage(String category, String title, byte[] image) {
-        File dir = this.getDir("DL", Context.MODE_PRIVATE);
+        File dir = this.getDir(Constants.DOWNLOADED_PUZZLES_DIR, Context.MODE_PRIVATE);
         if (!dir.exists())
             dir.mkdir();
         File categoryDir = new File(dir, category);

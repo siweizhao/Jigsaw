@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,8 +20,8 @@ import com.bumptech.glide.Glide;
 import com.szhao.jigsaw.R;
 import com.szhao.jigsaw.activities.jigsawgame.JigsawGameActivity;
 import com.szhao.jigsaw.db.PuzzleContentProvider;
+import com.szhao.jigsaw.global.Constants;
 import com.szhao.jigsaw.global.DisplayDimensions;
-import com.szhao.jigsaw.global.Utility;
 
 import java.io.File;
 import java.util.Locale;
@@ -33,10 +32,6 @@ import java.util.Locale;
  * create an instance of this fragment.
  */
 public class DifficultyFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
-    public static final int DIFFICULTY_MIN_VALUE = 2;
-    public static final int TABLE_COMPLETED = 1;
-    public static final int TABLE_STARTED = 2;
-
     private static final String ARG_PARAM1 = "item";
     private static final String ARG_PARAM2 = "difficulty";
     View masterLayout;
@@ -71,8 +66,8 @@ public class DifficultyFragment extends Fragment implements LoaderManager.Loader
             difficulty = getArguments().getInt(ARG_PARAM2);
             loadFinished = 0;
             loaderManager = getLoaderManager();
-            loaderManager.initLoader(TABLE_COMPLETED, null, this);
-            loaderManager.initLoader(TABLE_STARTED, null, this);
+            loaderManager.initLoader(Constants.TABLE_COMPLETED, null, this);
+            loaderManager.initLoader(Constants.TABLE_STARTED, null, this);
         }
     }
 
@@ -89,9 +84,8 @@ public class DifficultyFragment extends Fragment implements LoaderManager.Loader
     }
 
     private void loadImage(){
-
         int height = DisplayDimensions.getInstance().getHeight() / 2;
-        int width = Math.round(height * Utility.GOLDEN_RATIO);
+        int width = Math.round(height * Constants.GOLDEN_RATIO);
         Glide.with(getContext())
                 .load(new File(item))
                 .override(width, height)
@@ -105,10 +99,10 @@ public class DifficultyFragment extends Fragment implements LoaderManager.Loader
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent (getActivity(), JigsawGameActivity.class);
-                intent.putExtra("filePath", item);
-                intent.putExtra("difficulty", difficultySelector.getProgress() + DIFFICULTY_MIN_VALUE);
-                intent.putExtra("positions", startedPuzzlesPositions[difficultySelector.getProgress() + DIFFICULTY_MIN_VALUE]);
-                intent.putExtra("currTime", currentTime[difficultySelector.getProgress() + DIFFICULTY_MIN_VALUE]);
+                intent.putExtra(Constants.INTENT_FILE_PATH, item);
+                intent.putExtra(Constants.INTENT_DIFFICULTY, difficultySelector.getProgress() + Constants.DIFFICULTY_MIN_VALUE);
+                intent.putExtra(Constants.INTENT_POSITIONS, startedPuzzlesPositions[difficultySelector.getProgress() + Constants.DIFFICULTY_MIN_VALUE]);
+                intent.putExtra(Constants.INTENT_CURR_TIME, currentTime[difficultySelector.getProgress() + Constants.DIFFICULTY_MIN_VALUE]);
                 startActivity(intent);
             }
         });
@@ -119,15 +113,15 @@ public class DifficultyFragment extends Fragment implements LoaderManager.Loader
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 TextView difficultyTxt = (TextView)masterLayout.findViewById(R.id.difficultyFragmentDifficultyTxt);
-                difficultyTxt.setText("Difficulty: "+ (seekBar.getProgress() + DIFFICULTY_MIN_VALUE)
-                        + " x " + (seekBar.getProgress() + DIFFICULTY_MIN_VALUE));
+                difficultyTxt.setText("Difficulty: "+ (seekBar.getProgress() + Constants.DIFFICULTY_MIN_VALUE)
+                        + " x " + (seekBar.getProgress() + Constants.DIFFICULTY_MIN_VALUE));
                 setBestTime(seekBar.getProgress());
-                setReward(seekBar.getProgress() + DIFFICULTY_MIN_VALUE);
+                setReward(seekBar.getProgress() + Constants.DIFFICULTY_MIN_VALUE);
                 Button startGameBtn = (Button)masterLayout.findViewById(R.id.difficultyFragmentStartGameBtn);
-                if (startedPuzzlesPositions[seekBar.getProgress() + DIFFICULTY_MIN_VALUE] == null){
-                    startGameBtn.setText(getContext().getString(R.string.start_game));
+                if (startedPuzzlesPositions[seekBar.getProgress() + Constants.DIFFICULTY_MIN_VALUE] == null){
+                    startGameBtn.setText(getString(R.string.start_game));
                 } else {
-                    startGameBtn.setText(getContext().getString(R.string.continue_game));
+                    startGameBtn.setText(getString(R.string.continue_game));
                 }
             }
 
@@ -143,19 +137,19 @@ public class DifficultyFragment extends Fragment implements LoaderManager.Loader
         });
         //Trigger on progress change
         difficultySelector.setProgress(difficultySelector.getMax());
-        difficultySelector.setProgress(difficulty - DIFFICULTY_MIN_VALUE);
+        difficultySelector.setProgress(difficulty - Constants.DIFFICULTY_MIN_VALUE);
     }
 
     private void setBestTime(int difficulty){
-        int bestTimeSec = bestSolveTimes[difficulty + DIFFICULTY_MIN_VALUE] % 60;
-        int bestTimeMin = bestSolveTimes[difficulty + DIFFICULTY_MIN_VALUE] / 60;
+        int bestTimeSec = bestSolveTimes[difficulty + Constants.DIFFICULTY_MIN_VALUE] % 60;
+        int bestTimeMin = bestSolveTimes[difficulty + Constants.DIFFICULTY_MIN_VALUE] / 60;
         ((TextView)masterLayout.findViewById(R.id.difficultyFragmentBestTime))
-                .setText(String.format(Locale.getDefault(), "Best Time: %02d:%02d", bestTimeMin, bestTimeSec));
+                .setText(String.format(Locale.getDefault(), getString(R.string.best_time) + ": %02d:%02d", bestTimeMin, bestTimeSec));
     }
 
     private void setReward(int difficulty) {
         ((TextView) masterLayout.findViewById(R.id.difficultyFragmentReward))
-                .setText("Reward: " + String.valueOf(difficulty * 10));
+                .setText(getString(R.string.reward) + ": " + String.valueOf(difficulty * 10));
     }
     @Override
     public void onResume() {
@@ -169,10 +163,10 @@ public class DifficultyFragment extends Fragment implements LoaderManager.Loader
         String whereClause = "PUZZLE = '" + item + "'";
         CursorLoader cursorLoader = null;
         switch(id){
-            case TABLE_COMPLETED:
+            case Constants.TABLE_COMPLETED:
                 cursorLoader = new CursorLoader(getContext(),PuzzleContentProvider.CONTENT_URI_COMPLETED, null, whereClause, null, null);
                 break;
-            case TABLE_STARTED:
+            case Constants.TABLE_STARTED:
                 cursorLoader = new CursorLoader(getContext(),PuzzleContentProvider.CONTENT_URI_STARTED, null, whereClause, null, null);
                 break;
             default:
@@ -184,23 +178,22 @@ public class DifficultyFragment extends Fragment implements LoaderManager.Loader
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         switch (loader.getId()){
-            case TABLE_COMPLETED:
+            case Constants.TABLE_COMPLETED:
                 bestSolveTimes = new int[11];
                 while (data.moveToNext()) {
-                    int difficulty = data.getInt(data.getColumnIndex("DIFFICULTY"));
-                    int solveTime = data.getInt(data.getColumnIndex("SOLVETIME"));
+                    int difficulty = data.getInt(data.getColumnIndex(Constants.DB_DIFFICULTY));
+                    int solveTime = data.getInt(data.getColumnIndex(Constants.DB_SOLVETIME));
                     bestSolveTimes[difficulty] = solveTime;
                 }
                 loadFinished++;
                 break;
-            case TABLE_STARTED:
-                Log.d("startedtable", data.getCount() + "");
+            case Constants.TABLE_STARTED:
                 startedPuzzlesPositions = new String[11];
                 currentTime = new int[11];
                 while (data.moveToNext()) {
-                    int difficulty = data.getInt(data.getColumnIndex("DIFFICULTY"));
-                    String positions = data.getString(data.getColumnIndex("POSITIONS"));
-                    int time = data.getInt(data.getColumnIndex("SOLVETIME"));
+                    int difficulty = data.getInt(data.getColumnIndex(Constants.DB_DIFFICULTY));
+                    String positions = data.getString(data.getColumnIndex(Constants.DB_POSITIONS));
+                    int time = data.getInt(data.getColumnIndex(Constants.DB_SOLVETIME));
                     startedPuzzlesPositions[difficulty] = positions;
                     currentTime[difficulty] = time;
                 }

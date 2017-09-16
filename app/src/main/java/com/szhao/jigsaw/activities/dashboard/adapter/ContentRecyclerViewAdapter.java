@@ -9,12 +9,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.szhao.jigsaw.R;
 import com.szhao.jigsaw.activities.dashboard.vh.ContentViewHolder;
+import com.szhao.jigsaw.global.Constants;
 import com.szhao.jigsaw.global.PointSystem;
 import com.szhao.jigsaw.global.Utility;
 
@@ -69,7 +71,7 @@ public class ContentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         vh.setPuzzleImage(puzzles.get(position));
 
         //If the puzzle was downloaded it needs to be unlocked by paying coins
-        File downloadedDir = context.getDir("DL", Context.MODE_PRIVATE);
+        File downloadedDir = context.getDir(Constants.DOWNLOADED_PUZZLES_DIR, Context.MODE_PRIVATE);
         if (puzzles.get(position).contains(downloadedDir.getName()) && !PointSystem.getInstance().isPuzzleUnlocked(puzzles.get(position))) {
             vh.setLock();
         } else {
@@ -80,7 +82,7 @@ public class ContentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     public void setPuzzles(String category){
         puzzles.clear();
         startedDifficulties.clear();
-        if (category.equals("Started")){
+        if (category.equals(context.getString(R.string.started))){
             setStartPuzzles();
         } else {
             try {
@@ -102,7 +104,7 @@ public class ContentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
     public void setCustomPuzzles(){
         puzzles.clear();
-        File dir = context.getDir("custom_puzzles", Context.MODE_PRIVATE);
+        File dir = context.getDir(Constants.CUSTOM_PUZZLES_DIR, Context.MODE_PRIVATE);
         File[] puzzleFilePaths = dir.listFiles();
         for (File filePath : puzzleFilePaths) {
             puzzles.add(filePath.getAbsolutePath());
@@ -112,13 +114,12 @@ public class ContentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
     private void setDLPuzzles(String category) {
         puzzles.clear();
-        File dir = context.getDir("DL", Context.MODE_PRIVATE);
+        File dir = context.getDir(Constants.DOWNLOADED_PUZZLES_DIR, Context.MODE_PRIVATE);
         File categoryDir = new File(dir, category);
         File[] puzzleFilePaths = categoryDir.listFiles();
         for (File filePath : puzzleFilePaths){
             puzzles.add(filePath.getAbsolutePath());
         }
-        Collections.reverse(puzzles);
         notifyDataSetChanged();
     }
 
@@ -132,15 +133,16 @@ public class ContentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     }
 
     private void showUnlockDialog(final ContentViewHolder vh) {
-        new MaterialDialog.Builder(context)
-                .content("Would you like to unlock this puzzle for 100 coins?")
-                .contentGravity(GravityEnum.CENTER)
-                .positiveText("Yes")
-                .negativeText("No")
+        MaterialDialog materialDialog = new MaterialDialog.Builder(context)
+                .title(R.string.unlock)
+                .titleGravity(GravityEnum.CENTER)
+                .customView(R.layout.dialog_unlock, true)
+                .positiveText(R.string.accept)
+                .negativeText(R.string.decline)
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        PointSystem.getInstance().spendPoints(context, 100);
+                        PointSystem.getInstance().spendPoints(context, Constants.UNLOCK_COST);
                         PointSystem.getInstance().savePuzzle(context, puzzles.get(vh.getAdapterPosition()));
                         vh.setUnlock();
                         PointSystem.getInstance().increaseCountVH();
@@ -152,14 +154,17 @@ public class ContentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                         Utility.startImmersiveMode(context);
                     }
                 })
-                .show();
+                .build();
+        View customView = materialDialog.getCustomView();
+        ((TextView)customView.findViewById(R.id.dialogUnlockCostTxt)).setText(String.valueOf(Constants.UNLOCK_COST));
+        materialDialog.show();
     }
 
     private void setStartPuzzles() {
         startedPuzzlesCursor.moveToPosition(-1);
         while (startedPuzzlesCursor.moveToNext()) {
-            puzzles.add(startedPuzzlesCursor.getString(startedPuzzlesCursor.getColumnIndex("PUZZLE")));
-            startedDifficulties.add(startedPuzzlesCursor.getInt(startedPuzzlesCursor.getColumnIndex("DIFFICULTY")));
+            puzzles.add(startedPuzzlesCursor.getString(startedPuzzlesCursor.getColumnIndex(Constants.DB_PUZZLE)));
+            startedDifficulties.add(startedPuzzlesCursor.getInt(startedPuzzlesCursor.getColumnIndex(Constants.DB_DIFFICULTY)));
         }
         Collections.reverse(puzzles);
         Collections.reverse(startedDifficulties);

@@ -15,25 +15,16 @@
             android:orientation="vertical">
 
             <TextView
-                style="@style/Wrap"
-                android:fontFamily="sans-serif-condensed"
-                android:text="Difficulty:"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                style="@style/TextView"
+                android:text="Difficulty:"/>
 
             <TextView
-                style="@style/Wrap"
-                android:fontFamily="sans-serif-condensed"
-                android:text="Time:"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                style="@style/TextView"
+                android:text="Time:"/>
 
             <TextView
-                style="@style/Wrap"
-                android:fontFamily="sans-serif-condensed"
-                android:text="Reward:"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                style="@style/TextView"
+                android:text="Reward:"/>
         </LinearLayout>
 
         <!-- Values -->
@@ -44,17 +35,11 @@
 
             <TextView
                 android:id="@+id/dialogPuzzleComplete_difficultyTxt"
-                style="@style/Wrap"
-                android:fontFamily="sans-serif-condensed"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                style="@style/TextView" />
 
             <TextView
                 android:id="@+id/dialogPuzzleComplete_TimeTxt"
-                style="@style/Wrap"
-                android:fontFamily="sans-serif-condensed"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                style="@style/TextView"/>
 
             <LinearLayout
                 style="@style/Wrap"
@@ -62,26 +47,14 @@
 
                 <TextView
                     android:id="@+id/dialogPuzzleComplete_RewardTxt"
-                    style="@style/Wrap"
-                    android:fontFamily="sans-serif-condensed"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    style="@style/TextView"/>
 
                 <ImageView
                     style="@style/Wrap"
                     android:layout_marginLeft="5dp"
-                    android:src="@drawable/ic_coin36dp" />
+                    android:src="@drawable/ic_coin24dp" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-
-    <Button
-        android:id="@+id/dialogPuzzleComplete_finishBtn"
-        style="@style/Wrap"
-        android:layout_gravity="bottom|center"
-        android:fontFamily="sans-serif-condensed"
-        android:text="Finish"
-        android:textSize="18sp"
-        android:textStyle="bold" />
 
 </LinearLayout>

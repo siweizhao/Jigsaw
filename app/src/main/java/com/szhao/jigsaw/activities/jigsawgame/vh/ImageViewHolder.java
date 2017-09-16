@@ -2,7 +2,6 @@ package com.szhao.jigsaw.activities.jigsawgame.vh;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -25,10 +24,6 @@ public class ImageViewHolder extends RecyclerView.ViewHolder{
         mImage = (ImageView)view.findViewById(R.id.image_only);
     }
 
-    public Bitmap getBitmap(){
-        return ((BitmapDrawable)mImage.getDrawable()).getBitmap();
-    }
-
     public void setPuzzlePieceImage(Bitmap bitmap){
         mImage.setImageBitmap(bitmap);
     }
@@ -37,10 +32,6 @@ public class ImageViewHolder extends RecyclerView.ViewHolder{
         Glide.with(mContext)
                 .load(bgId)
                 .into(mImage);
-    }
-
-    public void setBorder(){
-        mImage.setBackgroundResource(R.drawable.border_black);
     }
 
 }

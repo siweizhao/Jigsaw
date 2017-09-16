@@ -18,7 +18,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.DragEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -42,6 +41,7 @@ import com.szhao.jigsaw.activities.jigsawgame.adapter.PuzzlePieceRecyclerViewAda
 import com.szhao.jigsaw.activities.jigsawgame.jigsaw.Game;
 import com.szhao.jigsaw.activities.jigsawgame.jigsaw.PuzzlePiece;
 import com.szhao.jigsaw.db.PuzzleContentProvider;
+import com.szhao.jigsaw.global.Constants;
 import com.szhao.jigsaw.global.DisplayDimensions;
 import com.szhao.jigsaw.global.PointSystem;
 import com.szhao.jigsaw.global.SoundSettings;
@@ -54,7 +54,6 @@ import java.util.Locale;
 
 public class JigsawGameActivity extends AppCompatActivity{
 
-    private static final String SHARED_PREF_BG = "bg";
     private FrameLayout masterLayout;
     private RelativeLayout gameLayout;
     private int totalTimeSec = 0;
@@ -96,10 +95,10 @@ public class JigsawGameActivity extends AppCompatActivity{
 
         setPuzzleImageDim();
         Intent intent = getIntent();
-        difficulty = intent.getExtras().getInt("difficulty");
-        filePath = intent.getExtras().getString("filePath");
-        positions = intent.getExtras().getString("positions");
-        totalTimeSec = intent.getExtras().getInt("currTime");
+        difficulty = intent.getExtras().getInt(Constants.INTENT_DIFFICULTY);
+        filePath = intent.getExtras().getString(Constants.INTENT_FILE_PATH);
+        positions = intent.getExtras().getString(Constants.INTENT_POSITIONS);
+        totalTimeSec = intent.getExtras().getInt(Constants.INTENT_CURR_TIME);
         soundSettings = new SoundSettings(this);
 
         loadBackgroundImage(getSavedBackgroundImage());
@@ -115,13 +114,13 @@ public class JigsawGameActivity extends AppCompatActivity{
 
         int marginHeight = 50;
         puzzleHeight = DisplayDimensions.getInstance().getHeight() * 5 / 6 - marginHeight;
-        puzzleWidth = Math.round(puzzleHeight * Utility.GOLDEN_RATIO);
+        puzzleWidth = Math.round(puzzleHeight * Constants.GOLDEN_RATIO);
 
         //Prevent puzzle from overlapping with buttons on the side
         int sideButtonsSpace = 120;
         if (puzzleWidth > DisplayDimensions.getInstance().getWidth() - sideButtonsSpace) {
             puzzleWidth = DisplayDimensions.getInstance().getWidth() - sideButtonsSpace;
-            puzzleHeight = Math.round(puzzleWidth / Utility.GOLDEN_RATIO);
+            puzzleHeight = Math.round(puzzleWidth / Constants.GOLDEN_RATIO);
         }
 
         android.view.ViewGroup.LayoutParams params = gameLayout.getLayoutParams();
@@ -204,9 +203,9 @@ public class JigsawGameActivity extends AppCompatActivity{
         //Updating db
         stopTimer();
         ContentValues contentValues = new ContentValues();
-        contentValues.put("DIFFICULTY", difficulty);
-        contentValues.put("SOLVETIME", totalTimeSec);
-        contentValues.put("PUZZLE", filePath);
+        contentValues.put(Constants.DB_DIFFICULTY, difficulty);
+        contentValues.put(Constants.DB_SOLVETIME, totalTimeSec);
+        contentValues.put(Constants.DB_PUZZLE, filePath);
 
         String whereClause = "PUZZLE = ? AND DIFFICULTY = ?";
         String[] args = new String[]{filePath, String.valueOf(difficulty)};
@@ -215,7 +214,7 @@ public class JigsawGameActivity extends AppCompatActivity{
         Cursor cursor = getContentResolver().query(PuzzleContentProvider.CONTENT_URI_COMPLETED, null, whereClause, args, null);
         if (cursor != null && cursor.moveToNext()) {
             //Faster solve time so update db
-            if (cursor.getInt(cursor.getColumnIndex("SOLVETIME")) > totalTimeSec)
+            if (cursor.getInt(cursor.getColumnIndex(Constants.DB_SOLVETIME)) > totalTimeSec)
                 getContentResolver().update(PuzzleContentProvider.CONTENT_URI_COMPLETED, contentValues, whereClause, args);
             cursor.close();
         } else {
@@ -228,11 +227,18 @@ public class JigsawGameActivity extends AppCompatActivity{
                 .customView(R.layout.dialog_puzzlecomplete, false)
                 .titleGravity(GravityEnum.CENTER)
                 .title("Puzzle Complete")
-                .backgroundColorRes(R.color.whitegrey)
                 .dismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
                         Utility.startImmersiveMode(JigsawGameActivity.this);
+                    }
+                })
+                .positiveText("Finish")
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        Intent intent = new Intent(getBaseContext(), DashboardActivity.class);
+                        startActivity(intent);
                     }
                 })
                 .build();
@@ -242,14 +248,6 @@ public class JigsawGameActivity extends AppCompatActivity{
         ((TextView) customView.findViewById(R.id.dialogPuzzleComplete_difficultyTxt)).setText(difficultyStr);
         ((TextView) customView.findViewById(R.id.dialogPuzzleComplete_TimeTxt)).setText(String.format(Locale.getDefault(), "%02d:%02d", totalTimeSec / 60, totalTimeSec % 60));
         ((TextView) customView.findViewById(R.id.dialogPuzzleComplete_RewardTxt)).setText(String.valueOf(difficulty * 10));
-        Button finishBtn = (Button) customView.findViewById(R.id.dialogPuzzleComplete_finishBtn);
-        finishBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getBaseContext(), DashboardActivity.class);
-                startActivity(intent);
-            }
-        });
         materialDialog.show();
     }
 
@@ -268,10 +266,11 @@ public class JigsawGameActivity extends AppCompatActivity{
         PuzzlePieceRecyclerViewAdapter viewAdapter = (PuzzlePieceRecyclerViewAdapter) puzzlePieceRecycler.getAdapter();
         viewAdapter.showSidePieces();
         if (showSidePiecesBtn.getTag().equals("false")) {
-            showSidePiecesBtn.setImageResource(R.drawable.ic_jigsaw_corner24dp);
+            showSidePiecesBtn.setImageResource(R.drawable.ic_jigsaw24dp);
             showSidePiecesBtn.setTag("true");
         }else {
-            showSidePiecesBtn.setImageResource(R.drawable.ic_jigsaw24dp);
+            showSidePiecesBtn.setImageResource(R.drawable.ic_jigsaw_corner24dp);
+
             showSidePiecesBtn.setTag("false");
         }
     }
@@ -318,7 +317,7 @@ public class JigsawGameActivity extends AppCompatActivity{
         MaterialDialog materialDialog = new MaterialDialog.Builder(this)
                 .customView(R.layout.dialog_changebackground, false)
                 .titleGravity(GravityEnum.CENTER)
-                .title("Background")
+                .title(getString(R.string.background))
                 .dismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
@@ -343,12 +342,12 @@ public class JigsawGameActivity extends AppCompatActivity{
 
     private int getSavedBackgroundImage(){
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        int defaultBackground = Utility.DEFAULT_BACKGROUND;
-        return sharedPref.getInt(SHARED_PREF_BG, defaultBackground);
+        int defaultBackground = Constants.DEFAULT_BACKGROUND;
+        return sharedPref.getInt(Constants.SHARED_PREF_BG, defaultBackground);
     }
 
     private void loadBackgroundImage(int bgId){
-        Utility.setSharedPrefValues(this, SHARED_PREF_BG, bgId);
+        Utility.setSharedPrefValues(this, Constants.SHARED_PREF_BG, bgId);
 
         //Display bg
         Glide.with(getApplicationContext())
@@ -369,10 +368,10 @@ public class JigsawGameActivity extends AppCompatActivity{
 
     public void goNavigationActivity(View view){
         new MaterialDialog.Builder(this)
-                .content("Are you sure you want to go back to menu? You progress will be saved.")
+                .content(getString(R.string.back_to_menu))
                 .contentGravity(GravityEnum.CENTER)
-                .positiveText("Yes")
-                .negativeText("No")
+                .positiveText(getString(R.string.yes))
+                .negativeText(getString(R.string.no))
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
@@ -405,10 +404,10 @@ public class JigsawGameActivity extends AppCompatActivity{
             puzzlepiecePositions.deleteCharAt(puzzlepiecePositions.length() - 1);
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put("DIFFICULTY", difficulty);
-        contentValues.put("SOLVETIME", totalTimeSec);
-        contentValues.put("PUZZLE", filePath);
-        contentValues.put("POSITIONS", puzzlepiecePositions.toString());
+        contentValues.put(Constants.DB_DIFFICULTY, difficulty);
+        contentValues.put(Constants.DB_SOLVETIME, totalTimeSec);
+        contentValues.put(Constants.DB_PUZZLE, filePath);
+        contentValues.put(Constants.DB_POSITIONS, puzzlepiecePositions.toString());
 
         String whereClause = "PUZZLE = ? AND DIFFICULTY = ?";
         String[] args = new String[]{filePath, String.valueOf(difficulty)};

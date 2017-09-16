@@ -96,7 +96,7 @@
             android:id="@+id/showSidePiecesBtn"
             style="@style/Wrap"
             android:onClick="showSidePieces"
-            android:src="@drawable/ic_jigsaw24dp"
+            android:src="@drawable/ic_jigsaw_corner24dp"
             android:tag="false" />
         <ImageButton
             android:id="@+id/showSolutionBtn"
