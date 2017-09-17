@@ -26,8 +26,8 @@ public class ContentViewHolder extends RecyclerView.ViewHolder{
     public ContentViewHolder(Context context, View view){
         super(view);
         this.context = context;
-        puzzleImage = (ImageView)view.findViewById(R.id.content_image);
-        lockImage = (ImageView) view.findViewById(R.id.content_locked);
+        puzzleImage = view.findViewById(R.id.content_image);
+        lockImage = view.findViewById(R.id.content_locked);
         height = DisplayDimensions.getInstance().getContentRecyclerHeight() - Constants.CONTENT_VH_MARGIN;
         width = Math.round(Constants.GOLDEN_RATIO * height);
     }
@@ -38,13 +38,13 @@ public class ContentViewHolder extends RecyclerView.ViewHolder{
 
     public void setLock() {
         isLocked = true;
-        puzzleImage.setImageAlpha(Constants.LOCKED_ALPHA);
+        puzzleImage.setAlpha(Constants.LOCKED_ALPHA);
         lockImage.setVisibility(View.VISIBLE);
     }
 
     public void setUnlock() {
         isLocked = false;
-        puzzleImage.setImageAlpha(Constants.UNLOCKED_ALPHA);
+        puzzleImage.setAlpha(Constants.UNLOCKED_ALPHA);
         lockImage.setVisibility(View.INVISIBLE);
     }
 

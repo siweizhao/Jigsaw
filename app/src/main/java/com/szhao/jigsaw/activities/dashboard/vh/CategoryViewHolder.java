@@ -27,13 +27,12 @@ public class CategoryViewHolder extends RecyclerView.ViewHolder {
     public CategoryViewHolder(Context context, View view) {
         super(view);
         this.context = context;
-        categoryImage = (ImageView)view.findViewById(R.id.category_image);
-        categoryCount = (TextView)view.findViewById(R.id.category_image_count);
-        categoryDescription = (TextView)view.findViewById(R.id.category_description);
-        int categoryRecyclerHeight = (int) (DisplayDimensions.getInstance().getHeight() * Constants.CATEGORY_RECYCLER_HEIGHT);
+        categoryImage = view.findViewById(R.id.category_image);
+        categoryCount = view.findViewById(R.id.category_image_count);
+        categoryDescription = view.findViewById(R.id.category_description);
+        int categoryRecyclerHeight = Math.round(DisplayDimensions.getInstance().getHeight() * Constants.CATEGORY_RECYCLER_HEIGHT);
         height = categoryRecyclerHeight - Constants.CATEGORY_VH_MARGIN;
         width = Math.round(Constants.GOLDEN_RATIO * height);
-
     }
 
     public void setImage(String filePath){

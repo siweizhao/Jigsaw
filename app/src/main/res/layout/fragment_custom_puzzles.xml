@@ -16,11 +16,13 @@
                 android:id="@+id/addCustomPuzzleBtn"
                 style="@style/Wrap"
             android:layout_marginEnd="30dp"
+            android:layout_marginRight="30dp"
             android:src="@drawable/ic_photo64dp" />
 
         <ImageButton
                 android:id="@+id/removeCustomPuzzleBtn"
                 style="@style/Wrap"
+            android:layout_marginLeft="30dp"
             android:layout_marginStart="30dp"
             android:src="@drawable/ic_trashcan_close64dp" />
 

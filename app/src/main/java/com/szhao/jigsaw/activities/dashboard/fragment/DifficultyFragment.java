@@ -76,8 +76,8 @@ public class DifficultyFragment extends Fragment implements LoaderManager.Loader
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         masterLayout = inflater.inflate(R.layout.fragment_difficulty, container, false);
-        puzzleImage = (ImageView)masterLayout.findViewById(R.id.difficultyFragmentPuzzleImage);
-        difficultySelector = (SeekBar)masterLayout.findViewById(R.id.difficultyFragmentSeekBar);
+        puzzleImage = masterLayout.findViewById(R.id.difficultyFragmentPuzzleImage);
+        difficultySelector = masterLayout.findViewById(R.id.difficultyFragmentSeekBar);
         loadImage();
         initStartGameBtn();
         return masterLayout;
@@ -94,7 +94,7 @@ public class DifficultyFragment extends Fragment implements LoaderManager.Loader
     }
 
     private void initStartGameBtn(){
-        Button startGameBtn = (Button)masterLayout.findViewById(R.id.difficultyFragmentStartGameBtn);
+        Button startGameBtn = masterLayout.findViewById(R.id.difficultyFragmentStartGameBtn);
         startGameBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,12 +112,12 @@ public class DifficultyFragment extends Fragment implements LoaderManager.Loader
         difficultySelector.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                TextView difficultyTxt = (TextView)masterLayout.findViewById(R.id.difficultyFragmentDifficultyTxt);
-                difficultyTxt.setText("Difficulty: "+ (seekBar.getProgress() + Constants.DIFFICULTY_MIN_VALUE)
+                TextView difficultyTxt = masterLayout.findViewById(R.id.difficultyFragmentDifficultyTxt);
+                difficultyTxt.setText(getContext().getString(R.string.difficulty) + ": " + (seekBar.getProgress() + Constants.DIFFICULTY_MIN_VALUE)
                         + " x " + (seekBar.getProgress() + Constants.DIFFICULTY_MIN_VALUE));
                 setBestTime(seekBar.getProgress());
                 setReward(seekBar.getProgress() + Constants.DIFFICULTY_MIN_VALUE);
-                Button startGameBtn = (Button)masterLayout.findViewById(R.id.difficultyFragmentStartGameBtn);
+                Button startGameBtn = masterLayout.findViewById(R.id.difficultyFragmentStartGameBtn);
                 if (startedPuzzlesPositions[seekBar.getProgress() + Constants.DIFFICULTY_MIN_VALUE] == null){
                     startGameBtn.setText(getString(R.string.start_game));
                 } else {

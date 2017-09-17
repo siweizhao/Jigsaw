@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
+import com.google.firebase.crash.FirebaseCrash;
 import com.szhao.jigsaw.R;
 import com.szhao.jigsaw.activities.dashboard.adapter.ContentRecyclerViewAdapter;
 import com.szhao.jigsaw.activities.dashboard.adapter.ItemSelectListener;
@@ -51,14 +52,14 @@ public class CustomPuzzlesFragment extends Fragment implements ItemSelectListene
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v =  inflater.inflate(R.layout.fragment_custom_puzzles, container, false);
-        ImageButton addImageBtn = (ImageButton)v.findViewById(R.id.addCustomPuzzleBtn);
+        ImageButton addImageBtn = v.findViewById(R.id.addCustomPuzzleBtn);
         addImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 addImage();
             }
         });
-        final ImageButton removeImageBtn = (ImageButton) v.findViewById(R.id.removeCustomPuzzleBtn);
+        final ImageButton removeImageBtn = v.findViewById(R.id.removeCustomPuzzleBtn);
         removeImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,12 +74,12 @@ public class CustomPuzzlesFragment extends Fragment implements ItemSelectListene
             }
         });
 
-        LinearLayout topWrapper = (LinearLayout) v.findViewById(R.id.customPuzzleFragmentTopWrapper);
+        LinearLayout topWrapper = v.findViewById(R.id.customPuzzleFragmentTopWrapper);
         ViewGroup.LayoutParams recyclerParams = topWrapper.getLayoutParams();
         recyclerParams.height = (int) (DisplayDimensions.getInstance().getHeight() * 0.3);
         topWrapper.setLayoutParams(recyclerParams);
 
-        RecyclerView customPuzzleRecycler = (RecyclerView)v.findViewById(R.id.customPuzzlesRecycler);
+        RecyclerView customPuzzleRecycler = v.findViewById(R.id.customPuzzlesRecycler);
         contentAdapter = new ContentRecyclerViewAdapter(getContext(),null);
         contentAdapter.setCustomPuzzles();
         contentAdapter.setListener(mListener);
@@ -150,7 +151,7 @@ public class CustomPuzzlesFragment extends Fragment implements ItemSelectListene
                 Utility.startImmersiveMode(getContext());
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
-                Log.d("Upload image error", error.getMessage());
+                FirebaseCrash.logcat(Log.ERROR, "Upload Image", error.getMessage());
             }
         }
     }
@@ -158,8 +159,9 @@ public class CustomPuzzlesFragment extends Fragment implements ItemSelectListene
     public void storeCustomPuzzle(Uri uri){
         File dir = getActivity().getDir(Constants.CUSTOM_PUZZLES_DIR, Context.MODE_PRIVATE);
         File newPath = new File(dir, "puzzle_" + String.valueOf(System.currentTimeMillis()));
-        try (FileInputStream in = new FileInputStream(uri.getPath());
-             FileOutputStream out = new FileOutputStream(newPath)) {
+        try {
+            FileInputStream in = new FileInputStream(uri.getPath());
+            FileOutputStream out = new FileOutputStream(newPath);
             byte[] buffer = new byte[1024];
             int read;
             while((read = in.read(buffer)) != -1){
@@ -169,7 +171,8 @@ public class CustomPuzzlesFragment extends Fragment implements ItemSelectListene
             out.flush();
             out.close();
         } catch (IOException e){
-            Log.d("Save custom puzzle", e.getMessage());
+            FirebaseCrash.logcat(Log.ERROR, "Custom Puzzle", "Saving custom puzzle");
+            FirebaseCrash.report(e);
         }
     }
 

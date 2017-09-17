@@ -17,9 +17,15 @@
     <string name="ok">Ok</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="finish">Finish</string>
+    <string name="difficulty">Difficulty</string>
+    <string name="puzzle_complete">Puzzle Complete</string>
+    <string name="downloading_puzzles">Downloading new puzzles</string>
+    <string name="back_to_menu">Would you like to go back to the menu? Your progress will be saved</string>
+    <string name="insufficent_funds">Insufficient Funds</string>
     <string name="download_puzzles">Download Puzzles</string>
     <string name="check_new_puzzles">Would you like to check for new available puzzles?</string>
-    <string name="back_to_menu">"Are you sure you want to go back to menu? You progress will be saved.</string>
+    <string name="reset_prompt">Are you sure you want to reset?</string>
     <string name="title_activity_shared_element">SharedElement</string>
     <string name="title_activity_dashboard">Dashboard</string>
 

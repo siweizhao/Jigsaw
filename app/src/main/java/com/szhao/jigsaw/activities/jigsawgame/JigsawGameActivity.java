@@ -72,11 +72,11 @@ public class JigsawGameActivity extends AppCompatActivity{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_jigsaw_game);
-        masterLayout = (FrameLayout)findViewById(R.id.masterLayout);
-        gameLayout = (RelativeLayout) findViewById(R.id.gameLayout);
-        originalImage = (ImageView)findViewById(R.id.originalImage);
-        showSidePiecesBtn = (ImageButton)findViewById(R.id.showSidePiecesBtn);
-        puzzlePieceRecycler = (RecyclerView)findViewById(R.id.puzzlePieceRecycler);
+        masterLayout = findViewById(R.id.masterLayout);
+        gameLayout = findViewById(R.id.gameLayout);
+        originalImage = findViewById(R.id.originalImage);
+        showSidePiecesBtn = findViewById(R.id.showSidePiecesBtn);
+        puzzlePieceRecycler = findViewById(R.id.puzzlePieceRecycler);
         puzzlePieceRecycler.setOnDragListener(new View.OnDragListener() {
             @Override
             public boolean onDrag(View v, DragEvent event) {
@@ -115,13 +115,6 @@ public class JigsawGameActivity extends AppCompatActivity{
         int marginHeight = 50;
         puzzleHeight = DisplayDimensions.getInstance().getHeight() * 5 / 6 - marginHeight;
         puzzleWidth = Math.round(puzzleHeight * Constants.GOLDEN_RATIO);
-
-        //Prevent puzzle from overlapping with buttons on the side
-        int sideButtonsSpace = 120;
-        if (puzzleWidth > DisplayDimensions.getInstance().getWidth() - sideButtonsSpace) {
-            puzzleWidth = DisplayDimensions.getInstance().getWidth() - sideButtonsSpace;
-            puzzleHeight = Math.round(puzzleWidth / Constants.GOLDEN_RATIO);
-        }
 
         android.view.ViewGroup.LayoutParams params = gameLayout.getLayoutParams();
         params.width = puzzleWidth;
@@ -178,7 +171,7 @@ public class JigsawGameActivity extends AppCompatActivity{
     }
 
     public void initCondensedImage(){
-        ImageView condensedImage = (ImageView)findViewById(R.id.condensedImage);
+        ImageView condensedImage = findViewById(R.id.condensedImage);
         Glide.with(this)
                 .load(new File(filePath ))
                 .override(puzzleWidth / 2, puzzleHeight / 2)
@@ -226,14 +219,14 @@ public class JigsawGameActivity extends AppCompatActivity{
         MaterialDialog materialDialog = new MaterialDialog.Builder(this)
                 .customView(R.layout.dialog_puzzlecomplete, false)
                 .titleGravity(GravityEnum.CENTER)
-                .title("Puzzle Complete")
+                .title(getString(R.string.puzzle_complete))
                 .dismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
                         Utility.startImmersiveMode(JigsawGameActivity.this);
                     }
                 })
-                .positiveText("Finish")
+                .positiveText(getString(R.string.finish))
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
@@ -283,21 +276,21 @@ public class JigsawGameActivity extends AppCompatActivity{
     }
 
     public void showCondensedImage(View view){
-        FrameLayout wrapper = (FrameLayout)findViewById(R.id.condensedImageWrapper);
+        FrameLayout wrapper = findViewById(R.id.condensedImageWrapper);
         wrapper.setVisibility(View.VISIBLE);
     }
 
     public void hideCondensedImage(View view){
-        FrameLayout wrapper = (FrameLayout)findViewById(R.id.condensedImageWrapper);
+        FrameLayout wrapper = findViewById(R.id.condensedImageWrapper);
         wrapper.setVisibility(View.INVISIBLE);
     }
 
     public void resetGame(View view){
         new MaterialDialog.Builder(this)
-                .content("Are you sure you want to reset?")
+                .content(getString(R.string.reset_prompt))
                 .contentGravity(GravityEnum.CENTER)
-                .positiveText("Yes")
-                .negativeText("No")
+                .positiveText(getString(R.string.yes))
+                .negativeText(getString(R.string.no))
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
@@ -327,7 +320,7 @@ public class JigsawGameActivity extends AppCompatActivity{
                 .build();
 
         View customView = materialDialog.getCustomView();
-        RecyclerView backgroundRecycler = (RecyclerView)customView.findViewById(R.id.backgroundRecycler);
+        RecyclerView backgroundRecycler = customView.findViewById(R.id.backgroundRecycler);
         backgroundRecycler.setLayoutManager(new GridLayoutManager(this, 4));
         BackgroundViewAdapter bgViewAdapter = new BackgroundViewAdapter(this);
         bgViewAdapter.setListener(new BackgroundViewAdapter.BackgroundSelectListener() {
@@ -356,8 +349,12 @@ public class JigsawGameActivity extends AppCompatActivity{
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                         Drawable drawable = new BitmapDrawable(resource);
-                        LinearLayout bg = (LinearLayout)findViewById(R.id.background);
-                        bg.setBackground(drawable);
+                        LinearLayout bg = findViewById(R.id.background);
+                        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                            bg.setBackgroundDrawable(drawable);
+                        } else {
+                            bg.setBackground(drawable);
+                        }
                     }
                 });
     }

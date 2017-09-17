@@ -52,14 +52,14 @@
 
                 <ImageView
                     style="@style/Wrap"
+                    android:layout_marginLeft="5dp"
                     android:layout_marginStart="5dp"
                     android:src="@drawable/ic_coin24dp" />
             </LinearLayout>
 
             <Button
                 android:id="@+id/difficultyFragmentStartGameBtn"
-                style="@style/ButtonBasic"
-                android:text="Start Game" />
+                style="@style/ButtonBasic" />
         </LinearLayout>
 
     </LinearLayout>

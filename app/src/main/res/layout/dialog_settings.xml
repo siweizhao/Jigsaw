@@ -5,6 +5,7 @@
 
     <LinearLayout
         style="@style/Wrap"
+        android:layout_marginLeft="20dp"
         android:layout_marginStart="20dp"
         android:orientation="vertical">
 
@@ -21,6 +22,7 @@
             <TextView
                 android:id="@+id/txtSound"
                 style="@style/TextView"
+                android:layout_marginLeft="5dp"
                 android:layout_marginStart="5dp"
                 android:layout_toRightOf="@id/ic_sound"
                 android:text="Sound Eff" />
@@ -38,6 +40,7 @@
             <TextView
                 android:id="@+id/txtMusic"
                 style="@style/TextView"
+                android:layout_marginLeft="5dp"
                 android:layout_marginStart="5dp"
                 android:layout_toRightOf="@+id/ic_music"
                 android:text="BGM"/>

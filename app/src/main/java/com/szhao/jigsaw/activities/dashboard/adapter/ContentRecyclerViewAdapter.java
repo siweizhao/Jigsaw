@@ -10,10 +10,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.firebase.crash.FirebaseCrash;
 import com.szhao.jigsaw.R;
 import com.szhao.jigsaw.activities.dashboard.vh.ContentViewHolder;
 import com.szhao.jigsaw.global.Constants;
@@ -47,6 +49,7 @@ public class ContentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(context).inflate(R.layout.cv_content_image, parent, false);
         final ContentViewHolder vh = new ContentViewHolder(context, v);
+
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,7 +72,6 @@ public class ContentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         ContentViewHolder vh = (ContentViewHolder)holder;
         vh.setPuzzleImage(puzzles.get(position));
-
         //If the puzzle was downloaded it needs to be unlocked by paying coins
         File downloadedDir = context.getDir(Constants.DOWNLOADED_PUZZLES_DIR, Context.MODE_PRIVATE);
         if (puzzles.get(position).contains(downloadedDir.getName()) && !PointSystem.getInstance().isPuzzleUnlocked(puzzles.get(position))) {
@@ -96,7 +98,8 @@ public class ContentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                     setDLPuzzles(category);
                 }
             } catch (IOException e) {
-                Log.d("set puzzles", "Error getting puzzles from assets " + e.getMessage());
+                FirebaseCrash.logcat(Log.ERROR, "Load Puzzles", "Error loading puzzles from assets");
+                FirebaseCrash.report(e);
             }
         }
         notifyDataSetChanged();
@@ -142,10 +145,14 @@ public class ContentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        PointSystem.getInstance().spendPoints(context, Constants.UNLOCK_COST);
-                        PointSystem.getInstance().savePuzzle(context, puzzles.get(vh.getAdapterPosition()));
-                        vh.setUnlock();
-                        PointSystem.getInstance().increaseCountVH();
+                        if (PointSystem.getInstance().getPoints() >= Constants.UNLOCK_COST) {
+                            PointSystem.getInstance().spendPoints(context, Constants.UNLOCK_COST);
+                            PointSystem.getInstance().savePuzzle(context, puzzles.get(vh.getAdapterPosition()));
+                            vh.setUnlock();
+                            PointSystem.getInstance().increaseCountVH();
+                        } else {
+                            Toast.makeText(context, context.getString(R.string.insufficent_funds), Toast.LENGTH_LONG).show();
+                        }
                     }
                 })
                 .dismissListener(new DialogInterface.OnDismissListener() {

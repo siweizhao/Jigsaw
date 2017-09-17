@@ -16,6 +16,7 @@ import java.util.Collections;
 public class PointSystem {
     private static final String SHARED_PREF_POINTS = "points";
     private static final String SHARED_PREF_AVAILABLE_PUZZLES = "available_puzzles";
+    private static final int DEFAULT_POINTS = 500;
     private static final PointSystem ourInstance = new PointSystem();
     private CategoryViewHolder categoryViewHolder;
     private int points;
@@ -79,9 +80,8 @@ public class PointSystem {
 
     public void loadPoints(Context context) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-        int defaultPoints = 500;
-        points = sharedPref.getInt(SHARED_PREF_POINTS, defaultPoints);
-        listener.pointChanged(this.points);
+        points = sharedPref.getInt(SHARED_PREF_POINTS, DEFAULT_POINTS);
+        listener.pointChanged(points);
     }
 
     public void addPoints(Context context, int points) {
@@ -93,6 +93,10 @@ public class PointSystem {
         this.points -= points;
         listener.pointChanged(this.points);
         Utility.setSharedPrefValues(context, SHARED_PREF_POINTS, this.points);
+    }
+
+    public int getPoints() {
+        return this.points;
     }
 
     public interface PointChangeListener {

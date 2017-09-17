@@ -23,8 +23,8 @@ public class Constants {
     public static final float GOLDEN_RATIO = 1.618f;
     public static final float CATEGORY_RECYCLER_HEIGHT = 0.3f;
 
-    public static final int UNLOCKED_ALPHA = 255;
-    public static final int LOCKED_ALPHA = 155;
+    public static final float UNLOCKED_ALPHA = 1f;
+    public static final float LOCKED_ALPHA = 0.7f;
     public static final int CATEGORY_VH_MARGIN = 100;
     public static final int CONTENT_VH_MARGIN = 50;
 

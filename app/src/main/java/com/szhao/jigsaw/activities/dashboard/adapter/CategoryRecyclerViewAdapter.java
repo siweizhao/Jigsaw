@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.crash.FirebaseCrash;
 import com.szhao.jigsaw.R;
 import com.szhao.jigsaw.activities.dashboard.vh.CategoryViewHolder;
 import com.szhao.jigsaw.global.Constants;
@@ -96,7 +97,8 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
                     String filepath = "android_asset/" + categories.get(position) + "/" + context.getAssets().list(categories.get(position))[0];
                     vh.setImage(filepath);
                 } catch (IOException e) {
-                    Log.d("CategoryVH", "Error accessing assets folder " + e.getMessage());
+                    FirebaseCrash.logcat(Log.ERROR, "Load Puzzles", "Error loading puzzles from assets");
+                    FirebaseCrash.report(e);
                 }
             } else {
                 //Load downloaded puzzles

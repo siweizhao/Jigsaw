@@ -11,10 +11,12 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.firebase.crash.FirebaseCrash;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -48,6 +50,7 @@ public class DashboardActivity extends AppCompatActivity implements ItemSelectLi
         soundSettings = new SoundSettings(this);
         initNavigationFragment();
         initPointSystem();
+        deleteDL();
         Utility.startImmersiveMode(this);
     }
 
@@ -91,6 +94,7 @@ public class DashboardActivity extends AppCompatActivity implements ItemSelectLi
                 .titleGravity(GravityEnum.CENTER)
                 .title(getString(R.string.download_puzzles))
                 .content(R.string.check_new_puzzles)
+                .contentGravity(GravityEnum.CENTER)
                 .positiveText(getString(R.string.yes))
                 .negativeText(getString(R.string.no))
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
@@ -121,6 +125,7 @@ public class DashboardActivity extends AppCompatActivity implements ItemSelectLi
                     .titleGravity(GravityEnum.CENTER)
                     .title(getString(R.string.no_connection))
                     .content(getString(R.string.try_again_later))
+                    .contentGravity(GravityEnum.CENTER)
                     .positiveText(getString(R.string.ok))
                     .dismissListener(new DialogInterface.OnDismissListener() {
                         @Override
@@ -166,6 +171,7 @@ public class DashboardActivity extends AppCompatActivity implements ItemSelectLi
     }
 
     private void downloadPuzzles(String category, DataSnapshot puzzles) {
+        Toast.makeText(this, getString(R.string.downloading_puzzles), Toast.LENGTH_LONG).show();
         for (DataSnapshot p : puzzles.getChildren()) {
             String title = p.child("title").getValue(String.class);
             String b64img = p.child("img").getValue(String.class);
@@ -226,11 +232,13 @@ public class DashboardActivity extends AppCompatActivity implements ItemSelectLi
         //Create dir if it does not exist
         if (categoryDir.exists() || categoryDir.mkdir()) {
             File imageFile = new File(categoryDir, title);
-            try (FileOutputStream out = new FileOutputStream(imageFile)) {
+            try {
+                FileOutputStream out = new FileOutputStream(imageFile);
                 out.write(image);
                 out.close();
             } catch (IOException e) {
-                Log.d("Save DL file", e.getMessage());
+                FirebaseCrash.logcat(Log.ERROR, "Save Puzzle", "Error saving puzzles from to internal dir");
+                FirebaseCrash.report(e);
             }
         }
     }
