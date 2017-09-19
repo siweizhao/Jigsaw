@@ -82,7 +82,7 @@ public class GameBoard {
                     PuzzlePiece selectedPiece = findPuzzlePiece(puzzleImage);
                     GlobalGameData.getInstance().setSelectedPuzzlePiece(selectedPiece);
                     PuzzlePieceDragShadowBuilder dragShadowBuilder = new PuzzlePieceDragShadowBuilder(jigsawGameActivity, puzzleImage);
-                    v.startDrag(null,dragShadowBuilder,null,0);
+                    v.startDragAndDrop(null, dragShadowBuilder, null, 0);
                     placedPuzzlePieces.remove(selectedPiece);
                     ((RelativeLayout)layout).removeView((View)v.getParent());
                 }

@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -46,21 +47,22 @@ public class PuzzlePieceRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(mContext).inflate(R.layout.cv_image_only, parent, false);
+        final View v = LayoutInflater.from(mContext).inflate(R.layout.cv_image_only, parent, false);
         final ImageViewHolder vh = new ImageViewHolder(mContext,v);
-        v.setOnLongClickListener(new View.OnLongClickListener() {
+        v.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public boolean onLongClick(View v) {
-                int position = vh.getAdapterPosition();
-                GlobalGameData.getInstance().setSelectedPuzzlePiece(puzzlePieces.get(position));
-                Bitmap puzzleImage = GlobalGameData.getInstance().getSelectedPuzzlePiece().getImage();
-                PuzzlePieceDragShadowBuilder dragShadowBuilder = new PuzzlePieceDragShadowBuilder(mContext, puzzleImage);
-                v.startDrag(null, dragShadowBuilder, null, 0);
-                removeItem(position);
-                return false;
+            public boolean onTouch(View view, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    int position = vh.getAdapterPosition();
+                    GlobalGameData.getInstance().setSelectedPuzzlePiece(puzzlePieces.get(position));
+                    Bitmap puzzleImage = GlobalGameData.getInstance().getSelectedPuzzlePiece().getImage();
+                    PuzzlePieceDragShadowBuilder dragShadowBuilder = new PuzzlePieceDragShadowBuilder(mContext, puzzleImage);
+                    v.startDragAndDrop(null, dragShadowBuilder, null, 0);
+                    removeItem(position);
+                }
+                return true;
             }
         });
-
         return vh;
     }
 
