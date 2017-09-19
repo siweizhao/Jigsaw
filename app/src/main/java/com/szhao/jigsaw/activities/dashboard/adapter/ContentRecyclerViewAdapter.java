@@ -112,6 +112,7 @@ public class ContentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         for (File filePath : puzzleFilePaths) {
             puzzles.add(filePath.getAbsolutePath());
         }
+        Collections.reverse(puzzles);
         notifyDataSetChanged();
     }
 
